@@ -1,19 +1,15 @@
 local Logger = {}
 
-local function printMessage(level, message)
-    reaper.ShowConsoleMsg(string.format("[%s] %s\n", level, message))
-end
-
 function Logger.Info(message)
-    printMessage("INFO", message)
+    reaper.ShowConsoleMsg("[INFO] " .. message .. "\n")
 end
 
 function Logger.Warning(message)
-    printMessage("WARNING", message)
+    reaper.ShowConsoleMsg("[WARNING] " .. message .. "\n")
 end
 
 function Logger.Error(message)
-    printMessage("ERROR", message)
+    reaper.ShowConsoleMsg("[ERROR] " .. message .. "\n")
 end
 
 return Logger

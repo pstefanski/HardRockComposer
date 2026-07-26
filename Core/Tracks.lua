@@ -4,12 +4,22 @@ local Tracks = {}
 
 function Tracks.Create(layout)
 
-    for _, folder in ipairs(layout) do
+    for _, group in ipairs(layout) do
 
-        Reaper.CreateTrack(folder.folder)
+        local folder = Reaper.CreateTrack(group.folder)
 
-        for _, trackName in ipairs(folder.tracks) do
-            Reaper.CreateTrack(trackName)
+        Reaper.BeginFolder(folder)
+
+        local lastTrack
+
+        for _, trackName in ipairs(group.tracks) do
+
+            lastTrack = Reaper.CreateTrack(trackName)
+
+        end
+
+        if lastTrack then
+            Reaper.EndFolder(lastTrack)
         end
 
     end
