@@ -10,7 +10,7 @@ function Tracks.Create(layout)
 
         Reaper.BeginFolder(folder)
 
-        local lastTrack
+        local lastTrack = nil
 
         for _, track in ipairs(group.tracks) do
 

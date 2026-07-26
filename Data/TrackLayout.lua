@@ -1,5 +1,9 @@
 local Layout = {
 
+    ------------------------------------------------------------------
+    -- DRUMS
+    ------------------------------------------------------------------
+
     {
         folder = "DRUMS",
 
@@ -57,7 +61,7 @@ local Layout = {
             {
                 name = "Overheads",
                 type = "audio",
-                role = "overhead",
+                role = "overheads",
                 color = "drums"
             },
 
@@ -86,6 +90,10 @@ local Layout = {
 
     },
 
+    ------------------------------------------------------------------
+    -- BASS
+    ------------------------------------------------------------------
+
     {
         folder = "BASS",
 
@@ -94,14 +102,14 @@ local Layout = {
             {
                 name = "DI",
                 type = "audio",
-                role = "clean",
+                role = "di",
                 color = "bass"
             },
 
             {
                 name = "Amp",
                 type = "audio",
-                role = "amped",
+                role = "amp",
                 color = "bass"
             },
 
@@ -110,6 +118,129 @@ local Layout = {
                 type = "bus",
                 role = "master",
                 color = "bass"
+            }
+
+        }
+
+    },
+
+    ------------------------------------------------------------------
+    -- GUITARS
+    ------------------------------------------------------------------
+
+    {
+        folder = "GUITARS",
+
+        tracks = {
+
+            {
+                name = "Rhythm L",
+                type = "audio",
+                role = "rhythm",
+                color = "guitars"
+            },
+
+            {
+                name = "Rhythm R",
+                type = "audio",
+                role = "rhythm",
+                color = "guitars"
+            },
+
+            {
+                name = "Lead",
+                type = "audio",
+                role = "lead",
+                color = "guitars"
+            },
+
+            {
+                name = "Solo",
+                type = "audio",
+                role = "solo",
+                color = "guitars"
+            },
+
+            {
+                name = "Guitar Bus",
+                type = "bus",
+                role = "master",
+                color = "guitars"
+            }
+
+        }
+
+    },
+
+    ------------------------------------------------------------------
+    -- VOCALS
+    ------------------------------------------------------------------
+
+    {
+        folder = "VOCALS",
+
+        tracks = {
+
+            {
+                name = "Lead",
+                type = "audio",
+                role = "lead",
+                color = "vocals"
+            },
+
+            {
+                name = "Backing",
+                type = "audio",
+                role = "backing",
+                color = "vocals"
+            },
+
+            {
+                name = "Vocal Bus",
+                type = "bus",
+                role = "master",
+                color = "vocals"
+            }
+
+        }
+
+    },
+
+    ------------------------------------------------------------------
+    -- FX
+    ------------------------------------------------------------------
+
+    {
+        folder = "FX",
+
+        tracks = {
+
+            {
+                name = "Plate",
+                type = "fx",
+                role = "reverb",
+                color = "fx"
+            },
+
+            {
+                name = "Room",
+                type = "fx",
+                role = "reverb",
+                color = "fx"
+            },
+
+            {
+                name = "Hall",
+                type = "fx",
+                role = "reverb",
+                color = "fx"
+            },
+
+            {
+                name = "Delay",
+                type = "fx",
+                role = "delay",
+                color = "fx"
             }
 
         }
