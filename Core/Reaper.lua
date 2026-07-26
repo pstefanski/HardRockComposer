@@ -63,4 +63,23 @@ function Reaper.EndFolder(track)
 
 end
 
+----------------------------------------------------------
+-- Colors
+----------------------------------------------------------
+
+function Reaper.SetTrackColor(track, rgb)
+
+    local color = reaper.ColorToNative(
+        rgb[1],
+        rgb[2],
+        rgb[3]
+    )
+
+    reaper.SetTrackColor(
+        track,
+        color | 0x1000000
+    )
+
+end
+
 return Reaper
