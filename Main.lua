@@ -2,26 +2,40 @@ local root = ({reaper.get_action_context()})[2]
 root = root:match("^(.*[\\/])")
 
 package.path =
-    root .. "?.lua;" ..
-    root .. "Core\\?.lua;" ..
-    package.path
+      root .. "?.lua;"
+   .. root .. "Core\\?.lua;"
+   .. root .. "Data\\?.lua;"
+   .. package.path
 
 local Version = require("Version")
-local Config  = require("Config")
-local Logger  = require("Logger")
+local Config = require("Config")
+
+local Logger = require("Logger")
+local Reaper = require("Reaper")
+local Builder = require("Builder")
+
+local TrackLayout = require("TrackLayout")
 
 reaper.ClearConsole()
 
 Logger.Info(Version.NAME)
-Logger.Info("Version : " .. Version.VERSION)
-Logger.Info("Initialisation...")
+Logger.Info(Version.VERSION)
 
 reaper.Undo_BeginBlock()
 
-reaper.SetCurrentBPM(0, Config.Project.DefaultTempo, true)
+Reaper.ResetProject()
 
-Logger.Info("Tempo : " .. Config.Project.DefaultTempo)
+reaper.SetCurrentBPM(
+    0,
+    Config.Project.Tempo,
+    true
+)
 
-reaper.Undo_EndBlock("HardRock Composer", -1)
+Builder.Build(TrackLayout)
+
+reaper.Undo_EndBlock(
+    "HardRock Composer",
+    -1
+)
 
 Logger.Info("Done.")

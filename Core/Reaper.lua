@@ -1,0 +1,66 @@
+local Reaper = {}
+
+----------------------------------------------------------
+-- Project
+----------------------------------------------------------
+
+function Reaper.ResetProject()
+
+    while reaper.CountTracks(0) > 0 do
+
+        local track = reaper.GetTrack(0,0)
+
+        reaper.DeleteTrack(track)
+
+    end
+
+end
+
+----------------------------------------------------------
+-- Tracks
+----------------------------------------------------------
+
+function Reaper.CreateTrack(name)
+
+    local index = reaper.CountTracks(0)
+
+    reaper.InsertTrackAtIndex(index,true)
+
+    local track = reaper.GetTrack(0,index)
+
+    reaper.GetSetMediaTrackInfo_String(
+        track,
+        "P_NAME",
+        name,
+        true
+    )
+
+    return track
+
+end
+
+----------------------------------------------------------
+-- Folder
+----------------------------------------------------------
+
+function Reaper.BeginFolder(track)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "I_FOLDERDEPTH",
+        1
+    )
+
+end
+
+function Reaper.EndFolder(track)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "I_FOLDERDEPTH",
+        -1
+    )
+
+end
+
+return Reaper
