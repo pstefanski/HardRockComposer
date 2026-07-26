@@ -5,17 +5,82 @@ local Layout = {
 
         tracks = {
 
-            "EZD MIDI",
-            "Kick",
-            "Snare",
-            "HiHat",
-            "Tom 1",
-            "Tom 2",
-            "Floor Tom",
-            "Overheads",
-            "Room",
-            "Parallel",
-            "Drum Bus"
+            {
+                name = "EZD MIDI",
+                type = "midi",
+                role = "instrument",
+                color = "drums"
+            },
+
+            {
+                name = "Kick",
+                type = "audio",
+                role = "closemic",
+                color = "drums"
+            },
+
+            {
+                name = "Snare",
+                type = "audio",
+                role = "closemic",
+                color = "drums"
+            },
+
+            {
+                name = "HiHat",
+                type = "audio",
+                role = "closemic",
+                color = "drums"
+            },
+
+            {
+                name = "Tom 1",
+                type = "audio",
+                role = "tom",
+                color = "drums"
+            },
+
+            {
+                name = "Tom 2",
+                type = "audio",
+                role = "tom",
+                color = "drums"
+            },
+
+            {
+                name = "Floor Tom",
+                type = "audio",
+                role = "tom",
+                color = "drums"
+            },
+
+            {
+                name = "Overheads",
+                type = "audio",
+                role = "overhead",
+                color = "drums"
+            },
+
+            {
+                name = "Room",
+                type = "audio",
+                role = "room",
+                color = "drums"
+            },
+
+            {
+                name = "Parallel",
+                type = "bus",
+                role = "parallel",
+                color = "drums"
+            },
+
+            {
+                name = "Drum Bus",
+                type = "bus",
+                role = "master",
+                color = "drums"
+            }
 
         }
 
@@ -26,51 +91,26 @@ local Layout = {
 
         tracks = {
 
-            "DI",
-            "Amp",
-            "Bass Bus"
+            {
+                name = "DI",
+                type = "audio",
+                role = "clean",
+                color = "bass"
+            },
 
-        }
+            {
+                name = "Amp",
+                type = "audio",
+                role = "amped",
+                color = "bass"
+            },
 
-    },
-
-    {
-        folder = "GUITARS",
-
-        tracks = {
-
-            "Rhythm L",
-            "Rhythm R",
-            "Lead",
-            "Solo",
-            "Guitar Bus"
-
-        }
-
-    },
-
-    {
-        folder = "VOCALS",
-
-        tracks = {
-
-            "Lead",
-            "Backing",
-            "Vocal Bus"
-
-        }
-
-    },
-
-    {
-        folder = "FX",
-
-        tracks = {
-
-            "Plate",
-            "Room",
-            "Hall",
-            "Delay"
+            {
+                name = "Bass Bus",
+                type = "bus",
+                role = "master",
+                color = "bass"
+            }
 
         }
 

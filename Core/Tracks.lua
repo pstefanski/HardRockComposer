@@ -12,9 +12,9 @@ function Tracks.Create(layout)
 
         local lastTrack
 
-        for _, trackName in ipairs(group.tracks) do
+        for _, track in ipairs(group.tracks) do
 
-            lastTrack = Reaper.CreateTrack(trackName)
+            lastTrack = Reaper.CreateTrack(track.name)
 
         end
 
