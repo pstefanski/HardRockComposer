@@ -5,7 +5,8 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
-        folder = "DRUMS",
+        name = "DRUMS",
+        color = "drums",
 
         tracks = {
 
@@ -95,7 +96,8 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
-        folder = "BASS",
+        name = "BASS",
+        color = "bass",
 
         tracks = {
 
@@ -129,7 +131,8 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
-        folder = "GUITARS",
+        name = "GUITARS",
+        color = "guitars",
 
         tracks = {
 
@@ -177,7 +180,8 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
-        folder = "VOCALS",
+        name = "VOCALS",
+        color = "vocals",
 
         tracks = {
 
@@ -211,7 +215,8 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
-        folder = "FX",
+        name = "FX",
+        color = "fx",
 
         tracks = {
 

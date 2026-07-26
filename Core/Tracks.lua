@@ -7,11 +7,8 @@ function Tracks.Create(layout)
 
     for _, group in ipairs(layout) do
 
-        local folder = Reaper.CreateTrack(group.folder)
-
-        Colors.Apply(folder, {
-            color = group.tracks[1].color
-        })
+        local folder = Reaper.CreateTrack(group.name)
+        Colors.Apply(folder, group)
 
         Reaper.BeginFolder(folder)
 
