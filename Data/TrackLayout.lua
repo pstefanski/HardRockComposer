@@ -25,11 +25,21 @@ local Layout = {
                 type = "audio",
                 role = "closemic",
                 color = "drums",
-                route_to = "drum_bus",
-                volume = -6,
-                pan = -0.20,
-                mute = false,
-                solo = false
+                routing = {
+                    output = "drum_bus"
+                },
+
+                properties = {
+
+                    volume = -6,
+
+                    pan = -0.15,
+
+                    mute = false,
+
+                    solo = false
+
+                }
             },
 
             {
@@ -38,7 +48,9 @@ local Layout = {
                 type = "audio",
                 role = "closemic",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -47,7 +59,9 @@ local Layout = {
                 type = "audio",
                 role = "closemic",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -56,7 +70,9 @@ local Layout = {
                 type = "audio",
                 role = "tom",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -65,7 +81,9 @@ local Layout = {
                 type = "audio",
                 role = "tom",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -74,7 +92,9 @@ local Layout = {
                 type = "audio",
                 role = "tom",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -83,7 +103,9 @@ local Layout = {
                 type = "audio",
                 role = "overheads",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -92,7 +114,9 @@ local Layout = {
                 type = "audio",
                 role = "room",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -101,7 +125,9 @@ local Layout = {
                 type = "bus",
                 role = "parallel",
                 color = "drums",
-                route_to = "drum_bus"
+                routing = {
+                    output = "drum_bus"
+                },
             },
 
             {
@@ -133,7 +159,9 @@ local Layout = {
                 type = "audio",
                 role = "di",
                 color = "bass",
-                route_to = "bass_bus"
+                routing = {
+                    output = "bass_bus"
+                },
             },
 
             {
@@ -142,7 +170,9 @@ local Layout = {
                 type = "audio",
                 role = "amp",
                 color = "bass",
-                route_to = "bass_bus"
+                routing = {
+                    output = "bass_bus"
+                },
             },
 
             {

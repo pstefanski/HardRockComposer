@@ -299,3 +299,14 @@ Le routage audio est réalisé exclusivement via des Track Sends.
 ### Notes
 
 Les propriétés sont définies directement dans le `TrackLayout` et appliquées après la création des pistes et du routage.
+
+## Commit #0014
+
+### Changed
+
+- Réorganisation de la définition des pistes dans `TrackLayout`.
+- Introduction des blocs `routing` et `properties`.
+
+### Notes
+
+Les données sont désormais regroupées par responsabilité, ce qui prépare l'ajout des futurs blocs (`plugins`, `record`, etc.) sans surcharger la racine des pistes.

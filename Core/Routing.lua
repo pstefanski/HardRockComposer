@@ -6,20 +6,26 @@ function Routing.Apply(context)
 
     for _, entry in ipairs(context.tracks) do
 
-        local destinationId = entry.data.route_to
+        local routing = entry.data.routing
 
-        if destinationId then
+        if routing then
 
-            local destination = context.registry.tracks[destinationId]
+            local destinationId = routing.output
 
-            if destination then
+            if destinationId then
 
-                Reaper.SetMainSend(entry.track, false)
+                local destination = context.registry.tracks[destinationId]
 
-                Reaper.CreateSend(
-                    entry.track,
-                    destination.track
-                )
+                if destination then
+
+                    Reaper.SetMainSend(entry.track, false)
+
+                    Reaper.CreateSend(
+                        entry.track,
+                        destination.track
+                    )
+
+                end
 
             end
 

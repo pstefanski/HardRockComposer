@@ -6,22 +6,26 @@ function Properties.Apply(context)
 
     for _, entry in ipairs(context.tracks) do
 
-        local data = entry.data
+        local properties = entry.data.properties
 
-        if data.volume ~= nil then
-            Reaper.SetTrackVolume(entry.track, data.volume)
-        end
+        if properties then
 
-        if data.pan ~= nil then
-            Reaper.SetTrackPan(entry.track, data.pan)
-        end
+            if properties.volume ~= nil then
+                Reaper.SetTrackVolume(entry.track, properties.volume)
+            end
 
-        if data.mute ~= nil then
-            Reaper.SetTrackMute(entry.track, data.mute)
-        end
+            if properties.pan ~= nil then
+                Reaper.SetTrackPan(entry.track, properties.pan)
+            end
 
-        if data.solo ~= nil then
-            Reaper.SetTrackSolo(entry.track, data.solo)
+            if properties.mute ~= nil then
+                Reaper.SetTrackMute(entry.track, properties.mute)
+            end
+
+            if properties.solo ~= nil then
+                Reaper.SetTrackSolo(entry.track, properties.solo)
+            end
+
         end
 
     end
