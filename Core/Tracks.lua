@@ -17,13 +17,13 @@ function Tracks.Create(layout, context)
 
         Reaper.BeginFolder(folderTrack)
 
-        table.insert(context.groups, {
-
+        local groupEntry = {
             data = group,
-
             track = folderTrack
+        }
 
-        })
+        table.insert(context.groups, groupEntry)
+        context.registry.groups[group.id] = groupEntry
 
         --------------------------------------------------
         -- Tracks
@@ -37,15 +37,14 @@ function Tracks.Create(layout, context)
 
             Colors.Apply(lastTrack, track)
 
-            table.insert(context.tracks, {
-
+            local trackEntry = {
                 data = track,
-
                 track = lastTrack,
+                group = groupEntry
+            }
 
-                group = group
-
-            })
+            table.insert(context.tracks, trackEntry)
+            context.registry.tracks[track.id] = trackEntry
 
         end
 

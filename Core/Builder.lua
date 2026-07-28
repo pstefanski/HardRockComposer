@@ -7,7 +7,14 @@ function Builder.Build(layout)
     local context = {
 
         groups = {},
-        tracks = {}
+        tracks = {},
+
+        registry = {
+
+            groups = {},
+            tracks = {}
+
+        }
 
     }
 

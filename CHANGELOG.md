@@ -241,3 +241,15 @@ Cette évolution prépare :
 - Routing
 - Plugins
 - Markers
+
+## Commit #0010
+
+### Added
+
+- Introduction d'un registre (`registry`) dans le `BuildContext`.
+- Accès direct aux groupes via leur `id`.
+- Accès direct aux pistes via leur `id`.
+
+### Notes
+
+Les listes `groups` et `tracks` sont conservées pour préserver l'ordre de création, tandis que le registre offre un accès instantané par identifiant.
