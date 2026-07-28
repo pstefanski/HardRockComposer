@@ -1,5 +1,6 @@
 local Tracks = require("Tracks")
 local Routing = require("Routing")
+local Properties = require("Properties")
 
 local Builder = {}
 
@@ -22,6 +23,8 @@ function Builder.Build(layout)
     Tracks.Create(layout, context)
 
     Routing.Apply(context)
+
+    Properties.Apply(context)
 
     return context
 

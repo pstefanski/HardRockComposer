@@ -25,7 +25,11 @@ local Layout = {
                 type = "audio",
                 role = "closemic",
                 color = "drums",
-                route_to = "drum_bus"
+                route_to = "drum_bus",
+                volume = -6,
+                pan = -0.20,
+                mute = false,
+                solo = false
             },
 
             {
@@ -128,7 +132,8 @@ local Layout = {
                 name = "DI",
                 type = "audio",
                 role = "di",
-                color = "bass"
+                color = "bass",
+                route_to = "bass_bus"
             },
 
             {
@@ -136,7 +141,8 @@ local Layout = {
                 name = "Amp",
                 type = "audio",
                 role = "amp",
-                color = "bass"
+                color = "bass",
+                route_to = "bass_bus"
             },
 
             {

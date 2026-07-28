@@ -284,3 +284,18 @@ Une seule destination est supportée dans cette première version.
 Les dossiers REAPER sont désormais considérés comme des éléments d'organisation uniquement.
 
 Le routage audio est réalisé exclusivement via des Track Sends.
+
+## Commit #0013
+
+### Added
+
+- Nouveau module `Properties`.
+- Application des propriétés natives des pistes :
+  - volume
+  - pan
+  - mute
+  - solo
+
+### Notes
+
+Les propriétés sont définies directement dans le `TrackLayout` et appliquées après la création des pistes et du routage.
