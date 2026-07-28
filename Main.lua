@@ -31,7 +31,7 @@ reaper.SetCurrentBPM(
     true
 )
 
-Builder.Build(TrackLayout)
+local context = Builder.Build(TrackLayout)
 
 reaper.Undo_EndBlock(
     "HardRock Composer",

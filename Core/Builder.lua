@@ -4,7 +4,16 @@ local Builder = {}
 
 function Builder.Build(layout)
 
-    Tracks.Create(layout)
+    local context = {
+
+        groups = {},
+        tracks = {}
+
+    }
+
+    Tracks.Create(layout, context)
+
+    return context
 
 end
 

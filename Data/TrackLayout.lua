@@ -115,7 +115,7 @@ local Layout = {
         tracks = {
 
             {
-                id = "bass_di"
+                id = "bass_di",
                 name = "DI",
                 type = "audio",
                 role = "di",
@@ -264,7 +264,7 @@ local Layout = {
             },
 
             {
-                id = "fx_hall"
+                id = "fx_hall",
                 name = "Hall",
                 type = "fx",
                 role = "reverb",
