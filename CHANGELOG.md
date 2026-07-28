@@ -253,3 +253,17 @@ Cette évolution prépare :
 ### Notes
 
 Les listes `groups` et `tracks` sont conservées pour préserver l'ordre de création, tandis que le registre offre un accès instantané par identifiant.
+
+## Commit #0011
+
+### Added
+
+- Nouveau module `Routing`.
+- Création automatique des Track Sends.
+- Nouveau champ `route_to` dans le `TrackLayout`.
+
+### Notes
+
+Le routage est basé sur les identifiants des pistes (`id`) et le registre (`context.registry`).
+
+Une seule destination est supportée dans cette première version.

@@ -82,4 +82,17 @@ function Reaper.SetTrackColor(track, rgb)
 
 end
 
+----------------------------------------------------------
+-- Rounting
+----------------------------------------------------------
+
+function Reaper.CreateSend(sourceTrack, destinationTrack)
+
+    reaper.CreateTrackSend(
+        sourceTrack,
+        destinationTrack
+    )
+
+end
+
 return Reaper

@@ -24,7 +24,8 @@ local Layout = {
                 name = "Kick",
                 type = "audio",
                 role = "closemic",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
