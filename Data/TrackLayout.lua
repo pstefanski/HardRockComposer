@@ -5,12 +5,14 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
+        id= "drums",
         name = "DRUMS",
         color = "drums",
 
         tracks = {
 
             {
+                id = "ezd_midi",
                 name = "EZD MIDI",
                 type = "midi",
                 role = "instrument",
@@ -18,6 +20,7 @@ local Layout = {
             },
 
             {
+                id = "kick",
                 name = "Kick",
                 type = "audio",
                 role = "closemic",
@@ -25,6 +28,7 @@ local Layout = {
             },
 
             {
+                id = "snare",
                 name = "Snare",
                 type = "audio",
                 role = "closemic",
@@ -32,6 +36,7 @@ local Layout = {
             },
 
             {
+                id = "hihat",
                 name = "HiHat",
                 type = "audio",
                 role = "closemic",
@@ -39,6 +44,7 @@ local Layout = {
             },
 
             {
+                id = "tom_1",
                 name = "Tom 1",
                 type = "audio",
                 role = "tom",
@@ -46,6 +52,7 @@ local Layout = {
             },
 
             {
+                id = "tom_2",
                 name = "Tom 2",
                 type = "audio",
                 role = "tom",
@@ -53,6 +60,7 @@ local Layout = {
             },
 
             {
+                id = "floor_tom",
                 name = "Floor Tom",
                 type = "audio",
                 role = "tom",
@@ -60,6 +68,7 @@ local Layout = {
             },
 
             {
+                id = "overheads",
                 name = "Overheads",
                 type = "audio",
                 role = "overheads",
@@ -67,6 +76,7 @@ local Layout = {
             },
 
             {
+                id = "room",
                 name = "Room",
                 type = "audio",
                 role = "room",
@@ -74,6 +84,7 @@ local Layout = {
             },
 
             {
+                id = "parallel",
                 name = "Parallel",
                 type = "bus",
                 role = "parallel",
@@ -81,6 +92,7 @@ local Layout = {
             },
 
             {
+                id = "drum_bus",
                 name = "Drum Bus",
                 type = "bus",
                 role = "master",
@@ -96,12 +108,14 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
+        id = "bass",
         name = "BASS",
         color = "bass",
 
         tracks = {
 
             {
+                id = "bass_di"
                 name = "DI",
                 type = "audio",
                 role = "di",
@@ -109,6 +123,7 @@ local Layout = {
             },
 
             {
+                id = "bass_amp",
                 name = "Amp",
                 type = "audio",
                 role = "amp",
@@ -116,6 +131,7 @@ local Layout = {
             },
 
             {
+                id = "bass_bus",
                 name = "Bass Bus",
                 type = "bus",
                 role = "master",
@@ -131,12 +147,14 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
+        id = "guitars", 
         name = "GUITARS",
         color = "guitars",
 
         tracks = {
 
             {
+                id = "guitar_rythm_l",
                 name = "Rhythm L",
                 type = "audio",
                 role = "rhythm",
@@ -144,6 +162,7 @@ local Layout = {
             },
 
             {
+                id = "guitar_rythm_r",
                 name = "Rhythm R",
                 type = "audio",
                 role = "rhythm",
@@ -151,6 +170,7 @@ local Layout = {
             },
 
             {
+                id = "guitar_lead",
                 name = "Lead",
                 type = "audio",
                 role = "lead",
@@ -158,6 +178,7 @@ local Layout = {
             },
 
             {
+                id = "guitar_solo",
                 name = "Solo",
                 type = "audio",
                 role = "solo",
@@ -165,6 +186,7 @@ local Layout = {
             },
 
             {
+                id = "guitar_bus",
                 name = "Guitar Bus",
                 type = "bus",
                 role = "master",
@@ -180,12 +202,14 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
+        id = "vocals",
         name = "VOCALS",
         color = "vocals",
 
         tracks = {
 
             {
+                id = "vocal_lead",
                 name = "Lead",
                 type = "audio",
                 role = "lead",
@@ -193,6 +217,7 @@ local Layout = {
             },
 
             {
+                id = "vocal_backing",
                 name = "Backing",
                 type = "audio",
                 role = "backing",
@@ -200,6 +225,7 @@ local Layout = {
             },
 
             {
+                id = "vocal_bus",
                 name = "Vocal Bus",
                 type = "bus",
                 role = "master",
@@ -215,12 +241,14 @@ local Layout = {
     ------------------------------------------------------------------
 
     {
+        id = "fx",
         name = "FX",
         color = "fx",
 
         tracks = {
 
             {
+                id = "fx_plate",
                 name = "Plate",
                 type = "fx",
                 role = "reverb",
@@ -228,6 +256,7 @@ local Layout = {
             },
 
             {
+                id = "fx_room",
                 name = "Room",
                 type = "fx",
                 role = "reverb",
@@ -235,6 +264,7 @@ local Layout = {
             },
 
             {
+                id = "fx_hall"
                 name = "Hall",
                 type = "fx",
                 role = "reverb",
@@ -242,6 +272,7 @@ local Layout = {
             },
 
             {
+                id = "fx_delay",
                 name = "Delay",
                 type = "fx",
                 role = "delay",
