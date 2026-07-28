@@ -267,3 +267,20 @@ Les listes `groups` et `tracks` sont conservées pour préserver l'ordre de cré
 Le routage est basé sur les identifiants des pistes (`id`) et le registre (`context.registry`).
 
 Une seule destination est supportée dans cette première version.
+
+## Commit #0012
+
+### Fixed
+
+- Désactivation automatique du Parent Send pour les pistes utilisant `route_to`.
+
+### Added
+
+- Nouveau document `ARCHITECTURE.md`.
+- Formalisation des règles fondamentales du moteur.
+
+### Notes
+
+Les dossiers REAPER sont désormais considérés comme des éléments d'organisation uniquement.
+
+Le routage audio est réalisé exclusivement via des Track Sends.

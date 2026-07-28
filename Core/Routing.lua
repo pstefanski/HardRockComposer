@@ -14,6 +14,8 @@ function Routing.Apply(context)
 
             if destination then
 
+                Reaper.SetMainSend(entry.track, false)
+
                 Reaper.CreateSend(
                     entry.track,
                     destination.track

@@ -88,9 +88,19 @@ end
 
 function Reaper.CreateSend(sourceTrack, destinationTrack)
 
-    reaper.CreateTrackSend(
+    return reaper.CreateTrackSend(
         sourceTrack,
         destinationTrack
+    )
+
+end
+
+function Reaper.SetMainSend(track, enabled)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "B_MAINSEND",
+        enabled and 1 or 0
     )
 
 end

@@ -33,7 +33,8 @@ local Layout = {
                 name = "Snare",
                 type = "audio",
                 role = "closemic",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -41,7 +42,8 @@ local Layout = {
                 name = "HiHat",
                 type = "audio",
                 role = "closemic",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -49,7 +51,8 @@ local Layout = {
                 name = "Tom 1",
                 type = "audio",
                 role = "tom",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -57,7 +60,8 @@ local Layout = {
                 name = "Tom 2",
                 type = "audio",
                 role = "tom",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -65,7 +69,8 @@ local Layout = {
                 name = "Floor Tom",
                 type = "audio",
                 role = "tom",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -73,7 +78,8 @@ local Layout = {
                 name = "Overheads",
                 type = "audio",
                 role = "overheads",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -81,7 +87,8 @@ local Layout = {
                 name = "Room",
                 type = "audio",
                 role = "room",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
@@ -89,7 +96,8 @@ local Layout = {
                 name = "Parallel",
                 type = "bus",
                 role = "parallel",
-                color = "drums"
+                color = "drums",
+                route_to = "drum_bus"
             },
 
             {
