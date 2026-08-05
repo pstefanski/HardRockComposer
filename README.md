@@ -6,6 +6,8 @@ HardRock Composer is an open-source **ReaScript (Lua)** project that automatical
 
 Instead of starting from a static template, HardRock Composer generates a complete project structure including tracks, folders, routing, markers, regions, FX buses, and (in future releases) MIDI drum patterns and plugin configuration.
 
+![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTB3MjFsOWkyMTk2bDF6eGpvdTVoc25lMTg0YW9sZWhpcTZpbjJtdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ifCT1dv4jfnSo/giphy.gif)
+
 ---
 
 ## ✨ Features
