@@ -67,7 +67,8 @@ function Builder.Build(layout)
         registry = {
 
             groups = {},
-            tracks = {}
+            tracks = {},
+            plugins = {}
 
         }
 

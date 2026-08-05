@@ -157,14 +157,25 @@ end
 
 function Reaper.InsertFX(track, pluginName)
 
-    local fxIndex = reaper.TrackFX_AddByName(
+    local index = reaper.TrackFX_AddByName(
+
         track,
+
         pluginName,
+
         false,
+
         -1
+
     )
 
-    return fxIndex
+    return {
+
+        track = track,
+
+        index = index
+
+    }
 
 end
 

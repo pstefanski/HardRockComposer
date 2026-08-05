@@ -140,11 +140,19 @@ local Layout = {
                 plugins = {
 
                     {
+
+                        id = "eq",
+
                         plugin = "VST: ReaEQ (Cockos)"
+
                     },
 
                     {
+
+                        id = "comp",
+
                         plugin = "VST: ReaComp (Cockos)"
+
                     }
 
                 }

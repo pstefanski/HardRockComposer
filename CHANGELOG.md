@@ -334,3 +334,55 @@ Cette évolution permet d'ajouter de nouveaux modules de génération sans modif
 
 Les plugins sont insérés dans l'ordre de déclaration.
 Cette première version ne gère pas encore les presets ni les erreurs de plugin introuvable.
+
+## Commit #0018
+
+### Added
+
+- Chargement automatique des presets de plugins.
+- Chaque instance de plugin peut désormais référencer un preset.
+- Nouveau wrapper `Reaper.LoadPreset()`.
+
+### Changed
+
+- Le moteur de plugins applique désormais les presets immédiatement après l'insertion du plugin.
+- La structure des plugins dans le `TrackLayout` est enrichie.
+
+Avant :
+
+```lua
+plugins = {
+
+    {
+        id = "eq",
+        plugin = "VST3: ReaEQ (Cockos)"
+    }
+
+}
+```
+
+Après :
+
+```lua
+plugins = {
+
+    {
+        id = "eq",
+        plugin = "VST3: ReaEQ (Cockos)",
+        preset = "Rock EQ"
+    }
+
+}
+```
+
+### Notes
+
+Les presets sont chargés uniquement lorsqu'ils sont définis.
+
+Cette évolution prépare les prochaines fonctionnalités :
+
+- paramètres des plugins ;
+- bypass ;
+- activation/désactivation ;
+- automation ;
+- validation des presets.
