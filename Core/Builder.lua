@@ -4,6 +4,48 @@ local Properties = require("Properties")
 
 local Builder = {}
 
+--------------------------------------------------
+-- Build stages
+--------------------------------------------------
+
+local stages = {
+
+    {
+        name = "Tracks",
+
+        apply = function(layout, context)
+
+            Tracks.Apply(layout, context)
+
+        end
+    },
+
+    {
+        name = "Routing",
+
+        apply = function(_, context)
+
+            Routing.Apply(context)
+
+        end
+    },
+
+    {
+        name = "Properties",
+
+        apply = function(_, context)
+
+            Properties.Apply(context)
+
+        end
+    }
+
+}
+
+--------------------------------------------------
+-- Builder
+--------------------------------------------------
+
 function Builder.Build(layout)
 
     local context = {
@@ -20,11 +62,11 @@ function Builder.Build(layout)
 
     }
 
-    Tracks.Create(layout, context)
+    for _, stage in ipairs(stages) do
 
-    Routing.Apply(context)
+        stage.apply(layout, context)
 
-    Properties.Apply(context)
+    end
 
     return context
 

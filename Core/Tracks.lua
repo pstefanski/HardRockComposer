@@ -3,7 +3,7 @@ local Colors = require("Colors")
 
 local Tracks = {}
 
-function Tracks.Create(layout, context)
+function Tracks.Apply(layout, context)
 
     for _, group in ipairs(layout) do
 

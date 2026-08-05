@@ -310,3 +310,14 @@ Les propriétés sont définies directement dans le `TrackLayout` et appliquées
 ### Notes
 
 Les données sont désormais regroupées par responsabilité, ce qui prépare l'ajout des futurs blocs (`plugins`, `record`, etc.) sans surcharger la racine des pistes.
+
+## Commit #0015
+
+### Changed
+
+- Le `Builder` exécute désormais une liste de stages.
+- `Tracks.Create()` est renommé en `Tracks.Apply()` pour harmoniser l'API interne.
+
+### Notes
+
+Cette évolution permet d'ajouter de nouveaux modules de génération sans modifier la logique du `Builder`.
