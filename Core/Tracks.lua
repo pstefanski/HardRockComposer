@@ -1,20 +1,50 @@
 local Reaper = require("Reaper")
+local Colors = require("Colors")
 
 local Tracks = {}
 
-function Tracks.Create(layout)
+function Tracks.Apply(layout, context)
 
     for _, group in ipairs(layout) do
 
-        local folder = Reaper.CreateTrack(group.folder)
+        --------------------------------------------------
+        -- Folder
+        --------------------------------------------------
 
-        Reaper.BeginFolder(folder)
+        local folderTrack = Reaper.CreateTrack(group.name)
 
-        local lastTrack
+        Colors.Apply(folderTrack, group)
 
-        for _, trackName in ipairs(group.tracks) do
+        Reaper.BeginFolder(folderTrack)
 
-            lastTrack = Reaper.CreateTrack(trackName)
+        local groupEntry = {
+            data = group,
+            track = folderTrack
+        }
+
+        table.insert(context.groups, groupEntry)
+        context.registry.groups[group.id] = groupEntry
+
+        --------------------------------------------------
+        -- Tracks
+        --------------------------------------------------
+
+        local lastTrack = nil
+
+        for _, track in ipairs(group.tracks) do
+
+            lastTrack = Reaper.CreateTrack(track.name)
+
+            Colors.Apply(lastTrack, track)
+
+            local trackEntry = {
+                data = track,
+                track = lastTrack,
+                group = groupEntry
+            }
+
+            table.insert(context.tracks, trackEntry)
+            context.registry.tracks[track.id] = trackEntry
 
         end
 

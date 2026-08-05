@@ -63,4 +63,120 @@ function Reaper.EndFolder(track)
 
 end
 
+----------------------------------------------------------
+-- Colors
+----------------------------------------------------------
+
+function Reaper.SetTrackColor(track, rgb)
+
+    local color = reaper.ColorToNative(
+        rgb[1],
+        rgb[2],
+        rgb[3]
+    )
+
+    reaper.SetTrackColor(
+        track,
+        color | 0x1000000
+    )
+
+end
+
+----------------------------------------------------------
+-- Rounting
+----------------------------------------------------------
+
+function Reaper.CreateSend(sourceTrack, destinationTrack)
+
+    return reaper.CreateTrackSend(
+        sourceTrack,
+        destinationTrack
+    )
+
+end
+
+function Reaper.SetMainSend(track, enabled)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "B_MAINSEND",
+        enabled and 1 or 0
+    )
+
+end
+
+--------------------------------------------------
+-- Track Properties
+--------------------------------------------------
+
+function Reaper.SetTrackVolume(track, db)
+
+    local linear = 10 ^ (db / 20)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "D_VOL",
+        linear
+    )
+
+end
+
+function Reaper.SetTrackPan(track, pan)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "D_PAN",
+        pan
+    )
+
+end
+
+function Reaper.SetTrackMute(track, mute)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "B_MUTE",
+        mute and 1 or 0
+    )
+
+end
+
+function Reaper.SetTrackSolo(track, solo)
+
+    reaper.SetMediaTrackInfo_Value(
+        track,
+        "I_SOLO",
+        solo and 1 or 0
+    )
+
+end
+
+--------------------------------------------------
+-- FX
+--------------------------------------------------
+
+function Reaper.InsertFX(track, pluginName)
+
+    local index = reaper.TrackFX_AddByName(
+
+        track,
+
+        pluginName,
+
+        false,
+
+        -1
+
+    )
+
+    return {
+
+        track = track,
+
+        index = index
+
+    }
+
+end
+
 return Reaper
