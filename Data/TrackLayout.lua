@@ -135,7 +135,19 @@ local Layout = {
                 name = "Drum Bus",
                 type = "bus",
                 role = "master",
-                color = "drums"
+                color = "drums",
+
+                plugins = {
+
+                    {
+                        plugin = "VST: ReaEQ (Cockos)"
+                    },
+
+                    {
+                        plugin = "VST: ReaComp (Cockos)"
+                    }
+
+                }
             }
 
         }

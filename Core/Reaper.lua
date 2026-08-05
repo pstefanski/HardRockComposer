@@ -151,4 +151,21 @@ function Reaper.SetTrackSolo(track, solo)
 
 end
 
+--------------------------------------------------
+-- FX
+--------------------------------------------------
+
+function Reaper.InsertFX(track, pluginName)
+
+    local fxIndex = reaper.TrackFX_AddByName(
+        track,
+        pluginName,
+        false,
+        -1
+    )
+
+    return fxIndex
+
+end
+
 return Reaper

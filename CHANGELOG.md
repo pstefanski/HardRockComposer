@@ -321,3 +321,16 @@ Les données sont désormais regroupées par responsabilité, ce qui prépare l'
 ### Notes
 
 Cette évolution permet d'ajouter de nouveaux modules de génération sans modifier la logique du `Builder`.
+
+## Commit #0016
+
+### Added
+
+- Nouveau module `Plugins`.
+- Insertion automatique des plugins définis dans `TrackLayout`.
+- Nouveau wrapper `Reaper.InsertFX()`.
+
+### Notes
+
+Les plugins sont insérés dans l'ordre de déclaration.
+Cette première version ne gère pas encore les presets ni les erreurs de plugin introuvable.

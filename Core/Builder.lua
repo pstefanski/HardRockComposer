@@ -1,6 +1,7 @@
 local Tracks = require("Tracks")
 local Routing = require("Routing")
 local Properties = require("Properties")
+local Plugins = require("Plugins")
 
 local Builder = {}
 
@@ -36,6 +37,16 @@ local stages = {
         apply = function(_, context)
 
             Properties.Apply(context)
+
+        end
+    },
+
+    {
+        name = "Plugins",
+
+        apply = function(_, context)
+
+            Plugins.Apply(context)
 
         end
     }
