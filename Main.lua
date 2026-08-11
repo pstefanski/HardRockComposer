@@ -40,6 +40,21 @@ reaper.ShowConsoleMsg(
 
 )
 
+for _, section in ipairs(context.song) do
+
+    reaper.ShowConsoleMsg(
+
+        section.name ..
+        " : " ..
+        section.startBar ..
+        "-" ..
+        section.endBar ..
+        "\n"
+
+    )
+
+end
+
 
 reaper.Undo_EndBlock(
     "HardRock Composer",

@@ -386,3 +386,22 @@ Cette évolution prépare les prochaines fonctionnalités :
 - activation/désactivation ;
 - automation ;
 - validation des presets.
+
+## Commit #0019
+
+### Added
+
+- Nouveau module `Song`.
+- Nouveau fichier `SongStructure`.
+- Calcul automatique des positions des sections du morceau.
+- Nouveau registre `context.registry.song`.
+
+### Notes
+
+Cette première version ne crée pas encore de marqueurs ou de régions dans REAPER.
+
+Les informations de structure sont désormais disponibles dans le `BuildContext` pour les futurs modules :
+- Markers
+- Regions
+- MIDI
+- Automation

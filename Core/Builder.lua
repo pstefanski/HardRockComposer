@@ -1,6 +1,8 @@
 local Tracks = require("Tracks")
 local Routing = require("Routing")
 local Properties = require("Properties")
+local Song = require("Song")
+local SongStructure = require("SongStructure")
 local Plugins = require("Plugins")
 
 local Builder = {}
@@ -42,6 +44,19 @@ local stages = {
     },
 
     {
+        name = "Song",
+
+        apply = function(_, context)
+
+            Song.Apply(
+                SongStructure,
+                context
+            )
+
+        end
+    },
+
+    {
         name = "Plugins",
 
         apply = function(_, context)
@@ -63,12 +78,14 @@ function Builder.Build(layout)
 
         groups = {},
         tracks = {},
+        song = {},
 
         registry = {
 
             groups = {},
             tracks = {},
-            plugins = {}
+            plugins = {},
+            song = {}
 
         }
 
