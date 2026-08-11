@@ -405,3 +405,20 @@ Les informations de structure sont désormais disponibles dans le `BuildContext`
 - Regions
 - MIDI
 - Automation
+
+## Commit #0020
+
+### Added
+
+- Nouveau module `Markers`.
+- Génération automatique des marqueurs REAPER à partir de la structure du morceau.
+- Nouveaux wrappers :
+  - `ClearMarkers()`
+  - `AddMarker()`
+  - `BarToTime()`
+
+### Notes
+
+Les marqueurs sont recréés à chaque génération afin d'éviter les doublons.
+
+Cette évolution prépare le futur module de régions REAPER.

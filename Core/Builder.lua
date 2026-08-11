@@ -3,6 +3,7 @@ local Routing = require("Routing")
 local Properties = require("Properties")
 local Song = require("Song")
 local SongStructure = require("SongStructure")
+local Markers = require("Markers")
 local Plugins = require("Plugins")
 
 local Builder = {}
@@ -52,6 +53,16 @@ local stages = {
                 SongStructure,
                 context
             )
+
+        end
+    },
+
+    {
+        name = "Markers",
+
+        apply = function(_, context)
+
+            Markers.Apply(context)
 
         end
     },

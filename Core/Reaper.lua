@@ -179,4 +179,46 @@ function Reaper.InsertFX(track, pluginName)
 
 end
 
+--------------------------------------------------
+-- Markers
+--------------------------------------------------
+
+function Reaper.ClearMarkers()
+
+    local _, numMarkers, numRegions = reaper.CountProjectMarkers(0)
+
+    for i = numMarkers + numRegions - 1, 0, -1 do
+
+        local _, isRegion, _, _, _, index = reaper.EnumProjectMarkers(i)
+
+        reaper.DeleteProjectMarker(0, index, isRegion)
+
+    end
+
+end
+
+function Reaper.AddMarker(name, position)
+
+    reaper.AddProjectMarker(
+        0,
+        false,
+        position,
+        0,
+        name,
+        -1
+    )
+
+end
+
+function Reaper.BarToTime(bar)
+
+    local time = reaper.TimeMap2_beatsToTime(
+        0,
+        bar - 1
+    )
+
+    return time
+
+end
+
 return Reaper
