@@ -221,4 +221,21 @@ function Reaper.BarToTime(bar)
 
 end
 
+--------------------------------------------------
+-- Regions
+--------------------------------------------------
+
+function Reaper.AddRegion(name, startTime, endTime)
+
+    reaper.AddProjectMarker(
+        0,
+        true,
+        startTime,
+        endTime,
+        name,
+        -1
+    )
+
+end
+
 return Reaper

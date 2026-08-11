@@ -422,3 +422,17 @@ Les informations de structure sont désormais disponibles dans le `BuildContext`
 Les marqueurs sont recréés à chaque génération afin d'éviter les doublons.
 
 Cette évolution prépare le futur module de régions REAPER.
+
+## Commit #0021
+
+### Added
+
+- Nouveau module `Regions`.
+- Génération automatique des régions REAPER à partir de la structure du morceau.
+- Nouveau wrapper `AddRegion()`.
+
+### Notes
+
+Les régions sont alignées sur les marqueurs et couvrent exactement les sections définies dans `SongStructure`.
+
+Cette évolution prépare les futurs modules de génération MIDI et d'arrangement.

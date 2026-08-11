@@ -4,6 +4,7 @@ local Properties = require("Properties")
 local Song = require("Song")
 local SongStructure = require("SongStructure")
 local Markers = require("Markers")
+local Regions = require("Regions")
 local Plugins = require("Plugins")
 
 local Builder = {}
@@ -63,6 +64,16 @@ local stages = {
         apply = function(_, context)
 
             Markers.Apply(context)
+
+        end
+    },
+
+    {
+        name = "Regions",
+
+        apply = function(_, context)
+
+            Regions.Apply(context)
 
         end
     },
