@@ -16,6 +16,12 @@ function Reaper.ResetProject()
 
 end
 
+function Reaper.UpdateArrange()
+
+    reaper.UpdateArrange()
+
+end
+
 ----------------------------------------------------------
 -- Tracks
 ----------------------------------------------------------
@@ -235,6 +241,63 @@ function Reaper.AddRegion(name, startTime, endTime)
         name,
         -1
     )
+
+end
+
+--------------------------------------------------
+-- MIDI
+--------------------------------------------------
+
+function Reaper.CreateMidiItem(
+    track,
+    startPosition,
+    endPosition
+)
+
+    local item = reaper.CreateNewMIDIItemInProj(
+        track,
+        startPosition,
+        endPosition,
+        false
+    )
+
+    if not item then
+        error("Unable to create MIDI item")
+    end
+
+    return item
+
+end
+
+function Reaper.GetActiveTake(item)
+
+    return reaper.GetActiveTake(item)
+
+end
+
+function Reaper.InsertMidiNote(
+    take,
+    startPPQ,
+    endPPQ,
+    pitch,
+    velocity
+)
+
+    local success = reaper.MIDI_InsertNote(
+        take,
+        false,
+        false,
+        startPPQ,
+        endPPQ,
+        0,
+        pitch,
+        velocity,
+        false
+    )
+
+    if not success then
+        error("Unable to insert MIDI note")
+    end
 
 end
 

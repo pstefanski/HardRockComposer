@@ -480,3 +480,27 @@ Cette étape prépare le futur moteur de génération MIDI.
 Aucun item MIDI REAPER n'est encore créé.
 
 Ce commit établit le modèle de données utilisé par le futur moteur MIDI.
+
+## Commit #0024
+
+### Added
+
+- Nouveau module `MidiWriter`.
+- Nouveau module `MidiTracks`.
+- Création d'items MIDI depuis les patterns.
+- Insertion des notes MIDI dans REAPER.
+- Conversion des positions de notes en PPQ.
+
+### Changed
+
+- `Core/Reaper.lua` expose désormais les opérations MIDI :
+  - création d'items MIDI ;
+  - récupération du Take actif ;
+  - insertion de notes MIDI ;
+  - mise à jour de l'arrangement.
+
+### Notes
+
+Cette première implémentation génère un seul pattern MIDI de test.
+
+Le positionnement temporel basé sur le tempo et la structure du morceau sera traité dans un commit ultérieur.

@@ -51,13 +51,6 @@ local Drums = {
             },
 
             {
-                pitch = MidiNotes.drums.kick,
-                position = 4,
-                length = 0.25,
-                velocity = 110
-            },
-
-            {
                 pitch = MidiNotes.drums.snare,
                 position = 4,
                 length = 0.25,
@@ -127,12 +120,6 @@ local Drums = {
                 velocity = 75
             },
 
-            {
-                pitch = MidiNotes.drums.kick,
-                position = 12,
-                length = 0.25,
-                velocity = 110
-            },
 
             {
                 pitch = MidiNotes.drums.snare,

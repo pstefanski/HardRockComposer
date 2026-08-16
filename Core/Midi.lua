@@ -40,4 +40,10 @@ function Midi.ValidatePattern(pattern)
 
 end
 
+function Midi.PatternLengthQuarters(pattern)
+
+    return pattern.bars * 4
+
+end
+
 return Midi
