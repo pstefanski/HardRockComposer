@@ -9,25 +9,41 @@ local SongStructure = {
     {
         id = "verse_1",
         name = "Verse 1",
-        bars = 16
+        bars = 16,
+
+        patterns = {
+            drums = "verse_basic"
+        }
     },
 
     {
         id = "chorus_1",
         name = "Chorus 1",
-        bars = 8
+        bars = 8,
+
+        patterns = {
+            drums = "chorus_open"
+        }
     },
 
     {
         id = "verse_2",
         name = "Verse 2",
-        bars = 16
+        bars = 16,
+
+        patterns = {
+            drums = "verse_basic"
+        }
     },
 
     {
         id = "chorus_2",
         name = "Chorus 2",
-        bars = 8
+        bars = 8,
+
+        patterns = {
+            drums = "chorus_open"
+        }
     },
 
     {

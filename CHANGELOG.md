@@ -436,3 +436,20 @@ Cette évolution prépare le futur module de régions REAPER.
 Les régions sont alignées sur les marqueurs et couvrent exactement les sections définies dans `SongStructure`.
 
 Cette évolution prépare les futurs modules de génération MIDI et d'arrangement.
+
+## Commit #0022
+
+### Added
+
+- Introduction du système de patterns.
+- Nouveau module `Core/Patterns.lua`.
+- Nouveau dossier `Data/Patterns/`.
+- Première bibliothèque de patterns batterie.
+- Registre `context.registry.patterns`.
+- Association de patterns aux sections du morceau.
+
+### Notes
+
+Les patterns sont actuellement déclaratifs et ne contiennent pas encore de données MIDI.
+
+Cette étape prépare le futur moteur de génération MIDI.

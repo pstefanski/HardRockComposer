@@ -6,6 +6,8 @@ local SongStructure = require("SongStructure")
 local Markers = require("Markers")
 local Regions = require("Regions")
 local Plugins = require("Plugins")
+local Patterns = require("Patterns")
+local DrumPatterns = require("Patterns/Drums")
 
 local Builder = {}
 
@@ -79,6 +81,21 @@ local stages = {
     },
 
     {
+        name = "Patterns",
+
+        apply = function(_, context)
+
+            Patterns.Apply(
+                {
+                    DrumPatterns
+                },
+                context
+            )
+
+        end
+    },
+
+    {
         name = "Plugins",
 
         apply = function(_, context)
@@ -107,7 +124,8 @@ function Builder.Build(layout)
             groups = {},
             tracks = {},
             plugins = {},
-            song = {}
+            song = {},
+            patterns = {}
 
         }
 
