@@ -91,6 +91,38 @@ for _, section in ipairs(context.song) do
 
 end
 
+local pattern = context.registry.patterns.verse_basic
+
+if pattern then
+
+    reaper.ShowConsoleMsg(
+        "\nPattern : " ..
+        pattern.name ..
+        "\n"
+    )
+
+    reaper.ShowConsoleMsg(
+        "Notes : " ..
+        tostring(#pattern.notes) ..
+        "\n"
+    )
+
+end
+
+for _, note in ipairs(pattern.notes) do
+
+    reaper.ShowConsoleMsg(
+        "pitch=" ..
+        tostring(note.pitch) ..
+        " position=" ..
+        tostring(note.position) ..
+        " velocity=" ..
+        tostring(note.velocity) ..
+        "\n"
+    )
+
+end
+
 
 reaper.Undo_EndBlock(
     "HardRock Composer",

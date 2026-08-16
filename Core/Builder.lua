@@ -7,7 +7,7 @@ local Markers = require("Markers")
 local Regions = require("Regions")
 local Plugins = require("Plugins")
 local Patterns = require("Patterns")
-local DrumPatterns = require("Patterns/Drums")
+local DrumPatterns = require("Patterns.Drums")
 
 local Builder = {}
 

@@ -453,3 +453,30 @@ Cette évolution prépare les futurs modules de génération MIDI et d'arrangeme
 Les patterns sont actuellement déclaratifs et ne contiennent pas encore de données MIDI.
 
 Cette étape prépare le futur moteur de génération MIDI.
+
+## Commit #0023
+
+### Added
+
+- Introduction du modèle MIDI.
+- Nouveau module `Core/Midi.lua`.
+- Nouvelle table `Data/Patterns/MidiNotes.lua`.
+- Ajout de notes MIDI aux patterns batterie.
+- Validation des notes et patterns MIDI.
+
+### Changed
+
+- Les patterns batterie contiennent désormais :
+  - une résolution ;
+  - une durée en mesures ;
+  - des notes ;
+  - pitch ;
+  - position ;
+  - longueur ;
+  - vélocité.
+
+### Notes
+
+Aucun item MIDI REAPER n'est encore créé.
+
+Ce commit établit le modèle de données utilisé par le futur moteur MIDI.
