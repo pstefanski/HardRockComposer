@@ -4,45 +4,73 @@ local MidiWriter = {}
 
 function MidiWriter.CreateItem(
     track,
-    startPosition,
-    length
+    startQN,
+    endQN
 )
 
-    local item = Reaper.CreateMidiItem(
+    return Reaper.CreateMidiItem(
         track,
-        startPosition,
-        length
+        startQN,
+        endQN
     )
-
-    return item
 
 end
 
 function MidiWriter.WritePattern(
     take,
     pattern,
-    ppqPerQuarter
+    patternStartQN,
+    beatsPerBar,
+    repeatCount
 )
 
-    for _, note in ipairs(pattern.notes) do
+    repeatCount = repeatCount or 1
 
-        local startPPQ =
-            note.position *
-            (ppqPerQuarter / 4)
+    local patternLengthQN =
+        pattern.bars * beatsPerBar
 
-        local lengthPPQ =
-            note.length *
-            (ppqPerQuarter / 4)
+    for repetition = 0, repeatCount - 1 do
 
-        Reaper.InsertMidiNote(
-            take,
-            startPPQ,
-            startPPQ + lengthPPQ,
-            note.pitch,
-            note.velocity
-        )
+        local repetitionStartQN =
+            patternStartQN
+            + repetition
+            * patternLengthQN
+
+        for _, note in ipairs(pattern.notes) do
+
+            local noteQN =
+                repetitionStartQN
+                + note.position / 4
+
+            local endQN =
+                noteQN
+                + note.length / 4
+
+            local startPPQ =
+                Reaper.QNToPPQ(
+                    take,
+                    noteQN
+                )
+
+            local endPPQ =
+                Reaper.QNToPPQ(
+                    take,
+                    endQN
+                )
+
+            Reaper.InsertMidiNote(
+                take,
+                startPPQ,
+                endPPQ,
+                note.pitch,
+                note.velocity
+            )
+
+        end
 
     end
+
+    Reaper.SortMidi(take)
 
 end
 

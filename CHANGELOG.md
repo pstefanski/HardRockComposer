@@ -504,3 +504,69 @@ Ce commit établit le modèle de données utilisé par le futur moteur MIDI.
 Cette première implémentation génère un seul pattern MIDI de test.
 
 Le positionnement temporel basé sur le tempo et la structure du morceau sera traité dans un commit ultérieur.
+
+## Commit #0025 — Musical Timing & Arrangement
+
+### Added
+
+- Ajout de `Core/Timing.lua`.
+- Ajout de `Core/Arrangement.lua`.
+- Ajout de `Data/SongSettings.lua`.
+- Gestion du tempo du projet.
+- Introduction du Quarter Note (QN) comme unité de référence musicale.
+- Conversion des mesures en positions musicales (QN).
+- Conversion QN → temps projet.
+- Conversion QN → PPQ pour l'écriture MIDI.
+- Répétition automatique des patterns MIDI sur la durée d'une section.
+- Génération automatique des items MIDI à partir de `context.song`.
+
+### Changed
+
+- Le moteur d'arrangement ne travaille plus avec des durées arbitraires en secondes.
+- `MidiWriter` utilise désormais les positions musicales du projet pour positionner les notes MIDI.
+- `CreateNewMIDIItemInProj()` est utilisé en mode QN.
+- Les notes MIDI sont converties en PPQ via les fonctions natives de REAPER.
+- Les markers utilisent désormais `Timing.BarToQN()` puis `Reaper.QNToTime()`.
+- Les regions utilisent désormais `Timing.BarToQN()` puis `Reaper.QNToTime()`.
+- `SongSettings` est transmis aux stages `Markers`, `Regions` et `Arrangement`.
+
+### Fixed
+
+- Correction du décalage entre les sections musicales et les markers/regions REAPER.
+- Correction de la conversion `bar → time` qui ne tenait pas compte des 4 beats par mesure.
+- Correction du désalignement entre les items MIDI et les sections du morceau.
+- Les markers, regions et événements MIDI utilisent désormais la même référence temporelle musicale.
+
+### Architecture
+
+Le moteur utilise désormais une référence temporelle commune :
+
+    Bar
+      ↓
+    Timing
+      ↓
+    QN
+      ├──→ REAPER Time → Markers / Regions / Items
+      │
+      └──→ MIDI PPQ → Notes MIDI
+
+### Notes
+
+Le projet utilise actuellement :
+
+- Tempo : 140 BPM
+- Signature : 4/4
+- 4 QN par mesure
+
+Les variations de tempo et de signature rythmique ne sont pas encore prises en charge.
+
+### Validation
+
+Le système a été vérifié sur :
+
+- Verse 1 : QN 32 → 96
+- Chorus 1 : QN 96 → 128
+- Verse 2 : QN 128 → 192
+- Chorus 2 : QN 192 → 224
+
+Les items MIDI, markers, regions et notes MIDI sont désormais synchronisés avec les frontières des sections.

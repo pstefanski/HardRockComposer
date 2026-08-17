@@ -16,12 +16,6 @@ function Reaper.ResetProject()
 
 end
 
-function Reaper.UpdateArrange()
-
-    reaper.UpdateArrange()
-
-end
-
 ----------------------------------------------------------
 -- Tracks
 ----------------------------------------------------------
@@ -216,16 +210,6 @@ function Reaper.AddMarker(name, position)
 
 end
 
-function Reaper.BarToTime(bar)
-
-    local time = reaper.TimeMap2_beatsToTime(
-        0,
-        bar - 1
-    )
-
-    return time
-
-end
 
 --------------------------------------------------
 -- Regions
@@ -250,15 +234,15 @@ end
 
 function Reaper.CreateMidiItem(
     track,
-    startPosition,
-    endPosition
+    startQN,
+    endQN
 )
 
     local item = reaper.CreateNewMIDIItemInProj(
         track,
-        startPosition,
-        endPosition,
-        false
+        startQN,
+        endQN,
+        true
     )
 
     if not item then
@@ -298,6 +282,59 @@ function Reaper.InsertMidiNote(
     if not success then
         error("Unable to insert MIDI note")
     end
+
+end
+
+function Reaper.SortMidi(take)
+
+    reaper.MIDI_Sort(take)
+
+end
+
+--------------------------------------------------
+-- Timing
+--------------------------------------------------
+
+function Reaper.SetTempo(bpm)
+
+    reaper.SetCurrentBPM(
+        0,
+        bpm,
+        true
+    )
+
+end
+
+function Reaper.TimeToPPQ(take, time)
+
+    return reaper.MIDI_GetPPQPosFromProjTime(
+        take,
+        time
+    )
+
+end
+
+function Reaper.QNToTime(qn)
+
+    return reaper.TimeMap2_QNToTime(
+        0,
+        qn
+    )
+
+end
+
+function Reaper.QNToPPQ(take, qn)
+
+    return reaper.MIDI_GetPPQPosFromProjQN(
+        take,
+        qn
+    )
+
+end
+
+function Reaper.UpdateArrange()
+
+    reaper.UpdateArrange()
 
 end
 

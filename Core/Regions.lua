@@ -1,18 +1,33 @@
 local Reaper = require("Reaper")
+local Timing = require("Timing")
 
 local Regions = {}
 
-function Regions.Apply(context)
+function Regions.Apply(context, settings)
 
     for _, section in ipairs(context.song) do
 
-        local startTime = Reaper.BarToTime(
-            section.startBar
-        )
+        local startQN =
+            Timing.BarToQN(
+                section.startBar,
+                settings
+            )
 
-        local endTime = Reaper.BarToTime(
-            section.endBar + 1
-        )
+        local endQN =
+            Timing.BarToQN(
+                section.endBar + 1,
+                settings
+            )
+
+        local startTime =
+            Reaper.QNToTime(
+                startQN
+            )
+
+        local endTime =
+            Reaper.QNToTime(
+                endQN
+            )
 
         Reaper.AddRegion(
             section.name,

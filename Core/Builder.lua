@@ -8,9 +8,8 @@ local Regions = require("Regions")
 local Plugins = require("Plugins")
 local Patterns = require("Patterns")
 local DrumPatterns = require("Patterns.Drums")
-local MidiTracks = require("MidiTracks")
-local MidiWriter = require("MidiWriter")
-local Reaper = require("Reaper")
+local Arrangement = require("Arrangement")
+local SongSettings = require("SongSettings")
 
 local Builder = {}
 
@@ -68,7 +67,10 @@ local stages = {
 
         apply = function(_, context)
 
-            Markers.Apply(context)
+            Markers.Apply(
+            context, 
+            SongSettings
+        )
 
         end
     },
@@ -78,7 +80,10 @@ local stages = {
 
         apply = function(_, context)
 
-            Regions.Apply(context)
+            Regions.Apply(
+            context, 
+            SongSettings
+        )
 
         end
     },
@@ -99,37 +104,14 @@ local stages = {
     },
 
     {
-        name = "MIDI Test",
+        name = "Arrangement",
 
         apply = function(_, context)
 
-            local pattern =
-                context.registry.patterns.verse_basic
-
-            if not pattern then
-                return
-            end
-
-            local track =
-                MidiTracks.Create("MIDI Test")
-
-            local item =
-                MidiWriter.CreateItem(
-                    track,
-                    0,
-                    2
-                )
-
-            local take =
-                Reaper.GetActiveTake(item)
-
-            MidiWriter.WritePattern(
-                take,
-                pattern,
-                960
+            Arrangement.Apply(
+                context,
+                SongSettings
             )
-
-            Reaper.UpdateArrange()
 
         end
     },

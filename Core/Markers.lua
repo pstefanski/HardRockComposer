@@ -1,16 +1,24 @@
 local Reaper = require("Reaper")
+local Timing = require("Timing")
 
 local Markers = {}
 
-function Markers.Apply(context)
+function Markers.Apply(context, settings)
 
     Reaper.ClearMarkers()
 
     for _, section in ipairs(context.song) do
 
-        local position = Reaper.BarToTime(
-            section.startBar
-        )
+        local positionQN =
+            Timing.BarToQN(
+                section.startBar,
+                settings
+            )
+
+        local position =
+            Reaper.QNToTime(
+                positionQN
+            )
 
         Reaper.AddMarker(
             section.name,
