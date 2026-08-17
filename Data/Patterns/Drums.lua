@@ -255,7 +255,173 @@ local Drums = {
 
         }
 
-    }
+    },
+
+    {
+        id = "verse_basic_alt",
+
+        name = "Verse Basic Alt",
+
+        type = "drums",
+
+        resolution = 16,
+
+        bars = 1,
+
+        notes = {
+
+            -- Kick
+            {
+                pitch = MidiNotes.drums.kick,
+                position = 0,
+                length = 0.25,
+                velocity = 115
+            },
+
+            {
+                pitch = MidiNotes.drums.kick,
+                position = 6,
+                length = 0.25,
+                velocity = 100
+            },
+
+            {
+                pitch = MidiNotes.drums.kick,
+                position = 8,
+                length = 0.25,
+                velocity = 115
+            },
+
+            -- Snare
+            {
+                pitch = MidiNotes.drums.snare,
+                position = 4,
+                length = 0.25,
+                velocity = 110
+            },
+
+            {
+                pitch = MidiNotes.drums.snare,
+                position = 12,
+                length = 0.25,
+                velocity = 110
+            },
+
+            -- Hi-hat
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 0,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 1,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 2,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 3,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 4,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 5,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 6,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 7,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 8,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 9,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 10,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 11,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 12,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 13,
+                length = 0.25,
+                velocity = 70
+            },
+
+            {
+                pitch = MidiNotes.drums.closed_hat,
+                position = 14,
+                length = 0.25,
+                velocity = 85
+            },
+
+            {
+                pitch = MidiNotes.drums.open_hat,
+                position = 15,
+                length = 0.25,
+                velocity = 95
+            }
+
+        }
+    },
 
 }
 

@@ -597,3 +597,38 @@ Les items MIDI, markers, regions et notes MIDI sont désormais synchronisés ave
 
 Les fills sont déclarés dans `SongStructure.lua` et non codés en dur
 dans le moteur d'arrangement.
+## Commit #0027 — Drum Pattern Variations
+
+### Added
+
+- Ajout du pattern `verse_basic_alt`.
+- Support des variations de patterns batterie.
+- Possibilité de définir un pattern `primary` et une `variation`.
+- Sélection déterministe des variations.
+- Variation automatique toutes les 4 mesures.
+
+### Changed
+
+- L'Arrangement génère désormais les patterns mesure par mesure
+  lorsqu'une variation est définie.
+- Le pattern principal reste utilisé par défaut.
+- La dernière mesure reste réservée au fill lorsqu'un fill est défini.
+
+### Architecture
+
+Une section peut maintenant définir :
+
+    patterns = {
+        drums = {
+            primary = "verse_basic",
+            variation = "verse_basic_alt"
+        }
+    }
+
+Le moteur sélectionne ensuite le pattern approprié pour chaque mesure.
+
+### Notes
+
+La sélection des variations est actuellement déterministe.
+
+Aucune randomisation ou humanisation MIDI n'est introduite dans ce commit.

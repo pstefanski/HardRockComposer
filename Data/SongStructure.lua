@@ -12,7 +12,10 @@ local SongStructure = {
         bars = 16,
 
         patterns = {
-            drums = "verse_basic"
+            drums = {
+                primary = "verse_basic",
+                variation = "verse_basic_alt"
+            }
         },
 
         fill = "fill_basic"
@@ -36,7 +39,10 @@ local SongStructure = {
         bars = 16,
 
         patterns = {
-            drums = "verse_basic"
+           drums = {
+                primary = "verse_basic",
+                variation = "verse_basic_alt"
+            }
         },
 
         fill = "fill_basic"

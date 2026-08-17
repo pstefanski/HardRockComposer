@@ -24,20 +24,54 @@ function Arrangement.Apply(
         if section.patterns
         and section.patterns.drums then
 
-            local patternId =
+            local drumDefinition =
                 section.patterns.drums
+
+            local primaryId
+            local variationId
+
+            if type(drumDefinition) == "string" then
+
+                primaryId = drumDefinition
+
+            else
+
+                primaryId = drumDefinition.primary
+                variationId = drumDefinition.variation
+
+            end
 
             local pattern =
                 context.registry.patterns[
-                    patternId
+                    primaryId
                 ]
 
             if not pattern then
 
                 error(
                     "Unknown drum pattern: " ..
-                    tostring(patternId)
+                    tostring(primaryId)
                 )
+
+            end
+
+            local variationPattern = nil
+
+            if variationId then
+
+                variationPattern =
+                    context.registry.patterns[
+                        variationId
+                    ]
+
+                if not variationPattern then
+
+                    error(
+                        "Unknown drum variation: " ..
+                        tostring(variationId)
+                    )
+
+                end
 
             end
 
@@ -113,13 +147,33 @@ function Arrangement.Apply(
 
             if normalBars > 0 then
 
-                MidiWriter.WritePattern(
+                for bar = 1, normalBars do
+
+                local selectedPattern = pattern
+
+                if variationPattern
+                and bar % 4 == 0 then
+
+                    selectedPattern =
+                        variationPattern
+
+                end
+
+                local barQN =
+                    startQN
+                    + (
+                        (bar - 1)
+                        * settings.beats_per_bar
+                    )
+
+                MidiWriter.WritePatternAtBar(
                     take,
-                    pattern,
-                    startQN,
-                    settings.beats_per_bar,
-                    normalBars
+                    selectedPattern,
+                    barQN,
+                    settings.beats_per_bar
                 )
+
+            end
 
             end
 
