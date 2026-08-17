@@ -667,3 +667,40 @@ Le moteur MIDI cible désormais les pistes instrument existantes :
 qu'il n'est plus utilisé par aucun autre module.
 
 Le comportement musical et le timing du Commit #0027 restent inchangés.
+
+## Commit #0029 — Colored Arrangement Regions
+
+### Added
+
+- Ajout d'une palette dédiée aux régions dans `ColorsPalette.lua`.
+- Support d'une couleur logique sur les sections musicales.
+- Ajout de couleurs aux régions REAPER.
+- Validation des références de couleurs inconnues.
+
+### Changed
+
+- `Song.lua` conserve désormais la référence de couleur des sections.
+- `Regions.lua` récupère les couleurs depuis `ColorsPalette.regions`.
+- `Reaper.AddRegion()` supporte désormais une couleur.
+- Utilisation de `AddProjectMarker2()` pour créer les régions colorées.
+
+### Architecture
+
+Les sections référencent une couleur logique :
+
+    color = "verse"
+
+La couleur RGB réelle est centralisée dans :
+
+    ColorsPalette.regions
+
+Le moteur des régions traduit ensuite cette référence en couleur
+REAPER.
+
+### Notes
+
+Les couleurs ne sont jamais définies directement dans `SongStructure.lua`.
+
+La palette reste centralisée dans `ColorsPalette.lua`.
+
+Le timing et la génération MIDI du Commit #0028 restent inchangés.

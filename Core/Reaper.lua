@@ -215,15 +215,35 @@ end
 -- Regions
 --------------------------------------------------
 
-function Reaper.AddRegion(name, startTime, endTime)
+function Reaper.AddRegion(
+    name,
+    startTime,
+    endTime,
+    rgb
+)
 
-    reaper.AddProjectMarker(
+    local color = 0
+
+    if rgb then
+
+        color = reaper.ColorToNative(
+            rgb[1],
+            rgb[2],
+            rgb[3]
+        )
+
+        color = color | 0x1000000
+
+    end
+
+    reaper.AddProjectMarker2(
         0,
         true,
         startTime,
         endTime,
         name,
-        -1
+        -1,
+        color
     )
 
 end

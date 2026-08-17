@@ -20,7 +20,9 @@ function Song.Apply(structure, context)
             
             patterns = section.patterns,
 
-            fill = section.fill
+            fill = section.fill,
+
+            color = section.color
 
         }
 

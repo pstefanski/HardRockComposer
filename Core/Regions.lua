@@ -1,9 +1,15 @@
 local Reaper = require("Reaper")
 local Timing = require("Timing")
+local ColorsPalette = require("ColorsPalette")
 
 local Regions = {}
 
-function Regions.Apply(context, settings)
+function Regions.Apply(
+    context,
+    settings
+)
+
+    Reaper.ClearMarkers()
 
     for _, section in ipairs(context.song) do
 
@@ -29,10 +35,31 @@ function Regions.Apply(context, settings)
                 endQN
             )
 
+        local color = nil
+
+        if section.color then
+
+            color =
+                ColorsPalette[
+                    section.color
+                ]
+
+            if not color then
+
+                error(
+                    "Unknown region color: " ..
+                    tostring(section.color)
+                )
+
+            end
+
+        end
+
         Reaper.AddRegion(
             section.name,
             startTime,
-            endTime
+            endTime,
+            color
         )
 
     end
