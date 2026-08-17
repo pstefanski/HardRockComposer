@@ -632,3 +632,38 @@ Le moteur sélectionne ensuite le pattern approprié pour chaque mesure.
 La sélection des variations est actuellement déterministe.
 
 Aucune randomisation ou humanisation MIDI n'est introduite dans ce commit.
+
+## Commit #0028 — MIDI Track Targets
+
+### Changed
+
+- Le moteur d'arrangement MIDI n'utilise plus une piste `Drums MIDI`
+  créée dynamiquement.
+- Les événements MIDI batterie sont désormais générés directement sur
+  la piste `EZ midi` existante.
+- `Arrangement` utilise désormais `context.registry.tracks.ez_midi`.
+
+### Removed
+
+- Création dynamique de la piste `Drums MIDI` par `Arrangement`.
+
+### Architecture
+
+Le moteur MIDI cible désormais les pistes instrument existantes :
+
+    Track Registry
+          │
+          └── ez_midi
+                │
+                ▼
+           MIDI Writer
+                │
+                ▼
+             EZdrummer
+
+### Notes
+
+`Core/MidiTracks.lua` est conservé temporairement jusqu'à vérification
+qu'il n'est plus utilisé par aucun autre module.
+
+Le comportement musical et le timing du Commit #0027 restent inchangés.

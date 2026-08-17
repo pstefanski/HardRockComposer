@@ -1,7 +1,6 @@
 local Reaper = require("Reaper")
 local Timing = require("Timing")
 local MidiWriter = require("MidiWriter")
-local MidiTracks = require("MidiTracks")
 
 local Arrangement = {}
 
@@ -12,8 +11,19 @@ function Arrangement.Apply(
 
     Reaper.SetTempo(settings.tempo)
 
+    local drumTrackEntry =
+    context.registry.tracks.ezd_midi
+
+    if not drumTrackEntry then
+
+        error(
+            "Missing MIDI track: ez_midi"
+        )
+
+    end
+
     local drumTrack =
-        MidiTracks.Create("Drums MIDI")
+        drumTrackEntry.track
 
     for _, section in ipairs(context.song) do
 
