@@ -74,4 +74,45 @@ function MidiWriter.WritePattern(
 
 end
 
+function MidiWriter.WritePatternAtBar(
+    take,
+    pattern,
+    startQN,
+    beatsPerBar
+)
+
+    for _, note in ipairs(pattern.notes) do
+
+        local noteQN =
+            startQN
+            + note.position / 4
+
+        local endQN =
+            noteQN
+            + note.length / 4
+
+        local startPPQ =
+            Reaper.QNToPPQ(
+                take,
+                noteQN
+            )
+
+        local endPPQ =
+            Reaper.QNToPPQ(
+                take,
+                endQN
+            )
+
+        Reaper.InsertMidiNote(
+            take,
+            startPPQ,
+            endPPQ,
+            note.pitch,
+            note.velocity
+        )
+
+    end
+
+end
+
 return MidiWriter

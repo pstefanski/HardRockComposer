@@ -570,3 +570,30 @@ Le système a été vérifié sur :
 - Chorus 2 : QN 192 → 224
 
 Les items MIDI, markers, regions et notes MIDI sont désormais synchronisés avec les frontières des sections.
+
+## Commit #0026 — Drum Fills & Transitions
+
+### Added
+
+- Introduction des fills de batterie.
+- Support du champ `fill` dans les sections musicales.
+- Ajout de `MidiWriter.WritePatternAtBar()`.
+- Ajout du pattern `fill_basic`.
+
+### Changed
+
+- Une section possédant un fill utilise son pattern principal sur toutes
+  ses mesures sauf la dernière.
+- La dernière mesure est remplacée par le pattern de fill.
+- Les fills sont positionnés en utilisant le système temporel QN.
+
+### Validation
+
+- Verse 1 : 15 mesures de groove + 1 mesure de fill.
+- Verse 2 : 15 mesures de groove + 1 mesure de fill.
+- Transition vers la section suivante sans trou ni chevauchement.
+
+### Architecture
+
+Les fills sont déclarés dans `SongStructure.lua` et non codés en dur
+dans le moteur d'arrangement.

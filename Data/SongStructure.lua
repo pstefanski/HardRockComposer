@@ -13,7 +13,9 @@ local SongStructure = {
 
         patterns = {
             drums = "verse_basic"
-        }
+        },
+
+        fill = "fill_basic"
     },
 
     {
@@ -23,7 +25,9 @@ local SongStructure = {
 
         patterns = {
             drums = "chorus_open"
-        }
+        },
+
+        fill = "fill_basic"
     },
 
     {
@@ -33,7 +37,9 @@ local SongStructure = {
 
         patterns = {
             drums = "verse_basic"
-        }
+        },
+
+        fill = "fill_basic"
     },
 
     {
@@ -43,7 +49,9 @@ local SongStructure = {
 
         patterns = {
             drums = "chorus_open"
-        }
+        },
+
+        fill = "fill_basic"
     },
 
     {
