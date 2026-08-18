@@ -759,3 +759,48 @@ L'humanisation est actuellement globale à l'arrangement.
 Les profils d'humanisation spécifiques au kick, snare, hi-hat, toms et fills
 pourront être ajoutés ultérieurement.fiques au kick, snare, hi-hat et aux fills
 seront traités ultérieurement.
+
+## Commit #0031 — Drum Dynamics
+
+### Added
+
+- Ajout de la notion d'énergie aux sections musicales.
+- Ajout du module `Core/Dynamics.lua`.
+- Contrôle de la vélocité MIDI en fonction de l'énergie de la section.
+
+### Changed
+
+- `Song.lua` conserve désormais le niveau d'énergie de chaque section.
+- `Arrangement.lua` récupère l'énergie de chaque section pendant la génération.
+- `MidiWriter` applique la dynamique avant l'humanisation.
+- Les patterns principaux et les fills utilisent l'énergie de leur section.
+
+### Architecture
+
+Le traitement MIDI suit désormais :
+
+    Pattern
+       ↓
+    Dynamics
+       ↓
+    Humanization
+       ↓
+    MIDI
+
+L'énergie représente l'intention musicale de la section, tandis que
+l'humanisation apporte les variations d'interprétation.
+
+### Validation
+
+- Les sections peuvent définir leur propre niveau d'énergie.
+- Une énergie faible produit une vélocité plus contenue.
+- Une énergie élevée conserve davantage la vélocité originale.
+- L'humanisation reste appliquée après la dynamique.
+- Les frontières des sections et le timing QN restent inchangés.
+
+### Notes
+
+L'énergie contrôle actuellement uniquement la vélocité.
+
+La densité des patterns, les cymbales, les accents et les transitions
+pourront exploiter cette information dans les commits suivants.

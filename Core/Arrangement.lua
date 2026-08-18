@@ -28,6 +28,8 @@ function Arrangement.Apply(context, settings)
 
     for _, section in ipairs(context.song) do
 
+        local energy = section.energy or 1
+
         --------------------------------------------------
         -- Drum pattern
         --------------------------------------------------
@@ -132,7 +134,8 @@ function Arrangement.Apply(context, settings)
 
                     local barQN = startQN + ((bar - 1) * settings.beats_per_bar)
 
-                    MidiWriter.WritePatternAtBar(take, selectedPattern, barQN, settings.beats_per_bar, humanization)
+                    MidiWriter.WritePatternAtBar(take, selectedPattern, barQN, settings.beats_per_bar, humanization,
+                        energy)
 
                 end
 
@@ -146,7 +149,8 @@ function Arrangement.Apply(context, settings)
 
                 local fillStartQN = startQN + (normalBars * settings.beats_per_bar)
 
-                MidiWriter.WritePatternAtBar(take, fillPattern, fillStartQN, settings.beats_per_bar, humanization)
+                MidiWriter.WritePatternAtBar(take, fillPattern, fillStartQN, settings.beats_per_bar, humanization,
+                    energy)
 
             end
 

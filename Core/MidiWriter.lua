@@ -1,5 +1,6 @@
 local Reaper = require("Reaper")
 local Humanizer = require("Humanizer")
+local Dynamics = require("Dynamics")
 
 local MidiWriter = {}
 
@@ -26,7 +27,7 @@ function MidiWriter.WritePattern(take, pattern, patternStartQN, beatsPerBar, rep
 
 end
 
-function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, humanization)
+function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, humanization, energy)
 
     local humanize = humanization and humanization.enabled
 
@@ -36,9 +37,9 @@ function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, human
 
         local endQN = noteQN + note.length / 4
 
-        local velocity = note.velocity
-
         local timingOffset = 0
+
+        local velocity = Dynamics.Velocity(note.velocity, energy)
 
         if humanize then
 

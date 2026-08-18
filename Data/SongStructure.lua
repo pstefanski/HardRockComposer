@@ -2,12 +2,14 @@ local SongStructure = {{
     id = "intro",
     name = "Intro",
     bars = 8,
-    color = "intro"
+    color = "intro",
+    energy = 0.3
 }, {
     id = "verse_1",
     name = "Verse 1",
     bars = 16,
     color = "verse",
+    energy = 0.6,
 
     patterns = {
         drums = {
@@ -22,6 +24,7 @@ local SongStructure = {{
     name = "Chorus 1",
     bars = 8,
     color = "chorus",
+    energy = 1.0,
 
     patterns = {
         drums = "chorus_open"
@@ -33,6 +36,7 @@ local SongStructure = {{
     name = "Verse 2",
     bars = 16,
     color = "verse",
+    energy = 0.6,
 
     patterns = {
         drums = {
@@ -47,6 +51,7 @@ local SongStructure = {{
     name = "Chorus 2",
     bars = 8,
     color = "chorus",
+    energy = 1.0,
 
     patterns = {
         drums = "chorus_open"

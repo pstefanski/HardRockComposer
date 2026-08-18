@@ -22,7 +22,9 @@ function Song.Apply(structure, context)
 
             fill = section.fill,
 
-            color = section.color
+            color = section.color,
+
+            energy = section.energy
 
         }
 
