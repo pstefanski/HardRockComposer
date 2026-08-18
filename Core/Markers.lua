@@ -9,21 +9,11 @@ function Markers.Apply(context, settings)
 
     for _, section in ipairs(context.song) do
 
-        local positionQN =
-            Timing.BarToQN(
-                section.startBar,
-                settings
-            )
+        local positionQN = Timing.BarToQN(section.startBar, settings)
 
-        local position =
-            Reaper.QNToTime(
-                positionQN
-            )
+        local position = Reaper.QNToTime(positionQN)
 
-        Reaper.AddMarker(
-            section.name,
-            position
-        )
+        Reaper.AddMarker(section.name, position)
 
     end
 

@@ -20,10 +20,7 @@ function Routing.Apply(context)
 
                     Reaper.SetMainSend(entry.track, false)
 
-                    Reaper.CreateSend(
-                        entry.track,
-                        destination.track
-                    )
+                    Reaper.CreateSend(entry.track, destination.track)
 
                 end
 

@@ -8,7 +8,7 @@ function Reaper.ResetProject()
 
     while reaper.CountTracks(0) > 0 do
 
-        local track = reaper.GetTrack(0,0)
+        local track = reaper.GetTrack(0, 0)
 
         reaper.DeleteTrack(track)
 
@@ -24,16 +24,11 @@ function Reaper.CreateTrack(name)
 
     local index = reaper.CountTracks(0)
 
-    reaper.InsertTrackAtIndex(index,true)
+    reaper.InsertTrackAtIndex(index, true)
 
-    local track = reaper.GetTrack(0,index)
+    local track = reaper.GetTrack(0, index)
 
-    reaper.GetSetMediaTrackInfo_String(
-        track,
-        "P_NAME",
-        name,
-        true
-    )
+    reaper.GetSetMediaTrackInfo_String(track, "P_NAME", name, true)
 
     return track
 
@@ -45,21 +40,13 @@ end
 
 function Reaper.BeginFolder(track)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "I_FOLDERDEPTH",
-        1
-    )
+    reaper.SetMediaTrackInfo_Value(track, "I_FOLDERDEPTH", 1)
 
 end
 
 function Reaper.EndFolder(track)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "I_FOLDERDEPTH",
-        -1
-    )
+    reaper.SetMediaTrackInfo_Value(track, "I_FOLDERDEPTH", -1)
 
 end
 
@@ -69,16 +56,9 @@ end
 
 function Reaper.SetTrackColor(track, rgb)
 
-    local color = reaper.ColorToNative(
-        rgb[1],
-        rgb[2],
-        rgb[3]
-    )
+    local color = reaper.ColorToNative(rgb[1], rgb[2], rgb[3])
 
-    reaper.SetTrackColor(
-        track,
-        color | 0x1000000
-    )
+    reaper.SetTrackColor(track, color | 0x1000000)
 
 end
 
@@ -88,20 +68,13 @@ end
 
 function Reaper.CreateSend(sourceTrack, destinationTrack)
 
-    return reaper.CreateTrackSend(
-        sourceTrack,
-        destinationTrack
-    )
+    return reaper.CreateTrackSend(sourceTrack, destinationTrack)
 
 end
 
 function Reaper.SetMainSend(track, enabled)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "B_MAINSEND",
-        enabled and 1 or 0
-    )
+    reaper.SetMediaTrackInfo_Value(track, "B_MAINSEND", enabled and 1 or 0)
 
 end
 
@@ -113,41 +86,25 @@ function Reaper.SetTrackVolume(track, db)
 
     local linear = 10 ^ (db / 20)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "D_VOL",
-        linear
-    )
+    reaper.SetMediaTrackInfo_Value(track, "D_VOL", linear)
 
 end
 
 function Reaper.SetTrackPan(track, pan)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "D_PAN",
-        pan
-    )
+    reaper.SetMediaTrackInfo_Value(track, "D_PAN", pan)
 
 end
 
 function Reaper.SetTrackMute(track, mute)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "B_MUTE",
-        mute and 1 or 0
-    )
+    reaper.SetMediaTrackInfo_Value(track, "B_MUTE", mute and 1 or 0)
 
 end
 
 function Reaper.SetTrackSolo(track, solo)
 
-    reaper.SetMediaTrackInfo_Value(
-        track,
-        "I_SOLO",
-        solo and 1 or 0
-    )
+    reaper.SetMediaTrackInfo_Value(track, "I_SOLO", solo and 1 or 0)
 
 end
 
@@ -157,17 +114,7 @@ end
 
 function Reaper.InsertFX(track, pluginName)
 
-    local index = reaper.TrackFX_AddByName(
-
-        track,
-
-        pluginName,
-
-        false,
-
-        -1
-
-    )
+    local index = reaper.TrackFX_AddByName(track, pluginName, false, -1)
 
     return {
 
@@ -199,52 +146,27 @@ end
 
 function Reaper.AddMarker(name, position)
 
-    reaper.AddProjectMarker(
-        0,
-        false,
-        position,
-        0,
-        name,
-        -1
-    )
+    reaper.AddProjectMarker(0, false, position, 0, name, -1)
 
 end
-
 
 --------------------------------------------------
 -- Regions
 --------------------------------------------------
 
-function Reaper.AddRegion(
-    name,
-    startTime,
-    endTime,
-    rgb
-)
+function Reaper.AddRegion(name, startTime, endTime, rgb)
 
     local color = 0
 
     if rgb then
 
-        color = reaper.ColorToNative(
-            rgb[1],
-            rgb[2],
-            rgb[3]
-        )
+        color = reaper.ColorToNative(rgb[1], rgb[2], rgb[3])
 
         color = color | 0x1000000
 
     end
 
-    reaper.AddProjectMarker2(
-        0,
-        true,
-        startTime,
-        endTime,
-        name,
-        -1,
-        color
-    )
+    reaper.AddProjectMarker2(0, true, startTime, endTime, name, -1, color)
 
 end
 
@@ -252,18 +174,9 @@ end
 -- MIDI
 --------------------------------------------------
 
-function Reaper.CreateMidiItem(
-    track,
-    startQN,
-    endQN
-)
+function Reaper.CreateMidiItem(track, startQN, endQN)
 
-    local item = reaper.CreateNewMIDIItemInProj(
-        track,
-        startQN,
-        endQN,
-        true
-    )
+    local item = reaper.CreateNewMIDIItemInProj(track, startQN, endQN, true)
 
     if not item then
         error("Unable to create MIDI item")
@@ -279,25 +192,9 @@ function Reaper.GetActiveTake(item)
 
 end
 
-function Reaper.InsertMidiNote(
-    take,
-    startPPQ,
-    endPPQ,
-    pitch,
-    velocity
-)
+function Reaper.InsertMidiNote(take, startPPQ, endPPQ, pitch, velocity)
 
-    local success = reaper.MIDI_InsertNote(
-        take,
-        false,
-        false,
-        startPPQ,
-        endPPQ,
-        0,
-        pitch,
-        velocity,
-        false
-    )
+    local success = reaper.MIDI_InsertNote(take, false, false, startPPQ, endPPQ, 0, pitch, velocity, false)
 
     if not success then
         error("Unable to insert MIDI note")
@@ -317,38 +214,25 @@ end
 
 function Reaper.SetTempo(bpm)
 
-    reaper.SetCurrentBPM(
-        0,
-        bpm,
-        true
-    )
+    reaper.SetCurrentBPM(0, bpm, true)
 
 end
 
 function Reaper.TimeToPPQ(take, time)
 
-    return reaper.MIDI_GetPPQPosFromProjTime(
-        take,
-        time
-    )
+    return reaper.MIDI_GetPPQPosFromProjTime(take, time)
 
 end
 
 function Reaper.QNToTime(qn)
 
-    return reaper.TimeMap2_QNToTime(
-        0,
-        qn
-    )
+    return reaper.TimeMap2_QNToTime(0, qn)
 
 end
 
 function Reaper.QNToPPQ(take, qn)
 
-    return reaper.MIDI_GetPPQPosFromProjQN(
-        take,
-        qn
-    )
+    return reaper.MIDI_GetPPQPosFromProjQN(take, qn)
 
 end
 

@@ -11,10 +11,7 @@ function Patterns.Apply(patternSets, context)
 
                 if not Midi.ValidatePattern(pattern) then
 
-                    error(
-                        "Invalid MIDI pattern: " ..
-                        tostring(pattern.id)
-                    )
+                    error("Invalid MIDI pattern: " .. tostring(pattern.id))
 
                 end
 

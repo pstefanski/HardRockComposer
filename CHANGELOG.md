@@ -704,3 +704,58 @@ Les couleurs ne sont jamais définies directement dans `SongStructure.lua`.
 La palette reste centralisée dans `ColorsPalette.lua`.
 
 Le timing et la génération MIDI du Commit #0028 restent inchangés.
+
+## Commit #0030 — MIDI Humanization
+
+### Added
+
+- Ajout du module `Core/Humanizer.lua`.
+- Ajout d'un système d'humanisation MIDI déterministe.
+- Variation contrôlée des vélocités des notes.
+- Variation contrôlée du timing des notes.
+- Ajout d'une seed permettant de reproduire exactement une génération.
+- Ajout des paramètres d'humanisation dans `SongSettings.lua`.
+
+### Changed
+
+- `MidiWriter.WritePattern()` délègue désormais l'écriture de chaque
+  répétition à `MidiWriter.WritePatternAtBar()`.
+- `MidiWriter.WritePatternAtBar()` applique l'humanisation aux notes
+  lorsqu'elle est activée.
+- `Arrangement.lua` initialise le générateur déterministe une seule fois
+  au début de la génération.
+- Les patterns principaux et les fills utilisent désormais la même logique
+  d'humanisation.
+
+### Preserved
+
+- Les frontières des sections restent inchangées.
+- Les positions des Media Items ne sont pas humanisées.
+- Les positions structurelles des patterns restent déterministes.
+- Le système de timing QN introduit au Commit #0025 reste inchangé.
+- Le système de variations et de fills du Commit #0026/#0027 reste inchangé.
+
+### Configuration
+
+Les paramètres sont définis dans `SongSettings.lua` :
+
+    humanization = {
+        enabled = true,
+        seed = 42,
+        velocity = 8,
+        timing = 8
+    }
+
+### Reproducibility
+
+Une même seed produit exactement la même génération MIDI.
+
+Une seed différente produit une interprétation différente.
+
+### Notes
+
+L'humanisation est actuellement globale à l'arrangement.
+
+Les profils d'humanisation spécifiques au kick, snare, hi-hat, toms et fills
+pourront être ajoutés ultérieurement.fiques au kick, snare, hi-hat et aux fills
+seront traités ultérieurement.

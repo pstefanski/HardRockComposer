@@ -1,72 +1,24 @@
 local Reaper = require("Reaper")
+local Humanizer = require("Humanizer")
 
 local MidiWriter = {}
 
-function MidiWriter.CreateItem(
-    track,
-    startQN,
-    endQN
-)
+function MidiWriter.CreateItem(track, startQN, endQN)
 
-    return Reaper.CreateMidiItem(
-        track,
-        startQN,
-        endQN
-    )
+    return Reaper.CreateMidiItem(track, startQN, endQN)
 
 end
-
-function MidiWriter.WritePattern(
-    take,
-    pattern,
-    patternStartQN,
-    beatsPerBar,
-    repeatCount
-)
+function MidiWriter.WritePattern(take, pattern, patternStartQN, beatsPerBar, repeatCount, humanization)
 
     repeatCount = repeatCount or 1
 
-    local patternLengthQN =
-        pattern.bars * beatsPerBar
+    local patternLengthQN = pattern.bars * beatsPerBar
 
     for repetition = 0, repeatCount - 1 do
 
-        local repetitionStartQN =
-            patternStartQN
-            + repetition
-            * patternLengthQN
+        local repetitionStartQN = patternStartQN + repetition * patternLengthQN
 
-        for _, note in ipairs(pattern.notes) do
-
-            local noteQN =
-                repetitionStartQN
-                + note.position / 4
-
-            local endQN =
-                noteQN
-                + note.length / 4
-
-            local startPPQ =
-                Reaper.QNToPPQ(
-                    take,
-                    noteQN
-                )
-
-            local endPPQ =
-                Reaper.QNToPPQ(
-                    take,
-                    endQN
-                )
-
-            Reaper.InsertMidiNote(
-                take,
-                startPPQ,
-                endPPQ,
-                note.pitch,
-                note.velocity
-            )
-
-        end
+        MidiWriter.WritePatternAtBar(take, pattern, repetitionStartQN, beatsPerBar, humanization)
 
     end
 
@@ -74,42 +26,37 @@ function MidiWriter.WritePattern(
 
 end
 
-function MidiWriter.WritePatternAtBar(
-    take,
-    pattern,
-    startQN,
-    beatsPerBar
-)
+function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, humanization)
+
+    local humanize = humanization and humanization.enabled
 
     for _, note in ipairs(pattern.notes) do
 
-        local noteQN =
-            startQN
-            + note.position / 4
+        local noteQN = startQN + note.position / 4
 
-        local endQN =
-            noteQN
-            + note.length / 4
+        local endQN = noteQN + note.length / 4
 
-        local startPPQ =
-            Reaper.QNToPPQ(
-                take,
-                noteQN
-            )
+        local velocity = note.velocity
 
-        local endPPQ =
-            Reaper.QNToPPQ(
-                take,
-                endQN
-            )
+        local timingOffset = 0
 
-        Reaper.InsertMidiNote(
-            take,
-            startPPQ,
-            endPPQ,
-            note.pitch,
-            note.velocity
-        )
+        if humanize then
+
+            velocity = Humanizer.Velocity(note.velocity, humanization.velocity)
+
+            timingOffset = Humanizer.Timing(humanization.timing)
+
+        end
+
+        local startPPQ = Reaper.QNToPPQ(take, noteQN)
+
+        local endPPQ = Reaper.QNToPPQ(take, endQN)
+
+        startPPQ = startPPQ + timingOffset
+
+        endPPQ = endPPQ + timingOffset
+
+        Reaper.InsertMidiNote(take, startPPQ, endPPQ, note.pitch, velocity)
 
     end
 

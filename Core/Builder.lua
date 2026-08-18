@@ -17,116 +17,79 @@ local Builder = {}
 -- Build stages
 --------------------------------------------------
 
-local stages = {
+local stages = {{
+    name = "Tracks",
 
-    {
-        name = "Tracks",
+    apply = function(layout, context)
 
-        apply = function(layout, context)
+        Tracks.Apply(layout, context)
 
-            Tracks.Apply(layout, context)
+    end
+}, {
+    name = "Routing",
 
-        end
-    },
+    apply = function(_, context)
 
-    {
-        name = "Routing",
+        Routing.Apply(context)
 
-        apply = function(_, context)
+    end
+}, {
+    name = "Properties",
 
-            Routing.Apply(context)
+    apply = function(_, context)
 
-        end
-    },
+        Properties.Apply(context)
 
-    {
-        name = "Properties",
+    end
+}, {
+    name = "Song",
 
-        apply = function(_, context)
+    apply = function(_, context)
 
-            Properties.Apply(context)
+        Song.Apply(SongStructure, context)
 
-        end
-    },
+    end
+}, {
+    name = "Markers",
 
-    {
-        name = "Song",
+    apply = function(_, context)
 
-        apply = function(_, context)
+        Markers.Apply(context, SongSettings)
 
-            Song.Apply(
-                SongStructure,
-                context
-            )
+    end
+}, {
+    name = "Regions",
 
-        end
-    },
+    apply = function(_, context)
 
-    {
-        name = "Markers",
+        Regions.Apply(context, SongSettings)
 
-        apply = function(_, context)
+    end
+}, {
+    name = "Patterns",
 
-            Markers.Apply(
-            context, 
-            SongSettings
-        )
+    apply = function(_, context)
 
-        end
-    },
+        Patterns.Apply({DrumPatterns}, context)
 
-    {
-        name = "Regions",
+    end
+}, {
+    name = "Arrangement",
 
-        apply = function(_, context)
+    apply = function(_, context)
 
-            Regions.Apply(
-            context, 
-            SongSettings
-        )
+        Arrangement.Apply(context, SongSettings)
 
-        end
-    },
+    end
+}, {
+    name = "Plugins",
 
-    {
-        name = "Patterns",
+    apply = function(_, context)
 
-        apply = function(_, context)
+        Plugins.Apply(context)
 
-            Patterns.Apply(
-                {
-                    DrumPatterns
-                },
-                context
-            )
-
-        end
-    },
-
-    {
-        name = "Arrangement",
-
-        apply = function(_, context)
-
-            Arrangement.Apply(
-                context,
-                SongSettings
-            )
-
-        end
-    },
-
-    {
-        name = "Plugins",
-
-        apply = function(_, context)
-
-            Plugins.Apply(context)
-
-        end
-    }
-
-}
+    end
+}}
 
 --------------------------------------------------
 -- Builder
