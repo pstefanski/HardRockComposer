@@ -859,3 +859,29 @@ pourront exploiter cette information dans les commits suivants.
 - Les huit sends de sorties batterie sont créés et validés dans REAPER.
 - Le routage multi-sorties fonctionne avec le preset de mixeur EZdrummer
   correspondant aux paires de sorties déclarées.
+
+## Commit #0034 — Guitar, Bass & Expanded Drum Routing
+
+### Added
+
+- Support optionnel du champ `preset` dans les déclarations de plugins.
+- Chargement automatique des presets FX REAPER après l'insertion d'un plugin.
+- Instances TONEX sur les pistes Rhythm L, Rhythm R, Lead, Solo et Bass Amp.
+- Routage des pistes guitare vers le Guitar Bus.
+- Pistes de batterie dédiées pour Snare Top, Snare Bottom, Toms,
+  Ride / Overheads, Ambience, Overheads Mono, Crunch / Parallel et percussion.
+
+### Changed
+
+- TONEX est appliqué sur `Bass Amp`, tandis que `Bass DI` reste non traitée.
+- Les rythmiques guitare sont panoramisées à 65 % à gauche et à droite.
+- Le routage EZdrummer reprend les paires du preset 32 sorties :
+  Kick 1/2, Snare 3/4 et 5/6, HiHat 7/8, Toms 9/10,
+  Ride / Overheads 11/12, Ambience 13/14, Overheads Mono 17/18,
+  Crunch / Parallel 19/20 et percussions 21/22 à 27/28.
+
+### Validation
+
+- Les instances TONEX et leurs presets REAPER se chargent sur les pistes
+  prévues.
+- Les pistes et sends batterie correspondent au preset de mixeur EZdrummer.

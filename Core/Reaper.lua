@@ -146,6 +146,12 @@ function Reaper.GetFXName(track, index)
 
 end
 
+function Reaper.LoadPreset(track, index, preset)
+
+    return reaper.TrackFX_SetPreset(track, index, preset)
+
+end
+
 function Reaper.SetTrackChannelCount(track, channelCount)
 
     reaper.SetMediaTrackInfo_Value(track, "I_NCHAN", channelCount)

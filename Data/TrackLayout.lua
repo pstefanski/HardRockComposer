@@ -17,33 +17,48 @@ local Layout = { ---------------------------------------------------------------
             id = "ezdrummer",
             plugin = "EZdrummer 3",
             outputChannels = 32,
+            preset = "HRC Bright Room Drums",
 
-            -- EZdrummer output-pair assignment. Adapt these pairs to the
-            -- selected EZdrummer mixer preset if necessary.
+            -- EZdrummer mixer routing, matching the selected 32-output setup.
             outputs = {{
                 pair = 1,
                 destination = "kick"
             }, {
                 pair = 2,
-                destination = "snare"
+                destination = "snare_top"
             }, {
                 pair = 3,
-                destination = "hihat"
+                destination = "snare_bottom"
             }, {
                 pair = 4,
-                destination = "tom_1"
+                destination = "hihat"
             }, {
                 pair = 5,
-                destination = "tom_2"
+                destination = "toms"
             }, {
                 pair = 6,
-                destination = "floor_tom"
+                destination = "cymbals"
             }, {
                 pair = 7,
+                destination = "room"
+            }, {
+                pair = 9,
                 destination = "overheads"
             }, {
-                pair = 8,
-                destination = "room"
+                pair = 10,
+                destination = "parallel"
+            }, {
+                pair = 11,
+                destination = "one_shot"
+            }, {
+                pair = 12,
+                destination = "shaker"
+            }, {
+                pair = 13,
+                destination = "tambourine"
+            }, {
+                pair = 14,
+                destination = "percussion_oh"
             }}
         }}
     }, {
@@ -60,16 +75,23 @@ local Layout = { ---------------------------------------------------------------
 
             volume = -6,
 
-            pan = -0.15,
-
             mute = false,
 
             solo = false
 
         }
     }, {
-        id = "snare",
-        name = "Snare",
+        id = "snare_top",
+        name = "Snare Top",
+        type = "audio",
+        role = "closemic",
+        color = "drums",
+        routing = {
+            output = "drum_bus"
+        }
+    }, {
+        id = "snare_bottom",
+        name = "Snare Bottom",
         type = "audio",
         role = "closemic",
         color = "drums",
@@ -86,8 +108,8 @@ local Layout = { ---------------------------------------------------------------
             output = "drum_bus"
         }
     }, {
-        id = "tom_1",
-        name = "Tom 1",
+        id = "toms",
+        name = "Toms",
         type = "audio",
         role = "tom",
         color = "drums",
@@ -95,26 +117,8 @@ local Layout = { ---------------------------------------------------------------
             output = "drum_bus"
         }
     }, {
-        id = "tom_2",
-        name = "Tom 2",
-        type = "audio",
-        role = "tom",
-        color = "drums",
-        routing = {
-            output = "drum_bus"
-        }
-    }, {
-        id = "floor_tom",
-        name = "Floor Tom",
-        type = "audio",
-        role = "tom",
-        color = "drums",
-        routing = {
-            output = "drum_bus"
-        }
-    }, {
-        id = "overheads",
-        name = "Overheads",
+        id = "cymbals",
+        name = "Ride / Overheads",
         type = "audio",
         role = "overheads",
         color = "drums",
@@ -123,7 +127,7 @@ local Layout = { ---------------------------------------------------------------
         }
     }, {
         id = "room",
-        name = "Room",
+        name = "Ambience",
         type = "audio",
         role = "room",
         color = "drums",
@@ -131,10 +135,55 @@ local Layout = { ---------------------------------------------------------------
             output = "drum_bus"
         }
     }, {
+        id = "overheads",
+        name = "Overheads Mono",
+        type = "audio",
+        role = "overheads",
+        color = "drums",
+        routing = {
+            output = "drum_bus"
+        }
+    }, {
         id = "parallel",
-        name = "Parallel",
+        name = "Crunch / Parallel",
         type = "bus",
         role = "parallel",
+        color = "drums",
+        routing = {
+            output = "drum_bus"
+        }
+    }, {
+        id = "one_shot",
+        name = "One Shot",
+        type = "audio",
+        role = "percussion",
+        color = "drums",
+        routing = {
+            output = "drum_bus"
+        }
+    }, {
+        id = "shaker",
+        name = "Shaker",
+        type = "audio",
+        role = "percussion",
+        color = "drums",
+        routing = {
+            output = "drum_bus"
+        }
+    }, {
+        id = "tambourine",
+        name = "Tambourine",
+        type = "audio",
+        role = "percussion",
+        color = "drums",
+        routing = {
+            output = "drum_bus"
+        }
+    }, {
+        id = "percussion_oh",
+        name = "Percussion OH",
+        type = "audio",
+        role = "percussion",
         color = "drums",
         routing = {
             output = "drum_bus"
@@ -175,6 +224,7 @@ local Layout = { ---------------------------------------------------------------
         type = "audio",
         role = "di",
         color = "bass",
+
         routing = {
             output = "bass_bus"
         }
@@ -184,6 +234,13 @@ local Layout = { ---------------------------------------------------------------
         type = "audio",
         role = "amp",
         color = "bass",
+
+        plugins = {{
+            id = "tonex_bass",
+            plugin = "TONEX",
+            preset = "HRC Bass Ampeg"
+        }},
+
         routing = {
             output = "bass_bus"
         }
@@ -208,25 +265,73 @@ local Layout = { ---------------------------------------------------------------
         name = "Rhythm L",
         type = "audio",
         role = "rhythm",
-        color = "guitars"
+        color = "guitars",
+
+        plugins = {{
+            id = "tonex_guitar_rythm_l",
+            plugin = "TONEX",
+            preset = "HRC Rhythm L JCM800"
+        }},
+
+        routing = {
+            output = "guitar_bus"
+        },
+
+        properties = {
+            pan = -0.65
+        }
     }, {
         id = "guitar_rythm_r",
         name = "Rhythm R",
         type = "audio",
         role = "rhythm",
-        color = "guitars"
+        color = "guitars",
+
+        plugins = {{
+            id = "tonex_guitar_rythm_r",
+            plugin = "TONEX",
+            preset = "HRC Rhythm R JCM800"
+        }},
+
+        routing = {
+            output = "guitar_bus"
+        },
+
+        properties = {
+            pan = 0.65
+        }
     }, {
         id = "guitar_lead",
         name = "Lead",
         type = "audio",
         role = "lead",
-        color = "guitars"
+        color = "guitars",
+
+        plugins = {{
+            id = "tonex_guitar_lead",
+            plugin = "TONEX",
+            preset = "HRC Lead JCM900"
+        }},
+
+        routing = {
+            output = "guitar_bus"
+        }
     }, {
         id = "guitar_solo",
         name = "Solo",
         type = "audio",
         role = "solo",
-        color = "guitars"
+        color = "guitars",
+
+        plugins = {{
+            id = "tonex_guitar_solo",
+            plugin = "TONEX",
+            preset = "HRC Solo Plexi"
+        }},
+
+        routing = {
+            output = "guitar_bus"
+        }
     }, {
         id = "guitar_bus",
         name = "Guitar Bus",

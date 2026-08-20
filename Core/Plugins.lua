@@ -104,6 +104,12 @@ function Plugins.Apply(context)
 
                 end
 
+                if pluginData.preset and not Reaper.LoadPreset(trackEntry.track, fx.index, pluginData.preset) then
+
+                    error("Unable to load preset '" .. pluginData.preset .. "' for plugin: " .. pluginData.id)
+
+                end
+
                 local name = Reaper.GetFXName(trackEntry.track, fx.index)
 
                 local pluginEntry = CreatePluginEntry(pluginData, trackEntry, fx, name)
