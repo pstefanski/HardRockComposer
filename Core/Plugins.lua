@@ -34,16 +34,9 @@ function Plugins.Apply(context)
 
             for _, pluginData in ipairs(plugins) do
 
-                local fx = Reaper.InsertFX(
-                    trackEntry.track,
-                    pluginData.plugin
-                )
+                local fx = Reaper.InsertFX(trackEntry.track, pluginData.plugin)
 
-                local pluginEntry = CreatePluginEntry(
-                    pluginData,
-                    trackEntry,
-                    fx
-                )
+                local pluginEntry = CreatePluginEntry(pluginData, trackEntry, fx)
 
                 context.registry.plugins[pluginData.id] = pluginEntry
 

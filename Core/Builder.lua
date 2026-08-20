@@ -1,7 +1,15 @@
 local Tracks = require("Tracks")
 local Routing = require("Routing")
 local Properties = require("Properties")
+local Song = require("Song")
+local SongStructure = require("SongStructure")
+local Markers = require("Markers")
+local Regions = require("Regions")
 local Plugins = require("Plugins")
+local Patterns = require("Patterns")
+local DrumPatterns = require("Patterns.Drums")
+local Arrangement = require("Arrangement")
+local SongSettings = require("SongSettings")
 
 local Builder = {}
 
@@ -9,49 +17,79 @@ local Builder = {}
 -- Build stages
 --------------------------------------------------
 
-local stages = {
+local stages = {{
+    name = "Tracks",
 
-    {
-        name = "Tracks",
+    apply = function(layout, context)
 
-        apply = function(layout, context)
+        Tracks.Apply(layout, context)
 
-            Tracks.Apply(layout, context)
+    end
+}, {
+    name = "Routing",
 
-        end
-    },
+    apply = function(_, context)
 
-    {
-        name = "Routing",
+        Routing.Apply(context)
 
-        apply = function(_, context)
+    end
+}, {
+    name = "Properties",
 
-            Routing.Apply(context)
+    apply = function(_, context)
 
-        end
-    },
+        Properties.Apply(context)
 
-    {
-        name = "Properties",
+    end
+}, {
+    name = "Song",
 
-        apply = function(_, context)
+    apply = function(_, context)
 
-            Properties.Apply(context)
+        Song.Apply(SongStructure, context)
 
-        end
-    },
+    end
+}, {
+    name = "Markers",
 
-    {
-        name = "Plugins",
+    apply = function(_, context)
 
-        apply = function(_, context)
+        Markers.Apply(context, SongSettings)
 
-            Plugins.Apply(context)
+    end
+}, {
+    name = "Regions",
 
-        end
-    }
+    apply = function(_, context)
 
-}
+        Regions.Apply(context, SongSettings)
+
+    end
+}, {
+    name = "Patterns",
+
+    apply = function(_, context)
+
+        Patterns.Apply({DrumPatterns}, context)
+
+    end
+}, {
+    name = "Arrangement",
+
+    apply = function(_, context)
+
+        Arrangement.Apply(context, SongSettings)
+
+    end
+}, {
+    name = "Plugins",
+
+    apply = function(_, context)
+
+        Plugins.Apply(context)
+
+    end
+}}
 
 --------------------------------------------------
 -- Builder
@@ -63,12 +101,15 @@ function Builder.Build(layout)
 
         groups = {},
         tracks = {},
+        song = {},
 
         registry = {
 
             groups = {},
             tracks = {},
-            plugins = {}
+            plugins = {},
+            song = {},
+            patterns = {}
 
         }
 
