@@ -72,6 +72,26 @@ function Reaper.CreateSend(sourceTrack, destinationTrack)
 
 end
 
+function Reaper.SetSendMode(track, sendIndex, mode)
+
+    local modes = {
+        post_fader = 0,
+        pre_fx = 1,
+        post_fx = 3
+    }
+
+    local value = modes[mode]
+
+    if value == nil then
+
+        error("Unknown send mode: " .. tostring(mode))
+
+    end
+
+    reaper.SetTrackSendInfo_Value(track, 0, sendIndex, "I_SENDMODE", value)
+
+end
+
 function Reaper.SetMainSend(track, enabled)
 
     reaper.SetMediaTrackInfo_Value(track, "B_MAINSEND", enabled and 1 or 0)

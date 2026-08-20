@@ -226,7 +226,15 @@ local Layout = { ---------------------------------------------------------------
         color = "bass",
 
         routing = {
-            output = "bass_bus"
+            outputs = {{
+                destination = "bass_amp",
+                mode = "pre_fx"
+            }, {
+                destination = "bass_distortion",
+                mode = "pre_fx"
+            }, {
+                destination = "bass_bus"
+            }}
         }
     }, {
         id = "bass_amp",
@@ -239,6 +247,26 @@ local Layout = { ---------------------------------------------------------------
             id = "tonex_bass",
             plugin = "TONEX",
             preset = "HRC Bass Ampeg"
+        }},
+
+        routing = {
+            output = "bass_bus"
+        }
+    }, {
+        id = "bass_distortion",
+        name = "Distortion",
+        type = "audio",
+        role = "distortion",
+        color = "bass",
+
+        plugins = {{
+            id = "tonex_bass_distortion",
+            plugin = "TONEX",
+            preset = "HRC Bass Distortion"
+        }, {
+            id = "bass_distortion_eq",
+            plugin = "ReaEQ",
+            preset = "HRC Bass Distortion EQ"
         }},
 
         routing = {

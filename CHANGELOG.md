@@ -885,3 +885,27 @@ pourront exploiter cette information dans les commits suivants.
 - Les instances TONEX et leurs presets REAPER se chargent sur les pistes
   prévues.
 - Les pistes et sends batterie correspondent au preset de mixeur EZdrummer.
+
+## Commit #0035 — Parallel Bass Processing
+
+### Added
+
+- Support de plusieurs destinations dans le routage d'une piste.
+- Support des modes d'envoi `post_fader`, `pre_fx` et `post_fx`.
+- Nouvelle piste `Bass Distortion` avec une instance TONEX et un ReaEQ dédié.
+- Chargement des presets `HRC Bass Distortion` et `HRC Bass Distortion EQ`.
+
+### Changed
+
+- `Bass DI` envoie désormais son signal pré-FX vers `Bass Amp` et
+  `Bass Distortion`.
+- `Bass DI`, `Bass Amp` et `Bass Distortion` alimentent tous le Bass Bus.
+- Le signal DI, le son amplifié et la saturation peuvent être dosés
+  indépendamment.
+
+### Validation
+
+- La DI basse possède trois sends : Bass Amp en pré-FX, Bass Distortion en
+  pré-FX et Bass Bus en post-fader.
+- Les chaînes TONEX et ReaEQ de la piste Bass Distortion sont chargées.
+- Le blend de basse est validé dans REAPER.

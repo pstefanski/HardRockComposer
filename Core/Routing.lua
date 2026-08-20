@@ -2,6 +2,26 @@ local Reaper = require("Reaper")
 
 local Routing = {}
 
+local function GetOutputs(routing)
+
+    if routing.outputs then
+
+        return routing.outputs
+
+    end
+
+    if routing.output then
+
+        return {{
+            destination = routing.output
+        }}
+
+    end
+
+    return {}
+
+end
+
 function Routing.Apply(context)
 
     for _, entry in ipairs(context.tracks) do
@@ -10,17 +30,29 @@ function Routing.Apply(context)
 
         if routing then
 
-            local destinationId = routing.output
+            local outputs = GetOutputs(routing)
 
-            if destinationId then
+            if #outputs > 0 then
 
-                local destination = context.registry.tracks[destinationId]
+                Reaper.SetMainSend(entry.track, false)
 
-                if destination then
+                for _, output in ipairs(outputs) do
 
-                    Reaper.SetMainSend(entry.track, false)
+                    local destination = context.registry.tracks[output.destination]
 
-                    Reaper.CreateSend(entry.track, destination.track)
+                    if not destination then
+
+                        error("Unknown routing destination: " .. tostring(output.destination))
+
+                    end
+
+                    local sendIndex = Reaper.CreateSend(entry.track, destination.track)
+
+                    if output.mode then
+
+                        Reaper.SetSendMode(entry.track, sendIndex, output.mode)
+
+                    end
 
                 end
 
