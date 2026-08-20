@@ -24,7 +24,9 @@ function Song.Apply(structure, context)
 
             color = section.color,
 
-            energy = section.energy
+            energy = section.energy,
+
+            transition = section.transition
 
         }
 

@@ -804,3 +804,33 @@ L'énergie contrôle actuellement uniquement la vélocité.
 
 La densité des patterns, les cymbales, les accents et les transitions
 pourront exploiter cette information dans les commits suivants.
+
+## Commit #0032 — Advanced Drum Transitions
+
+### Added
+
+- Nouveau module `Core/Transitions.lua`.
+- Support du champ `transition` sur les sections musicales.
+- Transition `big`, qui sélectionne le fill `fill_big`.
+- Pattern `fill_big` et propriété `transitionBeats` sur les fills.
+- `MidiWriter.WritePatternUntilBeat()` et `MidiWriter.WritePatternBetweenBeats()`.
+
+### Changed
+
+- Une transition appartient à la section que l'on quitte.
+- La dernière mesure conserve le groove jusqu'au début de la transition.
+- Le fill est écrit uniquement dans sa fenêtre musicale de transition.
+- Les fills d'un temps utilisent la dernière pulsation de leur pattern, sans
+  déplacer le pattern complet.
+- La dynamique est appliquée avant l'humanisation pour tous les chemins
+  d'écriture MIDI.
+
+### Validation
+
+- Verse 1 → Chorus 1 : groove de QN 92 à 95, puis fill de QN 95 à 96.
+- Verse 2 → Chorus 2 : groove de QN 188 à 191, puis fill de QN 191 à 192.
+- Les frontières QN des sections et des items MIDI restent inchangées.
+
+### Notes
+
+`transitionBeats` prépare l'ajout de fills de plusieurs temps.

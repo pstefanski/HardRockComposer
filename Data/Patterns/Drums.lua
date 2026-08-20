@@ -162,6 +162,8 @@ local Drums = {{
 
     bars = 1,
 
+    transitionBeats = 1,
+
     notes = {{
         pitch = MidiNotes.drums.high_tom,
         position = 12,
@@ -304,6 +306,56 @@ local Drums = {{
         length = 0.25,
         velocity = 95
     }}
+}, {
+    id = "fill_big",
+
+    name = "Big Drum Fill",
+
+    type = "drums",
+
+    resolution = 16,
+
+    bars = 1,
+
+    transitionBeats = 1,
+
+    notes = {{
+        pitch = MidiNotes.drums.kick,
+        position = 0,
+        length = 0.25,
+        velocity = 120
+    }, {
+        pitch = MidiNotes.drums.high_tom,
+        position = 8,
+        length = 0.25,
+        velocity = 105
+    }, {
+        pitch = MidiNotes.drums.mid_tom,
+        position = 10,
+        length = 0.25,
+        velocity = 110
+    }, {
+        pitch = MidiNotes.drums.mid_tom,
+        position = 12,
+        length = 0.25,
+        velocity = 115
+    }, {
+        pitch = MidiNotes.drums.low_tom,
+        position = 13,
+        length = 0.25,
+        velocity = 115
+    }, {
+        pitch = MidiNotes.drums.low_tom,
+        position = 14,
+        length = 0.25,
+        velocity = 120
+    }, {
+        pitch = MidiNotes.drums.crash,
+        position = 15,
+        length = 0.25,
+        velocity = 127
+    }}
+
 }}
 
 return Drums

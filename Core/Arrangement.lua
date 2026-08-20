@@ -2,6 +2,7 @@ local Reaper = require("Reaper")
 local Timing = require("Timing")
 local MidiWriter = require("MidiWriter")
 local Humanizer = require("Humanizer")
+local Transitions = require("Transitions")
 
 local Arrangement = {}
 
@@ -9,14 +10,21 @@ function Arrangement.Apply(context, settings)
 
     Reaper.SetTempo(settings.tempo)
 
+    --------------------------------------------------
+    -- Humanization
+    --------------------------------------------------
+
     if settings.humanization and settings.humanization.enabled then
 
         Humanizer.SetSeed(settings.humanization.seed)
 
     end
 
+    --------------------------------------------------
+    -- MIDI Track
+    --------------------------------------------------
+
     local drumTrackEntry = context.registry.tracks.ezd_midi
-    local humanization = settings.humanization
 
     if not drumTrackEntry then
 
@@ -26,7 +34,13 @@ function Arrangement.Apply(context, settings)
 
     local drumTrack = drumTrackEntry.track
 
-    for _, section in ipairs(context.song) do
+    --------------------------------------------------
+    -- Sections
+    --------------------------------------------------
+
+    for index, section in ipairs(context.song) do
+
+        local nextSection = context.song[index + 1]
 
         local energy = section.energy or 1
 
@@ -48,6 +62,7 @@ function Arrangement.Apply(context, settings)
             else
 
                 primaryId = drumDefinition.primary
+
                 variationId = drumDefinition.variation
 
             end
@@ -75,18 +90,20 @@ function Arrangement.Apply(context, settings)
             end
 
             --------------------------------------------------
-            -- Fill validation
+            -- Fill
             --------------------------------------------------
+
+            local fillId = Transitions.GetFill(section, nextSection)
 
             local fillPattern = nil
 
-            if section.fill then
+            if fillId then
 
-                fillPattern = context.registry.patterns[section.fill]
+                fillPattern = context.registry.patterns[fillId]
 
                 if not fillPattern then
 
-                    error("Unknown fill pattern: " .. tostring(section.fill))
+                    error("Unknown fill pattern: " .. tostring(fillId))
 
                 end
 
@@ -114,30 +131,26 @@ function Arrangement.Apply(context, settings)
 
             local normalBars = section.bars
 
-            if fillPattern then
+            --------------------------------------------------
+            -- Pattern generation
+            --------------------------------------------------
 
-                normalBars = normalBars - 1
+            local completeBars = fillPattern and normalBars - 1 or normalBars
 
-            end
+            for bar = 1, completeBars do
 
-            if normalBars > 0 then
+                local selectedPattern = pattern
 
-                for bar = 1, normalBars do
+                if variationPattern and bar % 4 == 0 then
 
-                    local selectedPattern = pattern
-
-                    if variationPattern and bar % 4 == 0 then
-
-                        selectedPattern = variationPattern
-
-                    end
-
-                    local barQN = startQN + ((bar - 1) * settings.beats_per_bar)
-
-                    MidiWriter.WritePatternAtBar(take, selectedPattern, barQN, settings.beats_per_bar, humanization,
-                        energy)
+                    selectedPattern = variationPattern
 
                 end
+
+                local barQN = startQN + ((bar - 1) * settings.beats_per_bar)
+
+                MidiWriter.WritePatternAtBar(take, selectedPattern, barQN, settings.beats_per_bar,
+                    settings.humanization, energy)
 
             end
 
@@ -147,12 +160,32 @@ function Arrangement.Apply(context, settings)
 
             if fillPattern then
 
-                local fillStartQN = startQN + (normalBars * settings.beats_per_bar)
+                local finalBarQN = startQN + ((normalBars - 1) * settings.beats_per_bar)
+                local fillBeats = fillPattern.transitionBeats or 1
+                local fillStartBeat = settings.beats_per_bar - fillBeats
+                local selectedPattern = pattern
 
-                MidiWriter.WritePatternAtBar(take, fillPattern, fillStartQN, settings.beats_per_bar, humanization,
-                    energy)
+                if fillBeats <= 0 or fillBeats > settings.beats_per_bar then
+
+                    error("Invalid transition length for fill: " .. tostring(fillId))
+
+                end
+
+                if variationPattern and normalBars % 4 == 0 then
+
+                    selectedPattern = variationPattern
+
+                end
+
+                MidiWriter.WritePatternUntilBeat(take, selectedPattern, finalBarQN, settings.beats_per_bar,
+                    fillStartBeat, settings.humanization, energy)
+
+                MidiWriter.WritePatternBetweenBeats(take, fillPattern, finalBarQN, settings.beats_per_bar,
+                    fillStartBeat, settings.beats_per_bar, settings.humanization, energy)
 
             end
+
+            Reaper.SortMidi(take)
 
         end
 

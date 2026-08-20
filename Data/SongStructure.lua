@@ -10,15 +10,14 @@ local SongStructure = {{
     bars = 16,
     color = "verse",
     energy = 0.6,
+    transition = "big",
 
     patterns = {
         drums = {
             primary = "verse_basic",
             variation = "verse_basic_alt"
         }
-    },
-
-    fill = "fill_basic"
+    }
 }, {
     id = "chorus_1",
     name = "Chorus 1",
@@ -28,15 +27,15 @@ local SongStructure = {{
 
     patterns = {
         drums = "chorus_open"
-    },
+    }
 
-    fill = "fill_basic"
 }, {
     id = "verse_2",
     name = "Verse 2",
     bars = 16,
     color = "verse",
     energy = 0.6,
+    transition = "big",
 
     patterns = {
         drums = {
@@ -52,12 +51,9 @@ local SongStructure = {{
     bars = 8,
     color = "chorus",
     energy = 1.0,
-
     patterns = {
         drums = "chorus_open"
-    },
-
-    fill = "fill_basic"
+    }
 }, {
     id = "solo",
     name = "Solo",

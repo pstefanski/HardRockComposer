@@ -27,39 +27,54 @@ function MidiWriter.WritePattern(take, pattern, patternStartQN, beatsPerBar, rep
 
 end
 
-function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, humanization, energy)
+local function WritePatternBetweenBeats(take, pattern, startQN, startBeat, endBeat, humanization, energy)
 
     local humanize = humanization and humanization.enabled
+    local windowStartQN = startQN + startBeat
+    local windowEndQN = startQN + endBeat
 
     for _, note in ipairs(pattern.notes) do
 
         local noteQN = startQN + note.position / 4
+        local noteEndQN = noteQN + note.length / 4
 
-        local endQN = noteQN + note.length / 4
+        if noteQN >= windowStartQN and noteQN < windowEndQN then
 
-        local timingOffset = 0
+            local endQN = math.min(noteEndQN, windowEndQN)
+            local velocity = Dynamics.Velocity(note.velocity, energy)
+            local timingOffset = 0
 
-        local velocity = Dynamics.Velocity(note.velocity, energy)
+            if humanize then
+                velocity = Humanizer.Velocity(velocity, humanization.velocity)
+                timingOffset = Humanizer.Timing(humanization.timing)
+            end
 
-        if humanize then
+            local startPPQ = Reaper.QNToPPQ(take, noteQN) + timingOffset
+            local endPPQ = Reaper.QNToPPQ(take, endQN) + timingOffset
 
-            velocity = Humanizer.Velocity(note.velocity, humanization.velocity)
-
-            timingOffset = Humanizer.Timing(humanization.timing)
-
+            Reaper.InsertMidiNote(take, startPPQ, endPPQ, note.pitch, velocity)
         end
 
-        local startPPQ = Reaper.QNToPPQ(take, noteQN)
-
-        local endPPQ = Reaper.QNToPPQ(take, endQN)
-
-        startPPQ = startPPQ + timingOffset
-
-        endPPQ = endPPQ + timingOffset
-
-        Reaper.InsertMidiNote(take, startPPQ, endPPQ, note.pitch, velocity)
-
     end
+
+end
+
+function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, humanization, energy)
+
+    WritePatternBetweenBeats(take, pattern, startQN, 0, pattern.bars * beatsPerBar, humanization, energy)
+
+end
+
+function MidiWriter.WritePatternUntilBeat(take, pattern, startQN, beatsPerBar, endBeat, humanization, energy)
+
+    WritePatternBetweenBeats(take, pattern, startQN, 0, endBeat, humanization, energy)
+
+end
+
+function MidiWriter.WritePatternBetweenBeats(take, pattern, startQN, beatsPerBar, startBeat, endBeat, humanization,
+                                              energy)
+
+    WritePatternBetweenBeats(take, pattern, startQN, startBeat, endBeat, humanization, energy)
 
 end
 
