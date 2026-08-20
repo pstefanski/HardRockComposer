@@ -11,7 +11,41 @@ local Layout = { ---------------------------------------------------------------
         name = "EZD MIDI",
         type = "midi",
         role = "instrument",
-        color = "drums"
+        color = "drums",
+
+        plugins = {{
+            id = "ezdrummer",
+            plugin = "EZdrummer 3",
+            outputChannels = 32,
+
+            -- EZdrummer output-pair assignment. Adapt these pairs to the
+            -- selected EZdrummer mixer preset if necessary.
+            outputs = {{
+                pair = 1,
+                destination = "kick"
+            }, {
+                pair = 2,
+                destination = "snare"
+            }, {
+                pair = 3,
+                destination = "hihat"
+            }, {
+                pair = 4,
+                destination = "tom_1"
+            }, {
+                pair = 5,
+                destination = "tom_2"
+            }, {
+                pair = 6,
+                destination = "floor_tom"
+            }, {
+                pair = 7,
+                destination = "overheads"
+            }, {
+                pair = 8,
+                destination = "room"
+            }}
+        }}
     }, {
         id = "kick",
         name = "Kick",

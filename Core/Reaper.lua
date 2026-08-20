@@ -116,6 +116,12 @@ function Reaper.InsertFX(track, pluginName)
 
     local index = reaper.TrackFX_AddByName(track, pluginName, false, -1)
 
+    if index < 0 then
+
+        return nil
+
+    end
+
     return {
 
         track = track,
@@ -123,6 +129,60 @@ function Reaper.InsertFX(track, pluginName)
         index = index
 
     }
+
+end
+
+function Reaper.GetFXName(track, index)
+
+    local success, name = reaper.TrackFX_GetFXName(track, index, "")
+
+    if not success then
+
+        return nil
+
+    end
+
+    return name
+
+end
+
+function Reaper.SetTrackChannelCount(track, channelCount)
+
+    reaper.SetMediaTrackInfo_Value(track, "I_NCHAN", channelCount)
+
+end
+
+function Reaper.MapFXOutputsToTrackChannels(track, fxIndex, channelCount)
+
+    for channel = 0, channelCount - 1 do
+
+        local mask = 1 << channel
+        local success = reaper.TrackFX_SetPinMappings(track, fxIndex, 1, channel, mask, 0)
+
+        if not success then
+
+            error("Unable to map FX output pin: " .. tostring(channel))
+
+        end
+
+    end
+
+end
+
+function Reaper.CreateStereoSend(sourceTrack, destinationTrack, sourceChannel)
+
+    local sendIndex = reaper.CreateTrackSend(sourceTrack, destinationTrack)
+
+    if sendIndex < 0 then
+
+        error("Unable to create audio send")
+
+    end
+
+    reaper.SetTrackSendInfo_Value(sourceTrack, 0, sendIndex, "I_SRCCHAN", sourceChannel)
+    reaper.SetTrackSendInfo_Value(sourceTrack, 0, sendIndex, "I_DSTCHAN", 0)
+
+    return sendIndex
 
 end
 

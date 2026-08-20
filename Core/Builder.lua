@@ -42,6 +42,14 @@ local stages = {{
 
     end
 }, {
+    name = "Plugins",
+
+    apply = function(_, context)
+
+        Plugins.Apply(context)
+
+    end
+}, {
     name = "Song",
 
     apply = function(_, context)
@@ -79,14 +87,6 @@ local stages = {{
     apply = function(_, context)
 
         Arrangement.Apply(context, SongSettings)
-
-    end
-}, {
-    name = "Plugins",
-
-    apply = function(_, context)
-
-        Plugins.Apply(context)
 
     end
 }}

@@ -834,3 +834,28 @@ pourront exploiter cette information dans les commits suivants.
 ### Notes
 
 `transitionBeats` prépare l'ajout de fills de plusieurs temps.
+
+## Commit #0033 — EZdrummer Multi-Output Routing
+
+### Added
+
+- Déclaration de `EZdrummer 3 (32 out)` sur la piste `EZD MIDI`.
+- Configuration de la piste instrument en 32 canaux.
+- Mapping explicite des sorties du VST vers les canaux de la piste.
+- Sends stéréo dédiés vers Kick, Snare, HiHat, Toms, Overheads et Room.
+
+### Changed
+
+- Les plugins sont désormais chargés avant la génération MIDI.
+- Une erreur explicite est levée lorsqu'un plugin ne peut pas être chargé.
+- Le registre des plugins conserve le nom réellement chargé par REAPER.
+- Les déclarations de plugins et leurs identifiants sont validés.
+- La sortie principale de `EZD MIDI` est désactivée pour éviter le doublage
+  du signal envoyé aux pistes de batterie.
+
+### Validation
+
+- EZdrummer se charge sur `EZD MIDI`.
+- Les huit sends de sorties batterie sont créés et validés dans REAPER.
+- Le routage multi-sorties fonctionne avec le preset de mixeur EZdrummer
+  correspondant aux paires de sorties déclarées.
