@@ -211,7 +211,11 @@ local Layout = { ---------------------------------------------------------------
 
             preset = "HRC Drum Bus Comp"
 
-        }}
+        }},
+
+        routing = {
+            output = "master_bus"
+        }
     }}
 
 }, ------------------------------------------------------------------
@@ -319,7 +323,11 @@ local Layout = { ---------------------------------------------------------------
             id = "bass_bus_comp",
             plugin = "VST: ReaComp (Cockos)",
             preset = "HRC Bass Bus Comp"
-        }}
+        }},
+
+        routing = {
+            output = "master_bus"
+        }
     }}
 
 }, ------------------------------------------------------------------
@@ -417,7 +425,11 @@ local Layout = { ---------------------------------------------------------------
             id = "guitar_bus_comp",
             plugin = "VST: ReaComp (Cockos)",
             preset = "HRC Guitar Bus Comp"
-        }}
+        }},
+
+        routing = {
+            output = "master_bus"
+        }
     }}
 
 }, ------------------------------------------------------------------
@@ -433,19 +445,28 @@ local Layout = { ---------------------------------------------------------------
         name = "Lead",
         type = "audio",
         role = "lead",
-        color = "vocals"
+        color = "vocals",
+        routing = {
+            output = "vocal_bus"
+        }
     }, {
         id = "vocal_backing",
         name = "Backing",
         type = "audio",
         role = "backing",
-        color = "vocals"
+        color = "vocals",
+        routing = {
+            output = "vocal_bus"
+        }
     }, {
         id = "vocal_bus",
         name = "Vocal Bus",
         type = "bus",
         role = "master",
-        color = "vocals"
+        color = "vocals",
+        routing = {
+            output = "master_bus"
+        }
     }}
 
 }, ------------------------------------------------------------------
@@ -461,25 +482,51 @@ local Layout = { ---------------------------------------------------------------
         name = "Plate",
         type = "fx",
         role = "reverb",
-        color = "fx"
+        color = "fx",
+        routing = {
+            output = "master_bus"
+        }
     }, {
         id = "fx_room",
         name = "Room",
         type = "fx",
         role = "reverb",
-        color = "fx"
+        color = "fx",
+        routing = {
+            output = "master_bus"
+        }
     }, {
         id = "fx_hall",
         name = "Hall",
         type = "fx",
         role = "reverb",
-        color = "fx"
+        color = "fx",
+        routing = {
+            output = "master_bus"
+        }
     }, {
         id = "fx_delay",
         name = "Delay",
         type = "fx",
         role = "delay",
-        color = "fx"
+        color = "fx",
+        routing = {
+            output = "master_bus"
+        }
+    }}
+
+}, {
+    id = "master",
+    name = "MASTER",
+    color = "master",
+    folder = false,
+
+    tracks = {{
+        id = "master_bus",
+        name = "Master Bus",
+        type = "bus",
+        role = "master",
+        color = "master"
     }}
 
 }}

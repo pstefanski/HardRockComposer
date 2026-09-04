@@ -11,16 +11,24 @@ function Tracks.Apply(layout, context)
         -- Folder
         --------------------------------------------------
 
-        local folderTrack = Reaper.CreateTrack(group.name)
-
-        Colors.Apply(folderTrack, group)
-
-        Reaper.BeginFolder(folderTrack)
-
         local groupEntry = {
             data = group,
-            track = folderTrack
+            track = nil
         }
+
+        local folderTrack = nil
+
+        if group.folder ~= false then
+
+            folderTrack = Reaper.CreateTrack(group.name)
+
+            Colors.Apply(folderTrack, group)
+
+            Reaper.BeginFolder(folderTrack)
+
+            groupEntry.track = folderTrack
+
+        end
 
         table.insert(context.groups, groupEntry)
         context.registry.groups[group.id] = groupEntry
@@ -48,7 +56,7 @@ function Tracks.Apply(layout, context)
 
         end
 
-        if lastTrack then
+        if folderTrack and lastTrack then
             Reaper.EndFolder(lastTrack)
         end
 

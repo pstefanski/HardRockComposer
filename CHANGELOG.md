@@ -1,5 +1,25 @@
 # Changelog
 
+## Commit #0037 — Master Bus Routing
+
+### Added
+
+- Nouvelle piste `Master Bus` recevant les bus de mixage et les retours FX.
+- Support des groupes de pistes sans folder via `folder = false`.
+- Couleur dédiée au Master Bus.
+
+### Changed
+
+- Drum Bus, Bass Bus, Guitar Bus et Vocal Bus sont routés vers Master Bus.
+- Vocal Lead et Vocal Backing sont routés vers Vocal Bus.
+- Plate, Room, Hall et Delay sont routés vers Master Bus.
+- Master Bus reste relié directement au master matériel REAPER.
+
+### Validation
+
+- Le Master Bus est créé comme piste autonome, sans folder `MASTER`.
+- Tous les bus et retours FX attendus convergent vers Master Bus.
+
 Toutes les évolutions importantes du projet sont documentées ici.
 
 Le projet suit une évolution incrémentale : chaque commit représente un état stable et testable.
