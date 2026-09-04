@@ -199,13 +199,17 @@ local Layout = { ---------------------------------------------------------------
 
             id = "eq",
 
-            plugin = "VST: ReaEQ (Cockos)"
+            plugin = "VST: ReaEQ (Cockos)",
+
+            preset = "HRC Drum Bus EQ"
 
         }, {
 
             id = "comp",
 
-            plugin = "VST: ReaComp (Cockos)"
+            plugin = "VST: ReaComp (Cockos)",
+
+            preset = "HRC Drum Bus Comp"
 
         }}
     }}
@@ -235,6 +239,15 @@ local Layout = { ---------------------------------------------------------------
             }, {
                 destination = "bass_bus"
             }}
+        },
+        properties = {
+
+            volume = -7.46,
+
+            mute = false,
+
+            solo = false
+
         }
     }, {
         id = "bass_amp",
@@ -251,6 +264,15 @@ local Layout = { ---------------------------------------------------------------
 
         routing = {
             output = "bass_bus"
+        },
+        properties = {
+
+            volume = -11.1,
+
+            mute = false,
+
+            solo = false
+
         }
     }, {
         id = "bass_distortion",
@@ -271,13 +293,33 @@ local Layout = { ---------------------------------------------------------------
 
         routing = {
             output = "bass_bus"
+        },
+
+        properties = {
+
+            volume = -22.2,
+
+            mute = false,
+
+            solo = false
+
         }
     }, {
         id = "bass_bus",
         name = "Bass Bus",
         type = "bus",
         role = "master",
-        color = "bass"
+        color = "bass",
+
+        plugins = {{
+            id = "bass_bus_eq",
+            plugin = "VST: ReaEQ (Cockos)",
+            preset = "HRC Bass Bus EQ"
+        }, {
+            id = "bass_bus_comp",
+            plugin = "VST: ReaComp (Cockos)",
+            preset = "HRC Bass Bus Comp"
+        }}
     }}
 
 }, ------------------------------------------------------------------
@@ -365,7 +407,17 @@ local Layout = { ---------------------------------------------------------------
         name = "Guitar Bus",
         type = "bus",
         role = "master",
-        color = "guitars"
+        color = "guitars",
+
+        plugins = {{
+            id = "guitar_bus_eq",
+            plugin = "VST: ReaEQ (Cockos)",
+            preset = "HRC Guitar Bus EQ"
+        }, {
+            id = "guitar_bus_comp",
+            plugin = "VST: ReaComp (Cockos)",
+            preset = "HRC Guitar Bus Comp"
+        }}
     }}
 
 }, ------------------------------------------------------------------

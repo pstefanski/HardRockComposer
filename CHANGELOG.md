@@ -909,3 +909,23 @@ pourront exploiter cette information dans les commits suivants.
   pré-FX et Bass Bus en post-fader.
 - Les chaînes TONEX et ReaEQ de la piste Bass Distortion sont chargées.
 - Le blend de basse est validé dans REAPER.
+
+## Commit #0036 — Bus Processing Foundations
+
+### Added
+
+- Chaînes `ReaEQ → ReaComp` sur Bass Bus et Guitar Bus.
+- Presets de bus dédiés : Drum Bus, Bass Bus et Guitar Bus.
+
+### Changed
+
+- Drum Bus charge désormais `HRC Drum Bus EQ` et `HRC Drum Bus Comp`.
+- Bass Bus charge désormais `HRC Bass Bus EQ` et `HRC Bass Bus Comp`.
+- Guitar Bus charge désormais `HRC Guitar Bus EQ` et `HRC Guitar Bus Comp`.
+
+### Validation
+
+- Les six FX de bus sont créés et leurs presets REAPER respectifs sont
+  chargés pendant la génération du projet.
+- Le traitement correctif et la compression légère sont validés avant
+  l'ajout ultérieur des plugins UAD.
