@@ -87,7 +87,11 @@ local Layout = { ---------------------------------------------------------------
         role = "closemic",
         color = "drums",
         routing = {
-            output = "drum_bus"
+            output = "drum_bus",
+            sends = {{
+                destination = "fx_plate",
+                volume = -18
+            }}
         }
     }, {
         id = "snare_bottom",
@@ -353,7 +357,11 @@ local Layout = { ---------------------------------------------------------------
         }},
 
         routing = {
-            output = "guitar_bus"
+            output = "guitar_bus",
+            sends = {{
+                destination = "fx_room",
+                volume = -24
+            }}
         },
 
         properties = {
@@ -373,7 +381,11 @@ local Layout = { ---------------------------------------------------------------
         }},
 
         routing = {
-            output = "guitar_bus"
+            output = "guitar_bus",
+            sends = {{
+                destination = "fx_room",
+                volume = -24
+            }}
         },
 
         properties = {
@@ -393,7 +405,14 @@ local Layout = { ---------------------------------------------------------------
         }},
 
         routing = {
-            output = "guitar_bus"
+            output = "guitar_bus",
+            sends = {{
+                destination = "fx_plate",
+                volume = -20
+            }, {
+                destination = "fx_delay",
+                volume = -16
+            }}
         }
     }, {
         id = "guitar_solo",
@@ -409,7 +428,14 @@ local Layout = { ---------------------------------------------------------------
         }},
 
         routing = {
-            output = "guitar_bus"
+            output = "guitar_bus",
+            sends = {{
+                destination = "fx_hall",
+                volume = -18
+            }, {
+                destination = "fx_delay",
+                volume = -14
+            }}
         }
     }, {
         id = "guitar_bus",
@@ -448,7 +474,17 @@ local Layout = { ---------------------------------------------------------------
         role = "lead",
         color = "vocals",
         routing = {
-            output = "vocal_bus"
+            output = "vocal_bus",
+            sends = {{
+                destination = "fx_plate",
+                volume = -18
+            }, {
+                destination = "fx_hall",
+                volume = -20
+            }, {
+                destination = "fx_delay",
+                volume = -16
+            }}
         }
     }, {
         id = "vocal_backing",
@@ -457,7 +493,14 @@ local Layout = { ---------------------------------------------------------------
         role = "backing",
         color = "vocals",
         routing = {
-            output = "vocal_bus"
+            output = "vocal_bus",
+            sends = {{
+                destination = "fx_plate",
+                volume = -22
+            }, {
+                destination = "fx_hall",
+                volume = -20
+            }}
         }
     }, {
         id = "vocal_bus",
@@ -477,6 +520,9 @@ local Layout = { ---------------------------------------------------------------
     id = "fx",
     name = "FX",
     color = "fx",
+    properties = {
+        showInTCP = false
+    },
 
     tracks = {{
         id = "fx_plate",
@@ -484,6 +530,14 @@ local Layout = { ---------------------------------------------------------------
         type = "fx",
         role = "reverb",
         color = "fx",
+        plugins = {{
+            id = "fx_plate_reverb",
+            plugin = "VST3: UADx Pure Plate Reverb",
+            preset = "HRC FX Plate"
+        }},
+        properties = {
+            showInTCP = false
+        },
         routing = {
             output = "master_bus"
         }
@@ -493,6 +547,14 @@ local Layout = { ---------------------------------------------------------------
         type = "fx",
         role = "reverb",
         color = "fx",
+        plugins = {{
+            id = "fx_room_sound_city",
+            plugin = "VST3: UADx Sound City Studios",
+            preset = "HRC FX Room"
+        }},
+        properties = {
+            showInTCP = false
+        },
         routing = {
             output = "master_bus"
         }
@@ -502,6 +564,14 @@ local Layout = { ---------------------------------------------------------------
         type = "fx",
         role = "reverb",
         color = "fx",
+        plugins = {{
+            id = "fx_hall_capitol",
+            plugin = "VST3: UADx Capitol Chambers",
+            preset = "HRC FX Hall"
+        }},
+        properties = {
+            showInTCP = false
+        },
         routing = {
             output = "master_bus"
         }
@@ -511,6 +581,14 @@ local Layout = { ---------------------------------------------------------------
         type = "fx",
         role = "delay",
         color = "fx",
+        plugins = {{
+            id = "fx_delay_valhalla",
+            plugin = "VST3: ValhallaDelay (Valhalla DSP, LLC)",
+            preset = "HRC FX Delay"
+        }},
+        properties = {
+            showInTCP = false
+        },
         routing = {
             output = "master_bus"
         }
@@ -537,7 +615,10 @@ local Layout = { ---------------------------------------------------------------
             id = "master_bus_ampex",
             plugin = "VST3: UADx Ampex ATR-102 Master Tape",
             preset = "HRC Master Bus Ampex"
-        }}
+        }},
+        properties = {
+            showInTCP = false
+        }
     }}
 
 }}

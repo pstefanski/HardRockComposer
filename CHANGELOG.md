@@ -1,5 +1,32 @@
 # Changelog
 
+## Commit #0039 — Dedicated FX Sends
+
+### Added
+
+- Support des sends auxiliaires avec mode et niveau indépendants.
+- Retours FX Plate, Room, Hall et Delay alimentés par les pistes de batterie,
+  guitares et voix appropriées.
+- Chargement automatique des effets UAD Pure Plate, Sound City Studios,
+  Capitol Chambers et ValhallaDelay.
+- Presets dédiés `HRC FX Plate`, `HRC FX Room`, `HRC FX Hall` et
+  `HRC FX Delay`.
+- Virtual Spacers natifs REAPER entre les dossiers de pistes.
+
+### Changed
+
+- Les retours FX sont routés vers le Master Bus, tandis que le signal direct
+  conserve son routage vers les bus d'instruments ou de voix.
+- Les niveaux des sends définissent la quantité d'effet par piste.
+- Le folder FX, ses retours et le Master Bus sont masqués dans le TCP tout en
+  restant actifs dans le routage.
+
+### Validation
+
+- Les 12 sends auxiliaires et les quatre retours FX sont créés pendant la
+  génération du projet.
+- Les quatre effets et leurs presets HRC se chargent sur les retours dédiés.
+
 ## Commit #0038 — UAD Bus & Master Processing
 
 ### Added

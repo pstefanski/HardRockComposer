@@ -92,6 +92,14 @@ function Reaper.SetSendMode(track, sendIndex, mode)
 
 end
 
+function Reaper.SetSendVolume(track, sendIndex, db)
+
+    local linear = 10 ^ (db / 20)
+
+    reaper.SetTrackSendInfo_Value(track, 0, sendIndex, "D_VOL", linear)
+
+end
+
 function Reaper.SetMainSend(track, enabled)
 
     reaper.SetMediaTrackInfo_Value(track, "B_MAINSEND", enabled and 1 or 0)
@@ -125,6 +133,18 @@ end
 function Reaper.SetTrackSolo(track, solo)
 
     reaper.SetMediaTrackInfo_Value(track, "I_SOLO", solo and 1 or 0)
+
+end
+
+function Reaper.SetTrackTCPVisible(track, visible)
+
+    reaper.SetMediaTrackInfo_Value(track, "B_SHOWINTCP", visible and 1 or 0)
+
+end
+
+function Reaper.SetTrackSpacerAbove(track, enabled)
+
+    reaper.SetMediaTrackInfo_Value(track, "I_SPACER", enabled and 1 or 0)
 
 end
 

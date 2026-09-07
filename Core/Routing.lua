@@ -22,6 +22,32 @@ local function GetOutputs(routing)
 
 end
 
+local function CreateConfiguredSend(context, sourceEntry, sendData)
+
+    local destination = context.registry.tracks[sendData.destination]
+
+    if not destination then
+
+        error("Unknown routing destination: " .. tostring(sendData.destination))
+
+    end
+
+    local sendIndex = Reaper.CreateSend(sourceEntry.track, destination.track)
+
+    if sendData.mode then
+
+        Reaper.SetSendMode(sourceEntry.track, sendIndex, sendData.mode)
+
+    end
+
+    if sendData.volume ~= nil then
+
+        Reaper.SetSendVolume(sourceEntry.track, sendIndex, sendData.volume)
+
+    end
+
+end
+
 function Routing.Apply(context)
 
     for _, entry in ipairs(context.tracks) do
@@ -38,23 +64,15 @@ function Routing.Apply(context)
 
                 for _, output in ipairs(outputs) do
 
-                    local destination = context.registry.tracks[output.destination]
-
-                    if not destination then
-
-                        error("Unknown routing destination: " .. tostring(output.destination))
-
-                    end
-
-                    local sendIndex = Reaper.CreateSend(entry.track, destination.track)
-
-                    if output.mode then
-
-                        Reaper.SetSendMode(entry.track, sendIndex, output.mode)
-
-                    end
+                    CreateConfiguredSend(context, entry, output)
 
                 end
+
+            end
+
+            for _, send in ipairs(routing.sends or {}) do
+
+                CreateConfiguredSend(context, entry, send)
 
             end
 
