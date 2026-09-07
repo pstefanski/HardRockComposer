@@ -473,6 +473,15 @@ local Layout = { ---------------------------------------------------------------
         type = "audio",
         role = "lead",
         color = "vocals",
+        plugins = {{
+            id = "vocal_lead_eq",
+            plugin = "VST: ReaEQ (Cockos)",
+            preset = "HRC Vocal Lead EQ"
+        }, {
+            id = "vocal_lead_1176",
+            plugin = "VST3: UADx 1176 Rev A Compressor",
+            preset = "HRC Vocal Lead 1176"
+        }},
         routing = {
             output = "vocal_bus",
             sends = {{
@@ -508,6 +517,15 @@ local Layout = { ---------------------------------------------------------------
         type = "bus",
         role = "master",
         color = "vocals",
+        plugins = {{
+            id = "vocal_bus_la2a",
+            plugin = "VST3: UADx LA-2A Gray Compressor",
+            preset = "HRC Vocal Bus LA-2A"
+        }, {
+            id = "vocal_bus_pultec",
+            plugin = "VST3: UADx Pultec EQP-1A EQ",
+            preset = "HRC Vocal Bus Pultec"
+        }},
         routing = {
             output = "master_bus"
         }

@@ -1,5 +1,19 @@
 # Changelog
 
+## Commit #0040 — Vocal Processing Foundation
+
+### Added
+
+- Chaîne `ReaEQ → UAD 1176 Rev A` sur Vocal Lead.
+- Chaîne `UAD LA-2A Gray → UAD Pultec EQP-1A` sur Vocal Bus.
+- Presets dédiés `HRC Vocal Lead EQ`, `HRC Vocal Lead 1176`,
+  `HRC Vocal Bus LA-2A` et `HRC Vocal Bus Pultec`.
+
+### Validation
+
+- Les quatre traitements vocaux et leurs presets HRC se chargent pendant la
+  génération du projet.
+
 ## Commit #0039 — Dedicated FX Sends
 
 ### Added
