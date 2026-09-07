@@ -204,12 +204,13 @@ local Layout = { ---------------------------------------------------------------
             preset = "HRC Drum Bus EQ"
 
         }, {
-
-            id = "comp",
-
-            plugin = "VST: ReaComp (Cockos)",
-
-            preset = "HRC Drum Bus Comp"
+            id = "drum_bus_studer",
+            plugin = "VST3: UADx Studer A800 Tape Recorder",
+            preset = "HRC Drum Bus Studer"
+        }, {
+            id = "drum_bus_api_2500",
+            plugin = "VST3: UADx API 2500 Bus Compressor",
+            preset = "HRC Drum Bus API 2500"
 
         }},
 
@@ -320,9 +321,9 @@ local Layout = { ---------------------------------------------------------------
             plugin = "VST: ReaEQ (Cockos)",
             preset = "HRC Bass Bus EQ"
         }, {
-            id = "bass_bus_comp",
-            plugin = "VST: ReaComp (Cockos)",
-            preset = "HRC Bass Bus Comp"
+            id = "bass_bus_1176",
+            plugin = "VST3: UADx 1176 Rev A Compressor",
+            preset = "HRC Bass Bus 1176"
         }},
 
         routing = {
@@ -422,9 +423,9 @@ local Layout = { ---------------------------------------------------------------
             plugin = "VST: ReaEQ (Cockos)",
             preset = "HRC Guitar Bus EQ"
         }, {
-            id = "guitar_bus_comp",
-            plugin = "VST: ReaComp (Cockos)",
-            preset = "HRC Guitar Bus Comp"
+            id = "guitar_bus_studer",
+            plugin = "VST3: UADx Studer A800 Tape Recorder",
+            preset = "HRC Guitar Bus Studer"
         }},
 
         routing = {
@@ -526,7 +527,17 @@ local Layout = { ---------------------------------------------------------------
         name = "Master Bus",
         type = "bus",
         role = "master",
-        color = "master"
+        color = "master",
+
+        plugins = {{
+            id = "master_bus_ssl_g",
+            plugin = "VST3: UADx SSL G Bus Compressor",
+            preset = "HRC Master Bus SSL G"
+        }, {
+            id = "master_bus_ampex",
+            plugin = "VST3: UADx Ampex ATR-102 Master Tape",
+            preset = "HRC Master Bus Ampex"
+        }}
     }}
 
 }}

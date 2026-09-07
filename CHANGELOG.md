@@ -1,5 +1,28 @@
 # Changelog
 
+## Commit #0038 — UAD Bus & Master Processing
+
+### Added
+
+- Chaîne UAD `Studer A800 → API 2500` sur Drum Bus.
+- Compresseur UAD 1176 Rev A sur Bass Bus.
+- Studer A800 sur Guitar Bus.
+- Chaîne UAD `SSL G Bus → Ampex ATR-102` sur Master Bus.
+- Chargement des six presets UAD HRC dédiés.
+
+### Changed
+
+- Les ReaComp de Drum, Bass et Guitar Bus sont remplacés par les traitements
+  UAD adaptés à chaque source.
+- ReaEQ reste en première position sur les bus d'instruments pour les
+  corrections transparentes.
+- Ampex ATR-102 est placé en dernier sur Master Bus, sans limiteur.
+
+### Validation
+
+- Les six plugins UAD et leurs presets HRC se chargent pendant la génération.
+- Le routage, le gain staging et la lecture du projet sont validés dans REAPER.
+
 ## Commit #0037 — Master Bus Routing
 
 ### Added
