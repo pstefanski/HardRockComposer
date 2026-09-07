@@ -1,361 +1,203 @@
 local MidiNotes = require("Patterns.MidiNotes")
 
-local Drums = {{
-    id = "verse_basic",
+local Drums = {}
 
-    name = "Verse Basic",
+local function Note(pitch, position, velocity, length)
+    return {pitch = pitch, position = position, length = length or 0.25, velocity = velocity}
+end
 
-    type = "drums",
+local function Add(notes, pitch, position, velocity, length)
+    table.insert(notes, Note(pitch, position, velocity, length))
+end
 
-    resolution = 16,
+local function AddKicks(notes, positions, velocity)
+    for _, position in ipairs(positions) do
+        Add(notes, MidiNotes.drums.kick, position, velocity)
+    end
+end
 
-    bars = 1,
+local function AddBackbeat(notes, velocity, ghostVelocity)
+    Add(notes, MidiNotes.drums.snare, 4, velocity)
+    Add(notes, MidiNotes.drums.snare, 12, velocity)
+    if ghostVelocity then
+        Add(notes, MidiNotes.drums.snare, 7, ghostVelocity)
+        Add(notes, MidiNotes.drums.snare, 15, ghostVelocity)
+    end
+end
 
-    notes = {{
-        pitch = MidiNotes.drums.kick,
-        position = 0,
-        length = 0.25,
-        velocity = 115
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 0,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 1,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 2,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 3,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.snare,
-        position = 4,
-        length = 0.25,
-        velocity = 110
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 4,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 5,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 6,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 7,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.kick,
-        position = 8,
-        length = 0.25,
-        velocity = 115
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 8,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 9,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 10,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 11,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.snare,
-        position = 12,
-        length = 0.25,
-        velocity = 110
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 12,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 13,
-        length = 0.25,
-        velocity = 75
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 14,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 15,
-        length = 0.25,
-        velocity = 75
-    }}
+local function AddEighthHats(notes, accent, normal, skipPosition)
+    for position = 0, 14, 2 do
+        if position ~= skipPosition then
+            Add(notes, MidiNotes.drums.closed_hat, position, position % 4 == 0 and accent or normal)
+        end
+    end
+end
 
-}, {
-    id = "chorus_open",
+local function AddSemiOpenHatQuarters(notes, velocity)
+    for position = 0, 12, 4 do
+        Add(notes, MidiNotes.drums.semi_open_hat, position, velocity)
+    end
+end
 
-    name = "Chorus Open",
+local function AddRide(notes, accent, normal, startPosition)
+    for position = startPosition or 0, 14, 2 do
+        Add(notes, MidiNotes.drums.ride, position, position % 4 == 0 and accent or normal)
+    end
+end
 
-    type = "drums",
+local function AddCrashQuarters(notes, velocity, startPosition)
+    for position = startPosition or 0, 12, 4 do
+        Add(notes, MidiNotes.drums.crash, position, velocity, 1)
+    end
+end
 
-    resolution = 16,
+local function Pattern(id, name, notes, transitionBeats)
+    table.insert(Drums, {
+        id = id,
+        name = name,
+        type = "drums",
+        resolution = 16,
+        bars = 1,
+        transitionBeats = transitionBeats,
+        notes = notes
+    })
+end
 
-    bars = 1,
+do
+    local notes = {}
+    for position = 0, 14, 2 do
+        Add(notes, MidiNotes.drums.floor_tom, position, position % 4 == 0 and 108 or 96)
+    end
+    Add(notes, MidiNotes.drums.snare, 4, 104)
+    Add(notes, MidiNotes.drums.snare, 12, 106)
+    Add(notes, MidiNotes.drums.high_tom, 7, 92)
+    Add(notes, MidiNotes.drums.mid_tom, 15, 96)
+    Pattern("intro_toms", "Intro Toms", notes)
+end
 
-    notes = {{
-        pitch = MidiNotes.drums.kick,
-        position = 0,
-        length = 0.25,
-        velocity = 120
-    }, {
-        pitch = MidiNotes.drums.crash,
-        position = 0,
-        length = 1,
-        velocity = 120
-    }, {
-        pitch = MidiNotes.drums.snare,
-        position = 4,
-        length = 0.25,
-        velocity = 120
-    }, {
-        pitch = MidiNotes.drums.kick,
-        position = 8,
-        length = 0.25,
-        velocity = 120
-    }, {
-        pitch = MidiNotes.drums.snare,
-        position = 12,
-        length = 0.25,
-        velocity = 120
-    }}
+do
+    local notes = {}
+    for position = 0, 14, 2 do
+        Add(notes, MidiNotes.drums.floor_tom, position, position % 4 == 0 and 112 or 100)
+    end
+    Add(notes, MidiNotes.drums.snare, 4, 108)
+    Add(notes, MidiNotes.drums.snare, 12, 110)
+    Add(notes, MidiNotes.drums.mid_tom, 3, 90)
+    Add(notes, MidiNotes.drums.high_tom, 7, 96)
+    Add(notes, MidiNotes.drums.mid_tom, 11, 94)
+    Add(notes, MidiNotes.drums.high_tom, 15, 100)
+    Pattern("intro_toms_alt", "Intro Toms Build", notes)
+end
 
-}, {
-    id = "fill_basic",
+do
+    local notes = {}
+    AddKicks(notes, {0, 8}, 112)
+    AddBackbeat(notes, 112)
+    AddSemiOpenHatQuarters(notes, 88)
+    Pattern("verse_drive", "Verse Drive", notes)
+end
 
-    name = "Basic Fill",
+do
+    local notes = {}
+    AddKicks(notes, {0, 8}, 108)
+    Add(notes, MidiNotes.drums.kick, 10, 92)
+    AddBackbeat(notes, 112)
+    AddSemiOpenHatQuarters(notes, 90)
+    Pattern("verse_drive_alt", "Verse Drive Alt", notes)
+end
 
-    type = "drums",
+do
+    local notes = {}
+    Add(notes, MidiNotes.drums.crash, 0, 124, 1)
+    AddKicks(notes, {0, 8}, 118)
+    AddBackbeat(notes, 120)
+    AddCrashQuarters(notes, 116, 4)
+    Pattern("chorus_crash", "Chorus Crash", notes)
+end
 
-    resolution = 16,
+do
+    local notes = {}
+    AddKicks(notes, {0, 8}, 118)
+    AddBackbeat(notes, 120)
+    AddCrashQuarters(notes, 116)
+    Pattern("chorus_drive", "Chorus Drive", notes)
+end
 
-    bars = 1,
+do
+    local notes = {}
+    AddKicks(notes, {0, 8}, 116)
+    Add(notes, MidiNotes.drums.kick, 10, 96)
+    AddBackbeat(notes, 120)
+    AddCrashQuarters(notes, 120)
+    Pattern("chorus_crash_alt", "Chorus Crash Alt", notes)
+end
 
-    transitionBeats = 1,
+do
+    local notes = {}
+    Add(notes, MidiNotes.drums.crash, 0, 124, 1)
+    AddKicks(notes, {0, 8}, 116)
+    AddBackbeat(notes, 118)
+    AddRide(notes, 94, 82, 2)
+    Pattern("solo_crash", "Solo Crash", notes)
+end
 
-    notes = {{
-        pitch = MidiNotes.drums.high_tom,
-        position = 12,
-        length = 0.25,
-        velocity = 100
-    }, {
-        pitch = MidiNotes.drums.mid_tom,
-        position = 13,
-        length = 0.25,
-        velocity = 105
-    }, {
-        pitch = MidiNotes.drums.low_tom,
-        position = 14,
-        length = 0.25,
-        velocity = 110
-    }, {
-        pitch = MidiNotes.drums.crash,
-        position = 15,
-        length = 0.25,
-        velocity = 120
-    }}
+do
+    local notes = {}
+    AddKicks(notes, {0, 8}, 114)
+    Add(notes, MidiNotes.drums.kick, 10, 94)
+    AddBackbeat(notes, 116)
+    AddRide(notes, 94, 82)
+    Pattern("solo_ride", "Solo Ride", notes)
+end
 
-}, {
-    id = "verse_basic_alt",
+do
+    local notes = {}
+    AddKicks(notes, {0, 8}, 114)
+    AddBackbeat(notes, 116)
+    AddEighthHats(notes, 92, 78, 14)
+    Add(notes, MidiNotes.drums.open_hat, 14, 96)
+    Pattern("solo_drive_alt", "Solo Drive Alt", notes)
+end
 
-    name = "Verse Basic Alt",
+do
+    local notes = {}
+    Add(notes, MidiNotes.drums.crash, 0, 127, 1)
+    AddKicks(notes, {0, 8}, 120)
+    AddBackbeat(notes, 122)
+    AddRide(notes, 98, 86, 2)
+    Pattern("outro_crash", "Outro Crash", notes)
+end
 
-    type = "drums",
+do
+    local notes = {}
+    Add(notes, MidiNotes.drums.crash, 0, 122, 1)
+    AddKicks(notes, {0, 8}, 118)
+    AddBackbeat(notes, 120)
+    AddRide(notes, 96, 84, 2)
+    Pattern("outro_drive", "Outro Drive", notes)
+end
 
-    resolution = 16,
+Pattern("fill_snare_pickup", "Snare Pickup", {
+    Note(MidiNotes.drums.snare, 12, 92),
+    Note(MidiNotes.drums.snare, 13, 100),
+    Note(MidiNotes.drums.snare, 14, 110),
+    Note(MidiNotes.drums.snare, 15, 120)
+}, 1)
 
-    bars = 1,
+Pattern("fill_tom_2beat", "Two Beat Tom Fill", {
+    Note(MidiNotes.drums.high_tom, 8, 100),
+    Note(MidiNotes.drums.high_tom, 10, 104),
+    Note(MidiNotes.drums.mid_tom, 12, 110),
+    Note(MidiNotes.drums.mid_tom, 13, 112),
+    Note(MidiNotes.drums.low_tom, 14, 118),
+    Note(MidiNotes.drums.low_tom, 15, 122)
+}, 2)
 
-    notes = { -- Kick
-    {
-        pitch = MidiNotes.drums.kick,
-        position = 0,
-        length = 0.25,
-        velocity = 115
-    }, {
-        pitch = MidiNotes.drums.kick,
-        position = 6,
-        length = 0.25,
-        velocity = 100
-    }, {
-        pitch = MidiNotes.drums.kick,
-        position = 8,
-        length = 0.25,
-        velocity = 115
-    }, -- Snare
-    {
-        pitch = MidiNotes.drums.snare,
-        position = 4,
-        length = 0.25,
-        velocity = 110
-    }, {
-        pitch = MidiNotes.drums.snare,
-        position = 12,
-        length = 0.25,
-        velocity = 110
-    }, -- Hi-hat
-    {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 0,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 1,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 2,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 3,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 4,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 5,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 6,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 7,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 8,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 9,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 10,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 11,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 12,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 13,
-        length = 0.25,
-        velocity = 70
-    }, {
-        pitch = MidiNotes.drums.closed_hat,
-        position = 14,
-        length = 0.25,
-        velocity = 85
-    }, {
-        pitch = MidiNotes.drums.open_hat,
-        position = 15,
-        length = 0.25,
-        velocity = 95
-    }}
-}, {
-    id = "fill_big",
-
-    name = "Big Drum Fill",
-
-    type = "drums",
-
-    resolution = 16,
-
-    bars = 1,
-
-    transitionBeats = 1,
-
-    notes = {{
-        pitch = MidiNotes.drums.kick,
-        position = 0,
-        length = 0.25,
-        velocity = 120
-    }, {
-        pitch = MidiNotes.drums.high_tom,
-        position = 8,
-        length = 0.25,
-        velocity = 105
-    }, {
-        pitch = MidiNotes.drums.mid_tom,
-        position = 10,
-        length = 0.25,
-        velocity = 110
-    }, {
-        pitch = MidiNotes.drums.mid_tom,
-        position = 12,
-        length = 0.25,
-        velocity = 115
-    }, {
-        pitch = MidiNotes.drums.low_tom,
-        position = 13,
-        length = 0.25,
-        velocity = 115
-    }, {
-        pitch = MidiNotes.drums.low_tom,
-        position = 14,
-        length = 0.25,
-        velocity = 120
-    }, {
-        pitch = MidiNotes.drums.crash,
-        position = 15,
-        length = 0.25,
-        velocity = 127
-    }}
-
-}}
+Pattern("fill_big", "Big Drum Fill", {
+    Note(MidiNotes.drums.high_tom, 12, 108),
+    Note(MidiNotes.drums.mid_tom, 13, 114),
+    Note(MidiNotes.drums.low_tom, 14, 120),
+    Note(MidiNotes.drums.low_tom, 15, 124)
+}, 1)
 
 return Drums

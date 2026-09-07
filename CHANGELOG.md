@@ -1,5 +1,42 @@
 # Changelog
 
+## Commit #0041 — Expressive Drum Arrangement
+
+### Added
+
+- Patterns dédiés aux intros, couplets, refrains, solos et outro.
+- Patterns d'entrée de section avec crash, ainsi que des grooves ride et
+  charley ouvert.
+- Intro rythmique aérée : tom basse en croches, caisse claire sur les temps
+  2 et 4, avec quelques réponses de rack toms.
+- Ghost notes de caisse claire et fills de pickup ou de toms sur un et deux
+  temps.
+- Support optionnel d'un pattern `opening` pour la première mesure d'une
+  section.
+
+### Changed
+
+- Les sections du morceau reçoivent maintenant des grooves, niveaux d'énergie
+  et fills adaptés à leur rôle musical.
+- Les refrains et le solo disposent d'un pulse continu, avec une variation
+  déterministe toutes les quatre mesures.
+- Les fills de toms se terminent sur le tom basse ; le crash d'entrée de la
+  section suivante évite les doubles impacts de cymbale.
+- Les grooves de couplet, refrain, solo et outro reposent désormais sur une
+  pulsation rock straight : grosse caisse sur 1 et 3, caisse claire sur 2 et 4.
+- Les couplets utilisent un charley semi-ouvert en noires, tandis que les
+  refrains remplacent la ride par une crash en noires.
+- Les variations de groove ajoutent ponctuellement une relance de grosse
+  caisse sur le contretemps du troisième temps.
+- La note du tom aigu est corrigée de 50 vers 48 pour le mapping standard
+  EZdrummer 3 ; la note 50 correspond au choke de Crash 2.
+
+### Validation
+
+- Tous les patterns référencés sont déclarés dans la bibliothèque batterie.
+- La génération conserve le timing, l'humanisation et le routage EZdrummer
+  existants.
+
 ## Commit #0040 — Vocal Processing Foundation
 
 ### Added
