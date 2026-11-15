@@ -27,10 +27,11 @@ Instead of starting from a static template, HardRock Composer generates a comple
 * Song structure, markers and colored regions
 * MIDI drum engine: section grooves, variations, fills, transitions,
   section dynamics and deterministic humanization
+* Five styles (Hard, Classic, Blues, Heavy, Punk Rock) with swing,
+  12/8 support and seeded song structure variants
 
 ### Planned
 
-* Multiple rock style presets (Classic, Blues, Heavy, Punk)
 * Bass MIDI and chord grid generation
 * Graphical user interface (ReaImGui)
 * ReaPack distribution
@@ -63,8 +64,23 @@ generation.
 3. Run the action. ⚠️ By default it **deletes every track** of the current
    project (see `Config.ResetProject`).
 
-Song settings (tempo, time signature, humanization) live in
-`Data/SongSettings.lua`.
+Choose the style in `Config.lua`:
+
+```lua
+Config.Style = "BluesRock"
+```
+
+| Style | Feel |
+| ----- | ---- |
+| `HardRock` | 140 BPM, straight 4/4 |
+| `ClassicRock` | 120 BPM, 4/4 with a light shuffle |
+| `BluesRock` | 12/8 shuffle, 12-bar verses, optional stop time |
+| `HeavyRock` | 145 BPM, gallop and double kick, optional breakdown |
+| `PunkRock` | 190 BPM, eighth-note drive and skank beat |
+
+Each style lives in `Styles/<Style>/` (settings, structure, drum patterns).
+Change `structure_seed` in its `SongSettings.lua` to get another variant of
+the song (optional bridge, breakdown or extra chorus).
 
 ---
 
@@ -88,7 +104,8 @@ HardRockComposer/
 ├── Version.lua
 
 ├── Core/             Engine logic (one responsibility per module)
-├── Data/             Declarative data: layout, song, patterns, colors
+├── Data/             Shared data: track layout, colors, MIDI note map
+├── Styles/           One folder per style: settings, structure, drums
 └── Tests/            Test suite with a mocked REAPER API
 ```
 
@@ -119,7 +136,6 @@ The objective is to generate a production-ready REAPER project in a single click
 Routing, FX buses, drum grooves and the song structure are already generated.
 Future versions will also:
 
-* Offer several rock styles
 * Generate bass lines and chord guides
 * Provide a graphical interface to configure the song
 

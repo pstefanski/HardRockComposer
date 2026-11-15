@@ -1,5 +1,33 @@
 # Changelog
 
+## Commit #0045 — Styles
+
+### Added
+
+- Dossier `Styles/` : un style par dossier (`SongSettings`, `SongStructure`,
+  `Drums`, `TrackLayout` facultatif), listés dans `Styles/Index.lua` et
+  choisis avec `Config.Style`.
+- Quatre nouveaux styles : Classic Rock, Blues Rock (12/8), Heavy Rock et
+  Punk Rock.
+- Signatures autres que x/4 : la longueur d'une mesure est calculée à partir
+  de `beats_per_bar` et `beat_unit` (12/8 = 6 noires).
+- Swing réglable (`swing.amount`, `swing.subdivision`) appliqué aux
+  contretemps.
+- Sections facultatives (`chance`) tirées de façon déterministe à partir de
+  `structure_seed`.
+- `Core/PatternBuilder.lua`, vocabulaire commun des patterns ;
+  `Core/Random.lua`, générateur déterministe partagé.
+- Couleurs de région `bridge` et `breakdown`, note `side_stick` (37).
+
+### Changed
+
+- Le style Hard Rock a migré dans `Styles/HardRock/` sans aucun changement
+  du projet généré.
+- `MidiWriter` reçoit un `feel` (énergie, humanisation, swing).
+- Le validateur accepte les unités 2, 4, 8 et 16, contrôle le swing, le seed,
+  les sections facultatives et les notes qui débordent de leur pattern.
+- Version `0.7.0-alpha`.
+
 ## Commit #0044 — Clean REAPER Master
 
 ### Fixed

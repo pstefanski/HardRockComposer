@@ -43,15 +43,17 @@ Objectif : générer un projet utilisable même si un plugin manque.
 - ⬜ **Validation manuelle dans REAPER**, sur Windows et sur macOS.
 - ↪️ **Scanner des plugins installés** (`EnumInstalledFX`) : reporté au sprint 9. C'est le chargement réel par REAPER qui fait foi. Un pré-scan devrait reproduire sa recherche par nom partiel et risquerait de déclarer absent un plugin pourtant chargeable. Le scanner sera utile pour afficher l'état des plugins dans l'interface.
 
-## Sprint 7 — Styles (v0.7) ⬜
+## Sprint 7 — Styles (v0.7) 🚧
 
 Objectif : ajouter un style sans modifier `Core/`.
 
-- ⬜ **Un dossier par style** : `Styles/<Style>/` regroupe `SongSettings`, `SongStructure`, `Patterns/Drums` et un éventuel override de `TrackLayout`. Le style actuel y migre sous le nom `HardRock`.
-- ⬜ `Core/StyleLoader.lua` : `Builder.Build(style)` remplace les `require` codés en dur.
-- ⬜ **Nouveaux styles** : Classic Rock, Blues Rock (12/8, shuffle), Heavy Rock (double pédale), Punk Rock.
-- ⬜ **Shuffle, swing et signatures autres que x/4** dans `Timing` et `Humanizer`. Le validateur refuse aujourd'hui `beat_unit ~= 4`.
-- ⬜ **Variantes de structure déterministes** tirées d'un seed : pont, double refrain, breakdown.
+- ✅ **Un dossier par style** : `Styles/<Style>/` regroupe `SongSettings`, `SongStructure` et `Drums`, avec un `TrackLayout` facultatif. Le style actuel a migré dans `Styles/HardRock/`, avec une génération identique à l'octet près.
+- ✅ **Chargement des styles** : `Core/StyleLoader.lua` et `Styles/Index.lua`. Le style est choisi dans `Config.Style`, et `Builder.Build(style)` remplace les `require` codés en dur.
+- ✅ **Patterns partagés** : `Core/PatternBuilder.lua` fournit le vocabulaire commun pour décrire les patterns.
+- ✅ **Nouveaux styles** : Classic Rock (shuffle léger), Blues Rock (12/8, grille de 12 mesures, stop time), Heavy Rock (galop, double pédale, breakdown), Punk Rock (190 BPM, skank beat).
+- ✅ **Signatures autres que x/4** (`Timing.QNPerBar`) et **swing** en croches ou en doubles croches.
+- ✅ **Variantes de structure déterministes** : sections facultatives (`chance`) tirées à partir de `structure_seed`.
+- ⬜ **Validation à l'oreille dans REAPER**, style par style, avec EZdrummer.
 
 ## Sprint 8 — Moteur musical étendu (v0.8) ⬜
 
