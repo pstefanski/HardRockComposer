@@ -16,6 +16,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "ezdrummer",
             plugin = "EZdrummer 3",
+            optional = true,
             outputChannels = 32,
             preset = "HRC Bright Room Drums",
 
@@ -209,11 +210,14 @@ local Layout = { ---------------------------------------------------------------
 
         }, {
             id = "drum_bus_studer",
-            plugin = "VST3: UADx Studer A800 Tape Recorder",
+            plugin = {"VST3: UADx Studer A800 Tape Recorder", "AU: UADx Studer A800 Tape Recorder"},
+            optional = true,
             preset = "HRC Drum Bus Studer"
         }, {
             id = "drum_bus_api_2500",
-            plugin = "VST3: UADx API 2500 Bus Compressor",
+            plugin = {"VST3: UADx API 2500 Bus Compressor", "AU: UADx API 2500 Bus Compressor", {
+                plugin = "VST: ReaComp (Cockos)"
+            }},
             preset = "HRC Drum Bus API 2500"
 
         }},
@@ -268,6 +272,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "tonex_bass",
             plugin = "TONEX",
+            optional = true,
             preset = "HRC Bass Ampeg"
         }},
 
@@ -293,6 +298,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "tonex_bass_distortion",
             plugin = "TONEX",
+            optional = true,
             preset = "HRC Bass Distortion"
         }, {
             id = "bass_distortion_eq",
@@ -326,7 +332,9 @@ local Layout = { ---------------------------------------------------------------
             preset = "HRC Bass Bus EQ"
         }, {
             id = "bass_bus_1176",
-            plugin = "VST3: UADx 1176 Rev A Compressor",
+            plugin = {"VST3: UADx 1176 Rev A Compressor", "AU: UADx 1176 Rev A Compressor", {
+                plugin = "VST: ReaComp (Cockos)"
+            }},
             preset = "HRC Bass Bus 1176"
         }},
 
@@ -353,6 +361,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "tonex_guitar_rythm_l",
             plugin = "TONEX",
+            optional = true,
             preset = "HRC Rhythm L JCM800"
         }},
 
@@ -377,6 +386,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "tonex_guitar_rythm_r",
             plugin = "TONEX",
+            optional = true,
             preset = "HRC Rhythm R JCM800"
         }},
 
@@ -401,6 +411,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "tonex_guitar_lead",
             plugin = "TONEX",
+            optional = true,
             preset = "HRC Lead JCM900"
         }},
 
@@ -424,6 +435,7 @@ local Layout = { ---------------------------------------------------------------
         plugins = {{
             id = "tonex_guitar_solo",
             plugin = "TONEX",
+            optional = true,
             preset = "HRC Solo Plexi"
         }},
 
@@ -450,7 +462,8 @@ local Layout = { ---------------------------------------------------------------
             preset = "HRC Guitar Bus EQ"
         }, {
             id = "guitar_bus_studer",
-            plugin = "VST3: UADx Studer A800 Tape Recorder",
+            plugin = {"VST3: UADx Studer A800 Tape Recorder", "AU: UADx Studer A800 Tape Recorder"},
+            optional = true,
             preset = "HRC Guitar Bus Studer"
         }},
 
@@ -479,7 +492,9 @@ local Layout = { ---------------------------------------------------------------
             preset = "HRC Vocal Lead EQ"
         }, {
             id = "vocal_lead_1176",
-            plugin = "VST3: UADx 1176 Rev A Compressor",
+            plugin = {"VST3: UADx 1176 Rev A Compressor", "AU: UADx 1176 Rev A Compressor", {
+                plugin = "VST: ReaComp (Cockos)"
+            }},
             preset = "HRC Vocal Lead 1176"
         }},
         routing = {
@@ -519,11 +534,15 @@ local Layout = { ---------------------------------------------------------------
         color = "vocals",
         plugins = {{
             id = "vocal_bus_la2a",
-            plugin = "VST3: UADx LA-2A Gray Compressor",
+            plugin = {"VST3: UADx LA-2A Gray Compressor", "AU: UADx LA-2A Gray Compressor", {
+                plugin = "VST: ReaComp (Cockos)"
+            }},
             preset = "HRC Vocal Bus LA-2A"
         }, {
             id = "vocal_bus_pultec",
-            plugin = "VST3: UADx Pultec EQP-1A EQ",
+            plugin = {"VST3: UADx Pultec EQP-1A EQ", "AU: UADx Pultec EQP-1A EQ", {
+                plugin = "VST: ReaEQ (Cockos)"
+            }},
             preset = "HRC Vocal Bus Pultec"
         }},
         routing = {
@@ -550,7 +569,9 @@ local Layout = { ---------------------------------------------------------------
         color = "fx",
         plugins = {{
             id = "fx_plate_reverb",
-            plugin = "VST3: UADx Pure Plate Reverb",
+            plugin = {"VST3: UADx Pure Plate Reverb", "AU: UADx Pure Plate Reverb", {
+                plugin = "VST: ReaVerbate (Cockos)"
+            }},
             preset = "HRC FX Plate"
         }},
         properties = {
@@ -567,7 +588,9 @@ local Layout = { ---------------------------------------------------------------
         color = "fx",
         plugins = {{
             id = "fx_room_sound_city",
-            plugin = "VST3: UADx Sound City Studios",
+            plugin = {"VST3: UADx Sound City Studios", "AU: UADx Sound City Studios", {
+                plugin = "VST: ReaVerbate (Cockos)"
+            }},
             preset = "HRC FX Room"
         }},
         properties = {
@@ -584,7 +607,9 @@ local Layout = { ---------------------------------------------------------------
         color = "fx",
         plugins = {{
             id = "fx_hall_capitol",
-            plugin = "VST3: UADx Capitol Chambers",
+            plugin = {"VST3: UADx Capitol Chambers", "AU: UADx Capitol Chambers", {
+                plugin = "VST: ReaVerbate (Cockos)"
+            }},
             preset = "HRC FX Hall"
         }},
         properties = {
@@ -601,7 +626,9 @@ local Layout = { ---------------------------------------------------------------
         color = "fx",
         plugins = {{
             id = "fx_delay_valhalla",
-            plugin = "VST3: ValhallaDelay (Valhalla DSP, LLC)",
+            plugin = {"VST3: ValhallaDelay (Valhalla DSP, LLC)", "AU: ValhallaDelay", {
+                plugin = "VST: ReaDelay (Cockos)"
+            }},
             preset = "HRC FX Delay"
         }},
         properties = {
@@ -627,11 +654,14 @@ local Layout = { ---------------------------------------------------------------
 
         plugins = {{
             id = "master_bus_ssl_g",
-            plugin = "VST3: UADx SSL G Bus Compressor",
+            plugin = {"VST3: UADx SSL G Bus Compressor", "AU: UADx SSL G Bus Compressor", {
+                plugin = "VST: ReaComp (Cockos)"
+            }},
             preset = "HRC Master Bus SSL G"
         }, {
             id = "master_bus_ampex",
-            plugin = "VST3: UADx Ampex ATR-102 Master Tape",
+            plugin = {"VST3: UADx Ampex ATR-102 Master Tape", "AU: UADx Ampex ATR-102 Master Tape"},
+            optional = true,
             preset = "HRC Master Bus Ampex"
         }},
         properties = {
