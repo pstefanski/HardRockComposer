@@ -30,16 +30,18 @@ Objectif : un socle fiable sur Windows **et** macOS.
 - ✅ **Ménage** : `ARCHITECTURE.md` renommé, README à jour, variable inutilisée supprimée.
 - ⬜ **Validation manuelle dans REAPER**, sur Windows et sur macOS.
 
-## Sprint 6 — Détection des plugins et mode dégradé (v0.6) ⬜
+## Sprint 6 — Plugins en mode dégradé (v0.6) 🚧
 
 Objectif : générer un projet utilisable même si un plugin manque.
 
-- ⬜ `Core/PluginScanner.lua` : inventaire des FX installés via `reaper.EnumInstalledFX`, mis en cache dans le `BuildContext`.
-- ⬜ **Fallbacks déclaratifs** : `plugin = { "VST3: UADx 1176 Rev A Compressor", "VST: ReaComp (Cockos)" }`. Le premier plugin disponible l'emporte.
-- ⬜ `optional = true` : un plugin manquant produit un warning au lieu d'une erreur.
-- ⬜ **Presets HRC versionnés** dans `Presets/`, installés via `GetResourcePath()`, avec des paramètres de secours (`TrackFX_SetParam`).
-- ⬜ **Rapport de fin de génération** : plugins trouvés, remplacés ou absents.
-- ⬜ Le validateur accepte les listes de plugins de remplacement.
+- ✅ **Candidats déclaratifs** : VST3, puis AU, puis plugin REAPER de remplacement. Le premier que REAPER charge l'emporte.
+- ✅ `optional = true` : un plugin manquant produit un warning au lieu d'une erreur. Concerne EZdrummer, TONEX, Studer et Ampex.
+- ✅ **Preset manquant** : simple warning, le plugin garde ses réglages par défaut.
+- ✅ **Rapport de fin de génération** : plugins chargés, remplacés, absents, presets manquants.
+- ✅ Le validateur accepte les listes de candidats.
+- ⬜ **Presets HRC versionnés** dans `Presets/` et installés via `GetResourcePath()`. Bloqué : les presets n'existent que sur la machine Windows et doivent d'abord en être exportés.
+- ⬜ **Validation manuelle dans REAPER**, sur Windows et sur macOS.
+- ↪️ **Scanner des plugins installés** (`EnumInstalledFX`) : reporté au sprint 9. C'est le chargement réel par REAPER qui fait foi. Un pré-scan devrait reproduire sa recherche par nom partiel et risquerait de déclarer absent un plugin pourtant chargeable. Le scanner sera utile pour afficher l'état des plugins dans l'interface.
 
 ## Sprint 7 — Styles (v0.7) ⬜
 
@@ -61,7 +63,8 @@ Objectif : ajouter un style sans modifier `Core/`.
 ## Sprint 9 — Interface graphique (v0.9) ⬜
 
 - ⬜ **ReaImGui** via ReaPack, avec repli sur la génération par défaut si l'extension est absente.
-- ⬜ **Écran de configuration** : style, tempo, signature, tonalité, seed, sections, état des plugins.
+- ⬜ **Écran de configuration** : style, tempo, signature, tonalité, seed, sections.
+- ⬜ **État des plugins** : `Core/PluginScanner.lua` (`EnumInstalledFX`), reporté du sprint 6.
 - ⬜ **Persistance** des choix avec `SetExtState`.
 - ⬜ **Génération non destructive** dans un nouvel onglet de projet.
 
