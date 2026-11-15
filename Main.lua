@@ -16,6 +16,7 @@ local Version = require("Version")
 local Logger = require("Logger")
 local Reaper = require("Reaper")
 local Builder = require("Builder")
+local Plugins = require("Plugins")
 
 local TrackLayout = require("TrackLayout")
 
@@ -34,5 +35,7 @@ if not ok then
     Logger.Error(tostring(result))
     return
 end
+
+Plugins.LogSummary(result)
 
 Logger.Info("Done.")

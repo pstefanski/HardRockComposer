@@ -124,6 +124,7 @@ function Builder.Build(layout)
         groups = {},
         tracks = {},
         song = {},
+        report = {},
 
         registry = {
 
