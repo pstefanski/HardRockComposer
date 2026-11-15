@@ -16,6 +16,12 @@ function MockReaper.Reset()
     state = {
         console = {},
         tracks = {},
+        master = {
+            name = "MASTER",
+            info = {},
+            sends = {},
+            fx = {}
+        },
         markers = {},
         tempoMarkers = {},
         bpm = 120,
@@ -158,6 +164,19 @@ function api.TrackFX_AddByName(track, name)
         pins = {}
     })
     return #track.fx - 1
+end
+
+function api.GetMasterTrack()
+    return state.master
+end
+
+function api.TrackFX_GetCount(track)
+    return #track.fx
+end
+
+function api.TrackFX_Delete(track, index)
+    table.remove(track.fx, index + 1)
+    return true
 end
 
 function api.TrackFX_GetFXName(track, index)

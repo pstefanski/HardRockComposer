@@ -1,5 +1,15 @@
 # Changelog
 
+## Commit #0044 — Clean REAPER Master
+
+### Fixed
+
+- Les effets présents sur le master de REAPER survivaient à la
+  réinitialisation du projet (seules les pistes étaient supprimées) et
+  doublaient le traitement du Master Bus. Avec `Config.ResetProject`, la
+  chaîne FX du master REAPER est maintenant vidée, et chaque plugin retiré est
+  signalé dans la console.
+
 ## Commit #0043 — Plugin Fallbacks
 
 ### Added
