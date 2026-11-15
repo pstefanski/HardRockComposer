@@ -1,5 +1,6 @@
 local Midi = require("Midi")
 local Transitions = require("Transitions")
+local Timing = require("Timing")
 
 --------------------------------------------------
 -- Validates every declarative data file before the build starts.
@@ -21,6 +22,18 @@ local TRANSITIONS = {
 }
 
 local DRUM_MIDI_TRACK = "ezd_midi"
+
+local BEAT_UNITS = {
+    [2] = true,
+    [4] = true,
+    [8] = true,
+    [16] = true
+}
+
+local SWING_SUBDIVISIONS = {
+    [8] = true,
+    [16] = true
+}
 
 --------------------------------------------------
 -- Helpers
@@ -84,11 +97,31 @@ local function ValidateSettings(report, settings)
 
     end
 
-    -- The MIDI engine counts bars in quarter notes; other units come with the
-    -- shuffle/12-8 work planned for the styles sprint.
-    if settings.beat_unit ~= 4 then
+    if not BEAT_UNITS[settings.beat_unit] then
 
-        report:Add(where, "beat_unit must be 4 (other units are not supported yet)")
+        report:Add(where, "beat_unit must be 2, 4, 8 or 16")
+
+    end
+
+    local swing = settings.swing
+
+    if swing ~= nil then
+
+        if type(swing) ~= "table" or type(swing.amount) ~= "number" or swing.amount < 0 or swing.amount > 1 then
+
+            report:Add(where, "swing.amount must be between 0 and 1")
+
+        elseif swing.subdivision ~= nil and not SWING_SUBDIVISIONS[swing.subdivision] then
+
+            report:Add(where, "swing.subdivision must be 8 or 16")
+
+        end
+
+    end
+
+    if settings.structure_seed ~= nil and not IsInteger(settings.structure_seed) then
+
+        report:Add(where, "structure_seed must be an integer")
 
     end
 
@@ -405,6 +438,14 @@ local function ValidatePatterns(report, patternSets, settings)
 
     local patterns = {}
 
+    local qnPerBar = nil
+
+    if IsInteger(settings.beats_per_bar) and BEAT_UNITS[settings.beat_unit] then
+
+        qnPerBar = Timing.QNPerBar(settings)
+
+    end
+
     for _, patternSet in ipairs(patternSets) do
 
         for index, pattern in ipairs(patternSet) do
@@ -441,10 +482,28 @@ local function ValidatePatterns(report, patternSets, settings)
 
             local beats = pattern.transitionBeats
 
-            if beats ~= nil and (type(beats) ~= "number" or beats <= 0 or
-                (IsInteger(settings.beats_per_bar) and beats > settings.beats_per_bar)) then
+            if beats ~= nil and (type(beats) ~= "number" or beats <= 0 or (qnPerBar and beats > qnPerBar)) then
 
-                report:Add(where, "transitionBeats must be between 0 and beats_per_bar")
+                report:Add(where, "transitionBeats must be between 0 and the bar length in quarter notes")
+
+            end
+
+            if qnPerBar and IsInteger(pattern.bars) and Midi.ValidatePattern(pattern) then
+
+                local lastPosition = pattern.bars * qnPerBar * 4
+
+                for _, note in ipairs(pattern.notes) do
+
+                    if note.position < 0 or note.position >= lastPosition then
+
+                        report:Add(where, string.format("note at position %g is outside the pattern (%g sixteenths)",
+                            note.position, lastPosition))
+
+                        break
+
+                    end
+
+                end
 
             end
 
@@ -478,6 +537,7 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds)
 
     local sectionIds = {}
     local usesDrums = false
+    local hasMandatorySection = false
 
     for index, section in ipairs(structure) do
 
@@ -513,6 +573,16 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds)
             report:Add(where, "energy must be between 0 and 1")
         end
 
+        if section.chance == nil then
+
+            hasMandatorySection = true
+
+        elseif type(section.chance) ~= "number" or section.chance < 0 or section.chance > 1 then
+
+            report:Add(where, "chance must be between 0 and 1")
+
+        end
+
         if section.transition ~= nil and not TRANSITIONS[section.transition] then
             report:Add(where, "unknown transition '" .. tostring(section.transition) .. "'")
         end
@@ -546,6 +616,12 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds)
             CheckPatternReference(report, where, "fill", Transitions.GetFill(section, structure[index + 1]), patterns)
 
         end
+
+    end
+
+    if #structure > 0 and not hasMandatorySection then
+
+        report:Add("SongStructure", "at least one section must be mandatory (without chance)")
 
     end
 

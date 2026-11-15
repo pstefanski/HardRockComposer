@@ -1,20 +1,18 @@
+local Random = require("Random")
+
 local Humanizer = {}
 
-local state = 1
+local generator = Random.New(1)
 
 function Humanizer.SetSeed(seed)
 
-    state = seed
+    generator = Random.New(seed)
 
 end
 
 function Humanizer.Random(min, max)
 
-    state = (state * 1103515245 + 12345) % 2147483648
-
-    local normalized = state / 2147483648
-
-    return math.floor(min + normalized * (max - min + 1))
+    return generator:Int(min, max)
 
 end
 

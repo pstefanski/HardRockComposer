@@ -32,6 +32,8 @@ function Arrangement.Apply(context, settings)
 
     local drumTrack = drumTrackEntry.track
 
+    local qnPerBar = Timing.QNPerBar(settings)
+
     --------------------------------------------------
     -- Sections
     --------------------------------------------------
@@ -40,7 +42,11 @@ function Arrangement.Apply(context, settings)
 
         local nextSection = context.song[index + 1]
 
-        local energy = section.energy or 1
+        local feel = {
+            energy = section.energy or 1,
+            humanization = settings.humanization,
+            swing = settings.swing
+        }
 
         --------------------------------------------------
         -- Drum pattern
@@ -166,10 +172,9 @@ function Arrangement.Apply(context, settings)
 
                 end
 
-                local barQN = startQN + ((bar - 1) * settings.beats_per_bar)
+                local barQN = startQN + ((bar - 1) * qnPerBar)
 
-                MidiWriter.WritePatternAtBar(take, selectedPattern, barQN, settings.beats_per_bar,
-                    settings.humanization, energy)
+                MidiWriter.WritePattern(take, selectedPattern, barQN, qnPerBar, feel)
 
             end
 
@@ -179,12 +184,12 @@ function Arrangement.Apply(context, settings)
 
             if fillPattern then
 
-                local finalBarQN = startQN + ((normalBars - 1) * settings.beats_per_bar)
+                local finalBarQN = startQN + ((normalBars - 1) * qnPerBar)
                 local fillBeats = fillPattern.transitionBeats or 1
-                local fillStartBeat = settings.beats_per_bar - fillBeats
+                local fillStartQN = qnPerBar - fillBeats
                 local selectedPattern = pattern
 
-                if fillBeats <= 0 or fillBeats > settings.beats_per_bar then
+                if fillBeats <= 0 or fillBeats > qnPerBar then
 
                     error("Invalid transition length for fill: " .. tostring(fillId))
 
@@ -196,11 +201,9 @@ function Arrangement.Apply(context, settings)
 
                 end
 
-                MidiWriter.WritePatternUntilBeat(take, selectedPattern, finalBarQN, settings.beats_per_bar,
-                    fillStartBeat, settings.humanization, energy)
+                MidiWriter.WriteBetween(take, selectedPattern, finalBarQN, 0, fillStartQN, feel)
 
-                MidiWriter.WritePatternBetweenBeats(take, fillPattern, finalBarQN, settings.beats_per_bar,
-                    fillStartBeat, settings.beats_per_bar, settings.humanization, energy)
+                MidiWriter.WriteBetween(take, fillPattern, finalBarQN, fillStartQN, qnPerBar, feel)
 
             end
 

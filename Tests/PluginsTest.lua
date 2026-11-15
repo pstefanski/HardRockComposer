@@ -1,9 +1,15 @@
 local Test = require("Test")
+local StyleLoader = require("StyleLoader")
+
+local Style = StyleLoader.Load("HardRock")
+local TrackLayout = Style.layout
+local SongStructure = Style.structure
+local SongSettings = Style.settings
+local DrumPatterns = Style.patternSets[1]
 local MockReaper = require("MockReaper")
 local Builder = require("Builder")
 local Plugins = require("Plugins")
 
-local TrackLayout = require("TrackLayout")
 
 local function Starts(text, prefix)
     return text:sub(1, #prefix) == prefix
@@ -47,7 +53,7 @@ end)
 
 Test.Case("Plugins: with everything installed, nothing is substituted", function()
     MockReaper.Reset()
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     local summary = Plugins.Summary(context)
     Test.Equal(#summary.substituted, 0)
     Test.Equal(#summary.missing, 0)
@@ -60,7 +66,7 @@ Test.Case("Plugins: falls back to the AU version", function()
     state.isPluginMissing = function(name)
         return Starts(name, "VST3: UADx")
     end
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     local entry = context.registry.plugins.bass_bus_1176
     Test.Equal(entry.plugin, "AU: UADx 1176 Rev A Compressor")
     Test.Equal(FindTrack(state, "Bass Bus").fx[2].preset, "HRC Bass Bus 1176")
@@ -71,7 +77,7 @@ Test.Case("Plugins: falls back to stock REAPER plugins without preset", function
     state.isPluginMissing = function(name)
         return name:find("UADx", 1, true) ~= nil
     end
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     local entry = context.registry.plugins.vocal_lead_1176
     Test.Equal(entry.plugin, "VST: ReaComp (Cockos)")
     Test.Equal(context.registry.plugins.fx_plate_reverb.plugin, "VST: ReaVerbate (Cockos)")
@@ -86,7 +92,7 @@ Test.Case("Plugins: optional plugins are skipped with a warning", function()
     state.isPluginMissing = function(name)
         return name:find("Studer", 1, true) ~= nil or name == "TONEX"
     end
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     Test.Equal(context.registry.plugins.drum_bus_studer, nil)
     Test.Equal(context.registry.plugins.tonex_guitar_lead, nil)
     Test.Equal(#Plugins.Summary(context).missing, 8)
@@ -96,7 +102,7 @@ end)
 Test.Case("Plugins: without EZdrummer the drum MIDI is still written", function()
     local state = MockReaper.Reset()
     state.missingPlugins["EZdrummer 3"] = true
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     Test.Equal(context.registry.plugins.ezdrummer, nil)
     Test.Equal(#FindTrack(state, "EZD MIDI").sends, 0)
     Test.True(#state.items > 0)
@@ -105,7 +111,7 @@ end)
 Test.Case("Plugins: a missing preset keeps default settings", function()
     local state = MockReaper.Reset()
     state.missingPresets["HRC Drum Bus EQ"] = true
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     Test.True(context.registry.plugins.eq ~= nil)
     local summary = Plugins.Summary(context)
     Test.Equal(#summary.missingPresets, 1)
@@ -118,7 +124,7 @@ Test.Case("Plugins: a required plugin without candidates stops the build", funct
     state.isPluginMissing = function(name)
         return name:find("ReaEQ", 1, true) ~= nil
     end
-    Test.Raises(function() Builder.Build(TrackLayout) end, "Unable to load plugin 'eq' on track 'drum_bus' (tried 'VST: ReaEQ (Cockos)')")
+    Test.Raises(function() Builder.Build(Style) end, "Unable to load plugin 'eq' on track 'drum_bus' (tried 'VST: ReaEQ (Cockos)')")
 end)
 
 Test.Case("Plugins: builds on a machine with only AU UADx, no TONEX, Valhalla or HRC presets", function()
@@ -129,7 +135,7 @@ Test.Case("Plugins: builds on a machine with only AU UADx, no TONEX, Valhalla or
     state.isPresetMissing = function()
         return true
     end
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     local summary = Plugins.Summary(context)
     Test.Equal(#summary.missing, 6, "TONEX instances")
     Test.Equal(context.registry.plugins.fx_delay_valhalla.plugin, "VST: ReaDelay (Cockos)")
@@ -139,7 +145,7 @@ end)
 Test.Case("Plugins: the summary is printed to the console", function()
     local state = MockReaper.Reset()
     state.missingPlugins["TONEX"] = true
-    local context = Builder.Build(TrackLayout)
+    local context = Builder.Build(Style)
     Plugins.LogSummary(context)
     Test.True(ConsoleContains(state, "6 missing"))
     Test.True(ConsoleContains(state, "missing      tonex_bass: TONEX"))

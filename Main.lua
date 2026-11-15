@@ -12,22 +12,32 @@ package.path = table.concat({
 }, ";")
 
 local Version = require("Version")
+local Config = require("Config")
 
 local Logger = require("Logger")
 local Reaper = require("Reaper")
 local Builder = require("Builder")
 local Plugins = require("Plugins")
 
-local TrackLayout = require("TrackLayout")
+local StyleLoader = require("StyleLoader")
 
 Reaper.ClearConsole()
 
 Logger.Info(Version.NAME)
 Logger.Info(Version.VERSION)
 
+local loaded, style = pcall(StyleLoader.Load, Config.Style)
+
+if not loaded then
+    Logger.Error(tostring(style))
+    return
+end
+
+Logger.Info("Style: " .. style.name)
+
 Reaper.BeginUndo()
 
-local ok, result = pcall(Builder.Build, TrackLayout)
+local ok, result = pcall(Builder.Build, style)
 
 Reaper.EndUndo("HardRock Composer")
 

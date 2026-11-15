@@ -1,67 +1,22 @@
 local MidiNotes = require("Patterns.MidiNotes")
+local PatternBuilder = require("PatternBuilder")
+
+--------------------------------------------------
+-- Hard Rock drum patterns (4/4, straight).
+--------------------------------------------------
 
 local Drums = {}
 
-local function Note(pitch, position, velocity, length)
-    return {pitch = pitch, position = position, length = length or 0.25, velocity = velocity}
-end
+local Note = PatternBuilder.Note
+local Add = PatternBuilder.Add
+local AddKicks = PatternBuilder.AddKicks
+local AddBackbeat = PatternBuilder.AddBackbeat
+local AddEighthHats = PatternBuilder.AddEighthHats
+local AddSemiOpenHatQuarters = PatternBuilder.AddSemiOpenHatQuarters
+local AddRide = PatternBuilder.AddRide
+local AddCrashQuarters = PatternBuilder.AddCrashQuarters
 
-local function Add(notes, pitch, position, velocity, length)
-    table.insert(notes, Note(pitch, position, velocity, length))
-end
-
-local function AddKicks(notes, positions, velocity)
-    for _, position in ipairs(positions) do
-        Add(notes, MidiNotes.drums.kick, position, velocity)
-    end
-end
-
-local function AddBackbeat(notes, velocity, ghostVelocity)
-    Add(notes, MidiNotes.drums.snare, 4, velocity)
-    Add(notes, MidiNotes.drums.snare, 12, velocity)
-    if ghostVelocity then
-        Add(notes, MidiNotes.drums.snare, 7, ghostVelocity)
-        Add(notes, MidiNotes.drums.snare, 15, ghostVelocity)
-    end
-end
-
-local function AddEighthHats(notes, accent, normal, skipPosition)
-    for position = 0, 14, 2 do
-        if position ~= skipPosition then
-            Add(notes, MidiNotes.drums.closed_hat, position, position % 4 == 0 and accent or normal)
-        end
-    end
-end
-
-local function AddSemiOpenHatQuarters(notes, velocity)
-    for position = 0, 12, 4 do
-        Add(notes, MidiNotes.drums.semi_open_hat, position, velocity)
-    end
-end
-
-local function AddRide(notes, accent, normal, startPosition)
-    for position = startPosition or 0, 14, 2 do
-        Add(notes, MidiNotes.drums.ride, position, position % 4 == 0 and accent or normal)
-    end
-end
-
-local function AddCrashQuarters(notes, velocity, startPosition)
-    for position = startPosition or 0, 12, 4 do
-        Add(notes, MidiNotes.drums.crash, position, velocity, 1)
-    end
-end
-
-local function Pattern(id, name, notes, transitionBeats)
-    table.insert(Drums, {
-        id = id,
-        name = name,
-        type = "drums",
-        resolution = 16,
-        bars = 1,
-        transitionBeats = transitionBeats,
-        notes = notes
-    })
-end
+local Pattern = PatternBuilder.Collector(Drums)
 
 do
     local notes = {}
