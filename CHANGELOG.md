@@ -1,5 +1,27 @@
 # Changelog
 
+## Commit #0043 — Plugin Fallbacks
+
+### Added
+
+- Un plugin peut déclarer plusieurs candidats, essayés dans l'ordre :
+  version VST3, version AU, puis plugin REAPER de remplacement.
+- Option `optional` : un plugin introuvable est ignoré avec un warning.
+- Rapport de fin de génération : plugins chargés, remplacés, absents et
+  presets manquants.
+- Le validateur contrôle les listes de candidats et l'option `optional`.
+
+### Changed
+
+- Les plugins UADx sont recherchés en VST3 puis en AU (sur macOS, les UADx ne
+  sont installés qu'en AU), avec repli sur ReaComp, ReaEQ ou ReaVerbate.
+- ValhallaDelay se replie sur ReaDelay.
+- EZdrummer 3, TONEX et les émulations de bande (Studer, Ampex) sont
+  optionnels : sans EZdrummer, le MIDI batterie est tout de même écrit.
+- Un preset introuvable n'arrête plus la génération : le plugin garde ses
+  réglages par défaut.
+- Version `0.6.0-alpha`.
+
 ## Commit #0042 — Sprint 5 Foundations
 
 ### Added

@@ -251,6 +251,57 @@ local function ValidateRouting(report, track, trackIds)
 
 end
 
+-- `plugin` is a name or a list of candidates (names or { plugin, preset }).
+local function ValidatePluginCandidates(report, where, plugin)
+
+    local declared = plugin.plugin
+
+    if type(declared) == "table" then
+
+        if #declared == 0 then
+
+            report:Add(where, "plugin candidate list is empty")
+
+        end
+
+        for index, candidate in ipairs(declared) do
+
+            local name = type(candidate) == "table" and candidate.plugin or candidate
+
+            if not IsNonEmptyString(name) then
+
+                report:Add(where, "candidate #" .. index .. " has no plugin name")
+
+            end
+
+            if type(candidate) == "table" and candidate.preset ~= nil and not IsNonEmptyString(candidate.preset) then
+
+                report:Add(where, "candidate #" .. index .. " preset must be a name")
+
+            end
+
+        end
+
+    elseif not IsNonEmptyString(declared) then
+
+        report:Add(where, "missing plugin name")
+
+    end
+
+    if plugin.preset ~= nil and not IsNonEmptyString(plugin.preset) then
+
+        report:Add(where, "preset must be a name")
+
+    end
+
+    if plugin.optional ~= nil and type(plugin.optional) ~= "boolean" then
+
+        report:Add(where, "optional must be true or false")
+
+    end
+
+end
+
 local function ValidatePlugins(report, track, trackIds, pluginIds)
 
     for index, plugin in ipairs(track.plugins or {}) do
@@ -273,11 +324,7 @@ local function ValidatePlugins(report, track, trackIds, pluginIds)
 
         end
 
-        if not IsNonEmptyString(plugin.plugin) then
-
-            report:Add(where, "missing plugin name")
-
-        end
+        ValidatePluginCandidates(report, where, plugin)
 
         if plugin.outputChannels ~= nil then
 

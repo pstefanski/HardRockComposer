@@ -18,7 +18,8 @@ Instead of starting from a static template, HardRock Composer generates a comple
 * Data validation before generation (every error reported at once)
 * Track folders, colorized track layout and track properties
 * Bus routing with configurable sends (mode and level)
-* Automatic plugin insertion with HRC presets
+* Automatic plugin insertion with HRC presets, AU/VST3 alternatives,
+  stock REAPER fallbacks and an end-of-build report
 * EZdrummer 3 multi-output routing (32 channels)
 * TONEX guitar and bass amps, parallel bass processing
 * UAD bus, vocal and master processing chains
@@ -29,7 +30,6 @@ Instead of starting from a static template, HardRock Composer generates a comple
 
 ### Planned
 
-* Plugin detection with fallbacks to stock REAPER plugins
 * Multiple rock style presets (Classic, Blues, Heavy, Punk)
 * Bass MIDI and chord grid generation
 * Graphical user interface (ReaImGui)
@@ -47,8 +47,11 @@ See [ROADMAP.md](ROADMAP.md) for the detailed plan.
 Linux should work but is untested.
 
 The default track layout uses EZdrummer 3, IK Multimedia TONEX,
-Universal Audio UADx plugins and ValhallaDelay. Until plugin detection lands,
-each declared plugin and its `HRC …` preset must be installed.
+Universal Audio UADx plugins (VST3 or AU) and ValhallaDelay, with their
+`HRC …` presets. Missing plugins are replaced by stock REAPER plugins
+(ReaComp, ReaEQ, ReaVerbate, ReaDelay) or skipped when optional, and missing
+presets keep the default settings. A report is printed at the end of the
+generation.
 
 ---
 
@@ -116,7 +119,6 @@ The objective is to generate a production-ready REAPER project in a single click
 Routing, FX buses, drum grooves and the song structure are already generated.
 Future versions will also:
 
-* Detect installed plugins and fall back to stock REAPER plugins
 * Offer several rock styles
 * Generate bass lines and chord guides
 * Provide a graphical interface to configure the song

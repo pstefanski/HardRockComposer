@@ -115,8 +115,3 @@ Test.Case("Build: invalid data leaves the current project untouched", function()
     Test.Equal(#state.tracks, 1)
 end)
 
-Test.Case("Build: a missing plugin stops the build", function()
-    local state = MockReaper.Reset()
-    state.missingPlugins["EZdrummer 3"] = true
-    Test.Raises(function() Builder.Build(TrackLayout) end, "Unable to load plugin 'EZdrummer 3'")
-end)

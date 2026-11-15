@@ -282,6 +282,43 @@ Lorsqu'une piste possède un bloc `routing` :
 
 ---
 
+# Plugins
+
+Un plugin est déclaré dans le bloc `plugins` d'une piste.
+
+```lua
+{
+    id = "bass_bus_1176",
+
+    -- Candidats essayés dans l'ordre : le premier que REAPER charge l'emporte.
+    plugin = {
+        "VST3: UADx 1176 Rev A Compressor",     -- hérite de `preset`
+        "AU: UADx 1176 Rev A Compressor",       -- hérite de `preset`
+        { plugin = "VST: ReaComp (Cockos)" }    -- preset propre (aucun ici)
+    },
+
+    preset = "HRC Bass Bus 1176",
+
+    -- Facultatif : si aucun candidat n'est disponible, un warning remplace l'erreur.
+    optional = true
+}
+```
+
+Règles :
+
+- `plugin` peut aussi être un simple nom ;
+- un candidat écrit comme un nom hérite du `preset` de la déclaration ;
+- un candidat écrit comme une table utilise son propre `preset` : c'est la
+  forme à employer pour les plugins de remplacement REAPER ;
+- un preset introuvable n'arrête pas la génération : le plugin garde ses
+  réglages par défaut et un warning est affiché ;
+- un plugin non optionnel introuvable arrête la génération.
+
+En fin de génération, la console affiche un rapport : plugins chargés,
+remplacés, absents, et presets manquants.
+
+---
+
 # Wrapper REAPER
 
 Aucun module ne doit appeler directement l'API REAPER.
@@ -313,7 +350,7 @@ Chaque module possède une responsabilité unique.
 | Colors | Couleurs |
 | Routing | Routage audio |
 | Properties | Propriétés natives |
-| Plugins | Gestion des plugins |
+| Plugins | Insertion des plugins, remplacements et rapport |
 | Logger | Journalisation |
 | Reaper | Wrapper API |
 
