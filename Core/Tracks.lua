@@ -5,22 +5,40 @@ local Tracks = {}
 
 function Tracks.Apply(layout, context)
 
+    local previousFolder = false
+
     for _, group in ipairs(layout) do
 
         --------------------------------------------------
         -- Folder
         --------------------------------------------------
 
-        local folderTrack = Reaper.CreateTrack(group.name)
-
-        Colors.Apply(folderTrack, group)
-
-        Reaper.BeginFolder(folderTrack)
-
         local groupEntry = {
             data = group,
-            track = folderTrack
+            track = nil
         }
+
+        local folderTrack = nil
+
+        if group.folder ~= false then
+
+            folderTrack = Reaper.CreateTrack(group.name)
+
+            Colors.Apply(folderTrack, group)
+
+            if group.properties and group.properties.showInTCP ~= nil then
+                Reaper.SetTrackTCPVisible(folderTrack, group.properties.showInTCP)
+            end
+
+            if previousFolder then
+                Reaper.SetTrackSpacerAbove(folderTrack, true)
+            end
+
+            Reaper.BeginFolder(folderTrack)
+
+            groupEntry.track = folderTrack
+
+        end
 
         table.insert(context.groups, groupEntry)
         context.registry.groups[group.id] = groupEntry
@@ -48,9 +66,11 @@ function Tracks.Apply(layout, context)
 
         end
 
-        if lastTrack then
+        if folderTrack and lastTrack then
             Reaper.EndFolder(lastTrack)
         end
+
+        previousFolder = folderTrack ~= nil
 
     end
 

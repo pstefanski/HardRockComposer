@@ -54,6 +54,7 @@ function Arrangement.Apply(context, settings)
 
             local primaryId
             local variationId
+            local openingId
 
             if type(drumDefinition) == "string" then
 
@@ -64,6 +65,8 @@ function Arrangement.Apply(context, settings)
                 primaryId = drumDefinition.primary
 
                 variationId = drumDefinition.variation
+
+                openingId = drumDefinition.opening
 
             end
 
@@ -77,6 +80,8 @@ function Arrangement.Apply(context, settings)
 
             local variationPattern = nil
 
+            local openingPattern = nil
+
             if variationId then
 
                 variationPattern = context.registry.patterns[variationId]
@@ -84,6 +89,18 @@ function Arrangement.Apply(context, settings)
                 if not variationPattern then
 
                     error("Unknown drum variation: " .. tostring(variationId))
+
+                end
+
+            end
+
+            if openingId then
+
+                openingPattern = context.registry.patterns[openingId]
+
+                if not openingPattern then
+
+                    error("Unknown drum opening pattern: " .. tostring(openingId))
 
                 end
 
@@ -141,7 +158,11 @@ function Arrangement.Apply(context, settings)
 
                 local selectedPattern = pattern
 
-                if variationPattern and bar % 4 == 0 then
+                if openingPattern and bar == 1 then
+
+                    selectedPattern = openingPattern
+
+                elseif variationPattern and bar % 4 == 0 then
 
                     selectedPattern = variationPattern
 

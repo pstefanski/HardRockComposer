@@ -72,6 +72,34 @@ function Reaper.CreateSend(sourceTrack, destinationTrack)
 
 end
 
+function Reaper.SetSendMode(track, sendIndex, mode)
+
+    local modes = {
+        post_fader = 0,
+        pre_fx = 1,
+        post_fx = 3
+    }
+
+    local value = modes[mode]
+
+    if value == nil then
+
+        error("Unknown send mode: " .. tostring(mode))
+
+    end
+
+    reaper.SetTrackSendInfo_Value(track, 0, sendIndex, "I_SENDMODE", value)
+
+end
+
+function Reaper.SetSendVolume(track, sendIndex, db)
+
+    local linear = 10 ^ (db / 20)
+
+    reaper.SetTrackSendInfo_Value(track, 0, sendIndex, "D_VOL", linear)
+
+end
+
 function Reaper.SetMainSend(track, enabled)
 
     reaper.SetMediaTrackInfo_Value(track, "B_MAINSEND", enabled and 1 or 0)
@@ -108,6 +136,18 @@ function Reaper.SetTrackSolo(track, solo)
 
 end
 
+function Reaper.SetTrackTCPVisible(track, visible)
+
+    reaper.SetMediaTrackInfo_Value(track, "B_SHOWINTCP", visible and 1 or 0)
+
+end
+
+function Reaper.SetTrackSpacerAbove(track, enabled)
+
+    reaper.SetMediaTrackInfo_Value(track, "I_SPACER", enabled and 1 or 0)
+
+end
+
 --------------------------------------------------
 -- FX
 --------------------------------------------------
@@ -116,6 +156,12 @@ function Reaper.InsertFX(track, pluginName)
 
     local index = reaper.TrackFX_AddByName(track, pluginName, false, -1)
 
+    if index < 0 then
+
+        return nil
+
+    end
+
     return {
 
         track = track,
@@ -123,6 +169,66 @@ function Reaper.InsertFX(track, pluginName)
         index = index
 
     }
+
+end
+
+function Reaper.GetFXName(track, index)
+
+    local success, name = reaper.TrackFX_GetFXName(track, index, "")
+
+    if not success then
+
+        return nil
+
+    end
+
+    return name
+
+end
+
+function Reaper.LoadPreset(track, index, preset)
+
+    return reaper.TrackFX_SetPreset(track, index, preset)
+
+end
+
+function Reaper.SetTrackChannelCount(track, channelCount)
+
+    reaper.SetMediaTrackInfo_Value(track, "I_NCHAN", channelCount)
+
+end
+
+function Reaper.MapFXOutputsToTrackChannels(track, fxIndex, channelCount)
+
+    for channel = 0, channelCount - 1 do
+
+        local mask = 1 << channel
+        local success = reaper.TrackFX_SetPinMappings(track, fxIndex, 1, channel, mask, 0)
+
+        if not success then
+
+            error("Unable to map FX output pin: " .. tostring(channel))
+
+        end
+
+    end
+
+end
+
+function Reaper.CreateStereoSend(sourceTrack, destinationTrack, sourceChannel)
+
+    local sendIndex = reaper.CreateTrackSend(sourceTrack, destinationTrack)
+
+    if sendIndex < 0 then
+
+        error("Unable to create audio send")
+
+    end
+
+    reaper.SetTrackSendInfo_Value(sourceTrack, 0, sendIndex, "I_SRCCHAN", sourceChannel)
+    reaper.SetTrackSendInfo_Value(sourceTrack, 0, sendIndex, "I_DSTCHAN", 0)
+
+    return sendIndex
 
 end
 

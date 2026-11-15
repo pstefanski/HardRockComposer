@@ -26,6 +26,10 @@ function Properties.Apply(context)
                 Reaper.SetTrackSolo(entry.track, properties.solo)
             end
 
+            if properties.showInTCP ~= nil then
+                Reaper.SetTrackTCPVisible(entry.track, properties.showInTCP)
+            end
+
         end
 
     end

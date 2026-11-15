@@ -1,5 +1,126 @@
 # Changelog
 
+## Commit #0041 — Expressive Drum Arrangement
+
+### Added
+
+- Patterns dédiés aux intros, couplets, refrains, solos et outro.
+- Patterns d'entrée de section avec crash, ainsi que des grooves ride et
+  charley ouvert.
+- Intro rythmique aérée : tom basse en croches, caisse claire sur les temps
+  2 et 4, avec quelques réponses de rack toms.
+- Ghost notes de caisse claire et fills de pickup ou de toms sur un et deux
+  temps.
+- Support optionnel d'un pattern `opening` pour la première mesure d'une
+  section.
+
+### Changed
+
+- Les sections du morceau reçoivent maintenant des grooves, niveaux d'énergie
+  et fills adaptés à leur rôle musical.
+- Les refrains et le solo disposent d'un pulse continu, avec une variation
+  déterministe toutes les quatre mesures.
+- Les fills de toms se terminent sur le tom basse ; le crash d'entrée de la
+  section suivante évite les doubles impacts de cymbale.
+- Les grooves de couplet, refrain, solo et outro reposent désormais sur une
+  pulsation rock straight : grosse caisse sur 1 et 3, caisse claire sur 2 et 4.
+- Les couplets utilisent un charley semi-ouvert en noires, tandis que les
+  refrains remplacent la ride par une crash en noires.
+- Les variations de groove ajoutent ponctuellement une relance de grosse
+  caisse sur le contretemps du troisième temps.
+- La note du tom aigu est corrigée de 50 vers 48 pour le mapping standard
+  EZdrummer 3 ; la note 50 correspond au choke de Crash 2.
+
+### Validation
+
+- Tous les patterns référencés sont déclarés dans la bibliothèque batterie.
+- La génération conserve le timing, l'humanisation et le routage EZdrummer
+  existants.
+
+## Commit #0040 — Vocal Processing Foundation
+
+### Added
+
+- Chaîne `ReaEQ → UAD 1176 Rev A` sur Vocal Lead.
+- Chaîne `UAD LA-2A Gray → UAD Pultec EQP-1A` sur Vocal Bus.
+- Presets dédiés `HRC Vocal Lead EQ`, `HRC Vocal Lead 1176`,
+  `HRC Vocal Bus LA-2A` et `HRC Vocal Bus Pultec`.
+
+### Validation
+
+- Les quatre traitements vocaux et leurs presets HRC se chargent pendant la
+  génération du projet.
+
+## Commit #0039 — Dedicated FX Sends
+
+### Added
+
+- Support des sends auxiliaires avec mode et niveau indépendants.
+- Retours FX Plate, Room, Hall et Delay alimentés par les pistes de batterie,
+  guitares et voix appropriées.
+- Chargement automatique des effets UAD Pure Plate, Sound City Studios,
+  Capitol Chambers et ValhallaDelay.
+- Presets dédiés `HRC FX Plate`, `HRC FX Room`, `HRC FX Hall` et
+  `HRC FX Delay`.
+- Virtual Spacers natifs REAPER entre les dossiers de pistes.
+
+### Changed
+
+- Les retours FX sont routés vers le Master Bus, tandis que le signal direct
+  conserve son routage vers les bus d'instruments ou de voix.
+- Les niveaux des sends définissent la quantité d'effet par piste.
+- Le folder FX, ses retours et le Master Bus sont masqués dans le TCP tout en
+  restant actifs dans le routage.
+
+### Validation
+
+- Les 12 sends auxiliaires et les quatre retours FX sont créés pendant la
+  génération du projet.
+- Les quatre effets et leurs presets HRC se chargent sur les retours dédiés.
+
+## Commit #0038 — UAD Bus & Master Processing
+
+### Added
+
+- Chaîne UAD `Studer A800 → API 2500` sur Drum Bus.
+- Compresseur UAD 1176 Rev A sur Bass Bus.
+- Studer A800 sur Guitar Bus.
+- Chaîne UAD `SSL G Bus → Ampex ATR-102` sur Master Bus.
+- Chargement des six presets UAD HRC dédiés.
+
+### Changed
+
+- Les ReaComp de Drum, Bass et Guitar Bus sont remplacés par les traitements
+  UAD adaptés à chaque source.
+- ReaEQ reste en première position sur les bus d'instruments pour les
+  corrections transparentes.
+- Ampex ATR-102 est placé en dernier sur Master Bus, sans limiteur.
+
+### Validation
+
+- Les six plugins UAD et leurs presets HRC se chargent pendant la génération.
+- Le routage, le gain staging et la lecture du projet sont validés dans REAPER.
+
+## Commit #0037 — Master Bus Routing
+
+### Added
+
+- Nouvelle piste `Master Bus` recevant les bus de mixage et les retours FX.
+- Support des groupes de pistes sans folder via `folder = false`.
+- Couleur dédiée au Master Bus.
+
+### Changed
+
+- Drum Bus, Bass Bus, Guitar Bus et Vocal Bus sont routés vers Master Bus.
+- Vocal Lead et Vocal Backing sont routés vers Vocal Bus.
+- Plate, Room, Hall et Delay sont routés vers Master Bus.
+- Master Bus reste relié directement au master matériel REAPER.
+
+### Validation
+
+- Le Master Bus est créé comme piste autonome, sans folder `MASTER`.
+- Tous les bus et retours FX attendus convergent vers Master Bus.
+
 Toutes les évolutions importantes du projet sont documentées ici.
 
 Le projet suit une évolution incrémentale : chaque commit représente un état stable et testable.
@@ -834,3 +955,98 @@ pourront exploiter cette information dans les commits suivants.
 ### Notes
 
 `transitionBeats` prépare l'ajout de fills de plusieurs temps.
+
+## Commit #0033 — EZdrummer Multi-Output Routing
+
+### Added
+
+- Déclaration de `EZdrummer 3 (32 out)` sur la piste `EZD MIDI`.
+- Configuration de la piste instrument en 32 canaux.
+- Mapping explicite des sorties du VST vers les canaux de la piste.
+- Sends stéréo dédiés vers Kick, Snare, HiHat, Toms, Overheads et Room.
+
+### Changed
+
+- Les plugins sont désormais chargés avant la génération MIDI.
+- Une erreur explicite est levée lorsqu'un plugin ne peut pas être chargé.
+- Le registre des plugins conserve le nom réellement chargé par REAPER.
+- Les déclarations de plugins et leurs identifiants sont validés.
+- La sortie principale de `EZD MIDI` est désactivée pour éviter le doublage
+  du signal envoyé aux pistes de batterie.
+
+### Validation
+
+- EZdrummer se charge sur `EZD MIDI`.
+- Les huit sends de sorties batterie sont créés et validés dans REAPER.
+- Le routage multi-sorties fonctionne avec le preset de mixeur EZdrummer
+  correspondant aux paires de sorties déclarées.
+
+## Commit #0034 — Guitar, Bass & Expanded Drum Routing
+
+### Added
+
+- Support optionnel du champ `preset` dans les déclarations de plugins.
+- Chargement automatique des presets FX REAPER après l'insertion d'un plugin.
+- Instances TONEX sur les pistes Rhythm L, Rhythm R, Lead, Solo et Bass Amp.
+- Routage des pistes guitare vers le Guitar Bus.
+- Pistes de batterie dédiées pour Snare Top, Snare Bottom, Toms,
+  Ride / Overheads, Ambience, Overheads Mono, Crunch / Parallel et percussion.
+
+### Changed
+
+- TONEX est appliqué sur `Bass Amp`, tandis que `Bass DI` reste non traitée.
+- Les rythmiques guitare sont panoramisées à 65 % à gauche et à droite.
+- Le routage EZdrummer reprend les paires du preset 32 sorties :
+  Kick 1/2, Snare 3/4 et 5/6, HiHat 7/8, Toms 9/10,
+  Ride / Overheads 11/12, Ambience 13/14, Overheads Mono 17/18,
+  Crunch / Parallel 19/20 et percussions 21/22 à 27/28.
+
+### Validation
+
+- Les instances TONEX et leurs presets REAPER se chargent sur les pistes
+  prévues.
+- Les pistes et sends batterie correspondent au preset de mixeur EZdrummer.
+
+## Commit #0035 — Parallel Bass Processing
+
+### Added
+
+- Support de plusieurs destinations dans le routage d'une piste.
+- Support des modes d'envoi `post_fader`, `pre_fx` et `post_fx`.
+- Nouvelle piste `Bass Distortion` avec une instance TONEX et un ReaEQ dédié.
+- Chargement des presets `HRC Bass Distortion` et `HRC Bass Distortion EQ`.
+
+### Changed
+
+- `Bass DI` envoie désormais son signal pré-FX vers `Bass Amp` et
+  `Bass Distortion`.
+- `Bass DI`, `Bass Amp` et `Bass Distortion` alimentent tous le Bass Bus.
+- Le signal DI, le son amplifié et la saturation peuvent être dosés
+  indépendamment.
+
+### Validation
+
+- La DI basse possède trois sends : Bass Amp en pré-FX, Bass Distortion en
+  pré-FX et Bass Bus en post-fader.
+- Les chaînes TONEX et ReaEQ de la piste Bass Distortion sont chargées.
+- Le blend de basse est validé dans REAPER.
+
+## Commit #0036 — Bus Processing Foundations
+
+### Added
+
+- Chaînes `ReaEQ → ReaComp` sur Bass Bus et Guitar Bus.
+- Presets de bus dédiés : Drum Bus, Bass Bus et Guitar Bus.
+
+### Changed
+
+- Drum Bus charge désormais `HRC Drum Bus EQ` et `HRC Drum Bus Comp`.
+- Bass Bus charge désormais `HRC Bass Bus EQ` et `HRC Bass Bus Comp`.
+- Guitar Bus charge désormais `HRC Guitar Bus EQ` et `HRC Guitar Bus Comp`.
+
+### Validation
+
+- Les six FX de bus sont créés et leurs presets REAPER respectifs sont
+  chargés pendant la génération du projet.
+- Le traitement correctif et la compression légère sont validés avant
+  l'ajout ultérieur des plugins UAD.
