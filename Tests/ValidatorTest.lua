@@ -86,6 +86,20 @@ Test.Case("Validator: rejects duplicate plugin ids", function()
     Test.Contains(Validator.Validate(data), "duplicate plugin id 'ezdrummer'")
 end)
 
+Test.Case("Validator: rejects broken plugin candidates", function()
+    local data = Data()
+    local kick = FindTrack(data, "kick")
+    kick.plugins = {
+        {id = "a", plugin = {}},
+        {id = "b", plugin = {"VST3: X", {preset = "HRC"}}},
+        {id = "c", plugin = "ReaEQ", optional = "yes"}
+    }
+    local errors = Validator.Validate(data)
+    Test.Contains(errors, "plugin 'a': plugin candidate list is empty")
+    Test.Contains(errors, "plugin 'b': candidate #2 has no plugin name")
+    Test.Contains(errors, "plugin 'c': optional must be true or false")
+end)
+
 Test.Case("Validator: rejects unknown pattern references", function()
     local data = Data()
     data.structure[2].patterns.drums.primary = "polka"

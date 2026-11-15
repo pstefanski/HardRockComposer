@@ -20,8 +20,15 @@ function MockReaper.Reset()
         tempoMarkers = {},
         bpm = 120,
         items = {},
+        -- Simulate the machine: exact names, or predicates for whole families.
         missingPlugins = {},
         missingPresets = {},
+        isPluginMissing = function()
+            return false
+        end,
+        isPresetMissing = function()
+            return false
+        end,
         nextMarkerIndex = 1
     }
 
@@ -143,7 +150,7 @@ end
 --------------------------------------------------
 
 function api.TrackFX_AddByName(track, name)
-    if state.missingPlugins[name] then
+    if state.missingPlugins[name] or state.isPluginMissing(name) then
         return -1
     end
     table.insert(track.fx, {
@@ -158,7 +165,7 @@ function api.TrackFX_GetFXName(track, index)
 end
 
 function api.TrackFX_SetPreset(track, index, preset)
-    if state.missingPresets[preset] then
+    if state.missingPresets[preset] or state.isPresetMissing(preset) then
         return false
     end
     track.fx[index + 1].preset = preset
