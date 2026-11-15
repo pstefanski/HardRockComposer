@@ -4,7 +4,7 @@
 
 HardRock Composer is an open-source **ReaScript (Lua)** project that automatically creates a fully organized REAPER session for composing and producing energetic rock music.
 
-Instead of starting from a static template, HardRock Composer generates a complete project structure including tracks, folders, routing, markers, regions, FX buses, and (in future releases) MIDI drum patterns and plugin configuration.
+Instead of starting from a static template, HardRock Composer generates a complete project structure including tracks, folders, routing, markers, regions, FX buses, plugin chains and MIDI drum patterns.
 
 ![](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTB3MjFsOWkyMTk2bDF6eGpvdTVoc25lMTg0YW9sZWhpcTZpbjJtdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ifCT1dv4jfnSo/giphy.gif)
 
@@ -14,53 +14,64 @@ Instead of starting from a static template, HardRock Composer generates a comple
 
 ### Current
 
-* Project creation
-* Tempo and time signature setup
-* Track folder generation
-* Colorized track layout
-* Song markers
-* Song regions
-* Production notes track
-* Mix checklist track
+* Project reset, tempo and time signature setup
+* Data validation before generation (every error reported at once)
+* Track folders, colorized track layout and track properties
+* Bus routing with configurable sends (mode and level)
+* Automatic plugin insertion with HRC presets
+* EZdrummer 3 multi-output routing (32 channels)
+* TONEX guitar and bass amps, parallel bass processing
+* UAD bus, vocal and master processing chains
+* FX returns: Plate, Room, Hall and Delay (Valhalla)
+* Song structure, markers and colored regions
+* MIDI drum engine: section grooves, variations, fills, transitions,
+  section dynamics and deterministic humanization
 
 ### Planned
 
-* Automatic plugin detection
-* EZdrummer 3 integration
-* EZdrummer multi-output routing
-* TONEX integration
-* UAD FX support
-* Valhalla FX buses
-* Drum groove generator
-* Song structure generator
-* Humanized MIDI engine
-* Multiple rock style presets
-* Graphical user interface (GUI)
+* Plugin detection with fallbacks to stock REAPER plugins
+* Multiple rock style presets (Classic, Blues, Heavy, Punk)
+* Bass MIDI and chord grid generation
+* Graphical user interface (ReaImGui)
+* ReaPack distribution
+
+See [ROADMAP.md](ROADMAP.md) for the detailed plan.
 
 ---
 
 # Supported Software
 
 * REAPER 7.78+
-* Windows 11
+* Windows 11 and macOS
 
-Future support for macOS and Linux is planned.
+Linux should work but is untested.
+
+The default track layout uses EZdrummer 3, IK Multimedia TONEX,
+Universal Audio UADx plugins and ValhallaDelay. Until plugin detection lands,
+each declared plugin and its `HRC …` preset must be installed.
 
 ---
 
-# Roadmap
+# Usage
 
-| Version | Status               |
-| ------- | -------------------- |
-| v0.1    | Project architecture |
-| v0.2    | Track generator      |
-| v0.3    | Markers & Regions    |
-| v0.4    | Routing engine       |
-| v0.5    | Plugin detection     |
-| v0.6    | FX chains            |
-| v0.7    | MIDI engine          |
-| v0.8    | GUI                  |
-| v1.0    | Stable release       |
+1. Copy the `HardRockComposer` folder into REAPER's `Scripts` folder.
+2. In REAPER: *Actions → Show action list → New action → Load ReaScript…*
+   and select `Main.lua`.
+3. Run the action. ⚠️ By default it **deletes every track** of the current
+   project (see `Config.ResetProject`).
+
+Song settings (tempo, time signature, humanization) live in
+`Data/SongSettings.lua`.
+
+---
+
+# Tests
+
+The engine can be tested outside REAPER with Lua 5.4+:
+
+```bash
+lua Tests/run.lua
+```
 
 ---
 
@@ -69,16 +80,13 @@ Future support for macOS and Linux is planned.
 ```text
 HardRockComposer/
 
-├── Main.lua
-├── Config.lua
+├── Main.lua          Entry point
+├── Config.lua        Engine options
 ├── Version.lua
 
-├── Core/
-├── Data/
-├── Styles/
-├── Assets/
-├── Docs/
-└── Tests/
+├── Core/             Engine logic (one responsibility per module)
+├── Data/             Declarative data: layout, song, patterns, colors
+└── Tests/            Test suite with a mocked REAPER API
 ```
 
 ---
@@ -105,14 +113,13 @@ Examples:
 
 The objective is to generate a production-ready REAPER project in a single click.
 
-A future version will automatically:
+Routing, FX buses, drum grooves and the song structure are already generated.
+Future versions will also:
 
-* Detect installed plugins
-* Configure routing
-* Generate drum grooves
-* Build the song structure
-* Create FX buses
-* Prepare the mix session
+* Detect installed plugins and fall back to stock REAPER plugins
+* Offer several rock styles
+* Generate bass lines and chord guides
+* Provide a graphical interface to configure the song
 
 ---
 

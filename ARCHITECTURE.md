@@ -29,11 +29,14 @@ HardRockComposer/
 │
 ├── Data/
 │
+├── Tests/
+│
 ├── Main.lua
 ├── Config.lua
 ├── Version.lua
 │
 ├── CHANGELOG.md
+├── ROADMAP.md
 └── ARCHITECTURE.md
 ```
 
@@ -304,6 +307,8 @@ Chaque module possède une responsabilité unique.
 | Module | Responsabilité |
 |---------|----------------|
 | Builder | Orchestration |
+| Validator | Validation des données avant génération |
+| Project | Réinitialisation, tempo et signature |
 | Tracks | Création des pistes |
 | Colors | Couleurs |
 | Routing | Routage audio |
@@ -319,30 +324,49 @@ Chaque module possède une responsabilité unique.
 Le Builder exécute toujours les modules dans un ordre déterministe.
 
 ```
-Reset Project
+Validation des données
 
 ↓
 
-Tracks
+Project (reset, marqueurs, tempo, signature)
 
 ↓
 
-Routing
+Tracks → Routing → Properties → Plugins
 
 ↓
 
-Properties
+Song → Markers → Regions
 
 ↓
 
-Plugins
-
-↓
-
-Modules futurs
+Patterns → Arrangement
 ```
 
 Chaque étape peut utiliser les résultats des étapes précédentes.
+
+La validation s'exécute avant toute modification du projet : si les données
+sont invalides, toutes les erreurs sont listées et le projet courant reste
+intact.
+
+L'étape `Project` s'exécute en premier, car toute conversion
+mesure → temps dépend de la carte de tempo.
+
+---
+
+# Tests
+
+Les tests s'exécutent hors de REAPER, avec un interpréteur Lua 5.4+ :
+
+```
+lua Tests/run.lua
+```
+
+`Tests/MockReaper.lua` remplace l'API `reaper` par un état en mémoire.
+C'est possible parce qu'aucun module n'appelle l'API directement :
+tout passe par `Core/Reaper.lua`.
+
+Toute nouvelle fonctionnalité doit être accompagnée de tests.
 
 ---
 
