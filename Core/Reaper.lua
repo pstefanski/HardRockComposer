@@ -32,6 +32,31 @@ end
 -- Project
 ----------------------------------------------------------
 
+function Reaper.GetMasterTrack()
+
+    return reaper.GetMasterTrack(0)
+
+end
+
+-- Deletes every FX of a track and returns the names of the removed FX.
+function Reaper.ClearTrackFX(track)
+
+    local removed = {}
+
+    for index = reaper.TrackFX_GetCount(track) - 1, 0, -1 do
+
+        local _, name = reaper.TrackFX_GetFXName(track, index, "")
+
+        table.insert(removed, 1, name)
+
+        reaper.TrackFX_Delete(track, index)
+
+    end
+
+    return removed
+
+end
+
 function Reaper.ResetProject()
 
     while reaper.CountTracks(0) > 0 do

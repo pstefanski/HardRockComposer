@@ -115,3 +115,25 @@ Test.Case("Build: invalid data leaves the current project untouched", function()
     Test.Equal(#state.tracks, 1)
 end)
 
+
+Test.Case("Build: clears the FX of REAPER's master track", function()
+    local state = MockReaper.Reset()
+    reaper.TrackFX_AddByName(state.master, "VST3: UADx SSL G Bus Compressor")
+    reaper.TrackFX_AddByName(state.master, "VST3: UADx Ampex ATR-102 Master Tape")
+    Builder.Build(TrackLayout)
+    Test.Equal(#state.master.fx, 0)
+    Test.True(table.concat(state.console):find("Removed from REAPER master: VST3: UADx SSL G Bus Compressor", 1, true) ~= nil)
+end)
+
+Test.Case("Build: the master processing lives on the Master Bus", function()
+    local state = MockReaper.Reset()
+    Builder.Build(TrackLayout)
+    for _, track in ipairs(state.tracks) do
+        if track.name == "Master Bus" then
+            Test.Equal(#track.fx, 2)
+            Test.Equal(track.fx[1].name, "VST3: UADx SSL G Bus Compressor")
+            return
+        end
+    end
+    error("No Master Bus track")
+end)
