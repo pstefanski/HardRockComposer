@@ -9,4 +9,16 @@
 return {{
     id = "HardRock",
     name = "Hard Rock"
+}, {
+    id = "ClassicRock",
+    name = "Classic Rock"
+}, {
+    id = "BluesRock",
+    name = "Blues Rock"
+}, {
+    id = "HeavyRock",
+    name = "Heavy Rock"
+}, {
+    id = "PunkRock",
+    name = "Punk Rock"
 }}
