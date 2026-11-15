@@ -10,6 +10,10 @@ local Patterns = require("Patterns")
 local DrumPatterns = require("Patterns.Drums")
 local Arrangement = require("Arrangement")
 local SongSettings = require("SongSettings")
+local ColorsPalette = require("ColorsPalette")
+local Project = require("Project")
+local Validator = require("Validator")
+local Config = require("Config")
 
 local Builder = {}
 
@@ -18,6 +22,14 @@ local Builder = {}
 --------------------------------------------------
 
 local stages = {{
+    name = "Project",
+
+    apply = function(_, context)
+
+        Project.Apply(SongSettings, Config)
+
+    end
+}, {
     name = "Tracks",
 
     apply = function(layout, context)
@@ -96,6 +108,16 @@ local stages = {{
 --------------------------------------------------
 
 function Builder.Build(layout)
+
+    Validator.Assert({
+
+        layout = layout,
+        structure = SongStructure,
+        patternSets = {DrumPatterns},
+        settings = SongSettings,
+        palette = ColorsPalette
+
+    })
 
     local context = {
 

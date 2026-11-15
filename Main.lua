@@ -1,10 +1,17 @@
 local root = ({reaper.get_action_context()})[2]
 root = root:match("^(.*[\\/])")
 
-package.path = root .. "?.lua;" .. root .. "Core\\?.lua;" .. root .. "Data\\?.lua;" .. package.path
+-- Lua uses the platform separator as the first character of package.config.
+local separator = package.config:sub(1, 1)
+
+package.path = table.concat({
+    root .. "?.lua",
+    root .. "Core" .. separator .. "?.lua",
+    root .. "Data" .. separator .. "?.lua",
+    package.path
+}, ";")
 
 local Version = require("Version")
-local Config = require("Config")
 
 local Logger = require("Logger")
 local Reaper = require("Reaper")
@@ -12,20 +19,20 @@ local Builder = require("Builder")
 
 local TrackLayout = require("TrackLayout")
 
-reaper.ClearConsole()
+Reaper.ClearConsole()
 
 Logger.Info(Version.NAME)
 Logger.Info(Version.VERSION)
 
-reaper.Undo_BeginBlock()
+Reaper.BeginUndo()
 
-Reaper.ResetProject()
+local ok, result = pcall(Builder.Build, TrackLayout)
 
-reaper.SetCurrentBPM(0, Config.Project.Tempo, true)
+Reaper.EndUndo("HardRock Composer")
 
-local context = Builder.Build(TrackLayout)
-local eq = context.registry.plugins.eq
-
-reaper.Undo_EndBlock("HardRock Composer", -1)
+if not ok then
+    Logger.Error(tostring(result))
+    return
+end
 
 Logger.Info("Done.")

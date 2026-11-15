@@ -1,6 +1,34 @@
 local Reaper = {}
 
 ----------------------------------------------------------
+-- Console & Undo
+----------------------------------------------------------
+
+function Reaper.ClearConsole()
+
+    reaper.ClearConsole()
+
+end
+
+function Reaper.ShowConsoleMsg(message)
+
+    reaper.ShowConsoleMsg(message)
+
+end
+
+function Reaper.BeginUndo()
+
+    reaper.Undo_BeginBlock()
+
+end
+
+function Reaper.EndUndo(description)
+
+    reaper.Undo_EndBlock(description, -1)
+
+end
+
+----------------------------------------------------------
 -- Project
 ----------------------------------------------------------
 
@@ -318,9 +346,27 @@ end
 -- Timing
 --------------------------------------------------
 
-function Reaper.SetTempo(bpm)
+function Reaper.ClearTempoMarkers()
 
-    reaper.SetCurrentBPM(0, bpm, true)
+    for i = reaper.CountTempoTimeSigMarkers(0) - 1, 0, -1 do
+
+        reaper.DeleteTempoTimeSigMarker(0, i)
+
+    end
+
+end
+
+function Reaper.SetTempoAndTimeSignature(bpm, numerator, denominator)
+
+    reaper.SetCurrentBPM(0, bpm, false)
+
+    local success = reaper.SetTempoTimeSigMarker(0, -1, 0, -1, -1, bpm, numerator, denominator, false)
+
+    if not success then
+        error("Unable to set tempo and time signature")
+    end
+
+    reaper.UpdateTimeline()
 
 end
 

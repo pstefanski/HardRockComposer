@@ -8,8 +8,6 @@ local Arrangement = {}
 
 function Arrangement.Apply(context, settings)
 
-    Reaper.SetTempo(settings.tempo)
-
     --------------------------------------------------
     -- Humanization
     --------------------------------------------------
@@ -28,7 +26,7 @@ function Arrangement.Apply(context, settings)
 
     if not drumTrackEntry then
 
-        error("Missing MIDI track: ez_midi")
+        error("Missing MIDI track: ezd_midi")
 
     end
 
