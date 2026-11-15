@@ -6,8 +6,6 @@ local Regions = {}
 
 function Regions.Apply(context, settings)
 
-    Reaper.ClearMarkers()
-
     for _, section in ipairs(context.song) do
 
         local startQN = Timing.BarToQN(section.startBar, settings)

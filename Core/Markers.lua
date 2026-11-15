@@ -5,8 +5,6 @@ local Markers = {}
 
 function Markers.Apply(context, settings)
 
-    Reaper.ClearMarkers()
-
     for _, section in ipairs(context.song) do
 
         local positionQN = Timing.BarToQN(section.startBar, settings)

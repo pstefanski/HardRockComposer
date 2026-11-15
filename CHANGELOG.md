@@ -1,5 +1,40 @@
 # Changelog
 
+## Commit #0042 — Sprint 5 Foundations
+
+### Added
+
+- Étape `Project` en tête de génération : réinitialisation du projet,
+  suppression des marqueurs, régions et marqueurs de tempo, puis application
+  du tempo **et de la signature** depuis `SongSettings`.
+- Module `Validator` : contrôle de toutes les données (réglages, pistes,
+  couleurs, routage, plugins, patterns, sections) avant de toucher au projet.
+  Toutes les erreurs sont listées en une fois.
+- Suite de tests hors REAPER (`lua Tests/run.lua`) avec un mock de l'API
+  `reaper` : timing, humanisation, dynamique, transitions, structure,
+  validation et génération complète.
+- `ROADMAP.md` : feuille de route jusqu'à la v1.0.
+
+### Fixed
+
+- Les marqueurs de section étaient effacés par l'étape Regions : seules les
+  régions subsistaient.
+- Le tempo de `Config.lua` (168) était remplacé par celui de `SongSettings`
+  (140) seulement à l'étape Arrangement, après le placement des marqueurs et
+  régions. Le tempo est désormais appliqué une seule fois, en premier.
+- Chemins des modules compatibles macOS (séparateur de la plateforme au lieu
+  de `\\`).
+- Une erreur de génération ferme désormais le bloc d'annulation et s'affiche
+  dans la console.
+
+### Changed
+
+- `SongSettings` est la seule source des réglages musicaux ; `Config` ne
+  contient plus que les options du moteur (`ResetProject`).
+- `Logger` passe par le wrapper `Core/Reaper.lua`.
+- `ARCHITECURE.md` renommé en `ARCHITECTURE.md`, README mis à jour.
+- Version `0.5.0-alpha`.
+
 ## Commit #0041 — Expressive Drum Arrangement
 
 ### Added
