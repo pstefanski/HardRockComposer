@@ -35,7 +35,9 @@ function MockReaper.Reset()
         isPresetMissing = function()
             return false
         end,
-        nextMarkerIndex = 1
+        nextMarkerIndex = 1,
+        messageBoxes = {},
+        messageBoxAnswer = 6
     }
 
     return state
@@ -189,6 +191,40 @@ function api.TrackFX_SetPreset(track, index, preset)
     end
     track.fx[index + 1].preset = preset
     return true
+end
+
+local function FXType(name)
+    local prefix = name:match("^(%w+):")
+    return prefix or "VST3"
+end
+
+-- Plugin state: VST/VST3 only, like REAPER's "vst_chunk".
+function api.TrackFX_GetNamedConfigParm(track, index, key)
+    local fx = track.fx[index + 1]
+    if key == "fx_type" then
+        return true, FXType(fx.name)
+    end
+    if key == "vst_chunk" then
+        if FXType(fx.name) == "AU" then
+            return false, ""
+        end
+        return true, fx.state or ("state:" .. fx.name .. ":" .. tostring(fx.preset))
+    end
+    return false, ""
+end
+
+function api.TrackFX_SetNamedConfigParm(track, index, key, value)
+    local fx = track.fx[index + 1]
+    if key == "vst_chunk" and FXType(fx.name) ~= "AU" then
+        fx.state = value
+        return true
+    end
+    return false
+end
+
+function api.ShowMessageBox(message, title, boxType)
+    table.insert(state.messageBoxes, message)
+    return state.messageBoxAnswer
 end
 
 function api.TrackFX_SetPinMappings(track, index, isOutput, pin, low)

@@ -407,12 +407,16 @@ Règles :
 - un candidat écrit comme un nom hérite du `preset` de la déclaration ;
 - un candidat écrit comme une table utilise son propre `preset` : c'est la
   forme à employer pour les plugins de remplacement REAPER ;
+- un preset est cherché d'abord dans REAPER, puis dans `Presets/` (état du
+  plugin exporté par `ExportPresets.lua`, appliqué seulement au même plugin
+  dans le même format) ;
 - un preset introuvable n'arrête pas la génération : le plugin garde ses
-  réglages par défaut et un warning est affiché ;
+  réglages par défaut ;
 - un plugin non optionnel introuvable arrête la génération.
 
-En fin de génération, la console affiche un rapport : plugins chargés,
-remplacés, absents, et presets manquants.
+Rien n'est affiché pendant le chargement. En fin de génération, la console
+affiche un rapport d'une ligne par catégorie : plugins chargés, remplacés,
+ignorés, presets chargés, lus dans `Presets/` ou introuvables.
 
 ---
 
@@ -468,6 +472,8 @@ Chaque module possède une responsabilité unique.
 | Bass | Ligne de basse MIDI |
 | ChordGuide | Piste de grille d'accords |
 | Automation | Enveloppes pilotées par l'énergie |
+| PresetStore | Lecture et écriture des états de plugins dans `Presets/` |
+| PresetExport | Export des presets HRC chargés |
 | Tracks | Création des pistes |
 | Colors | Couleurs |
 | Routing | Routage audio |

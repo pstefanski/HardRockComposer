@@ -1,5 +1,6 @@
 local Reaper = require("Reaper")
 local Logger = require("Logger")
+local PresetStore = require("PresetStore")
 
 --------------------------------------------------
 -- Inserts the plugins declared on each track.
@@ -15,7 +16,9 @@ local Logger = require("Logger")
 --     preset = "HRC Bass Bus 1176",
 --     optional = true
 --
--- A missing preset keeps the default settings. A plugin that cannot be
+-- Presets are looked up in REAPER first, then in the repository (Presets/,
+-- see PresetStore and ExportPresets.lua). A missing preset keeps the
+-- default settings. A plugin that cannot be
 -- loaded stops the build, unless it is declared `optional`. Nothing is
 -- logged while plugins load: everything is summarized at the end of the
 -- build (LogSummary).
@@ -93,6 +96,24 @@ local function CandidateNames(candidates)
     end
 
     return table.concat(names, ", ")
+
+end
+
+-- Applies the state saved in Presets/ when it was exported from the same
+-- plugin, in the same format.
+local function LoadStoredPreset(track, fx, candidate)
+
+    local stored = PresetStore.Load(candidate.preset)
+
+    if not stored or stored.plugin ~= candidate.plugin then
+        return false
+    end
+
+    if stored.fx_type ~= Reaper.GetFXType(track, fx.index) then
+        return false
+    end
+
+    return Reaper.SetFXState(track, fx.index, stored.state) == true
 
 end
 
@@ -195,6 +216,10 @@ local function ApplyPlugin(context, trackEntry, pluginData)
         if Reaper.LoadPreset(trackEntry.track, fx.index, candidate.preset) then
 
             reportEntry.presetStatus = "loaded"
+
+        elseif LoadStoredPreset(trackEntry.track, fx, candidate) then
+
+            reportEntry.presetStatus = "file"
 
         else
 
