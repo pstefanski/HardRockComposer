@@ -229,17 +229,23 @@ function Window:DrawSong(ImGui, ctx)
     ImGui.Spacing(ctx)
     ImGui.SeparatorText(ctx, "Generate into")
 
-    changed, value = ImGui.RadioButtonEx(ctx, "The current project (its tracks are replaced)", options.target,
-        "replace")
+    -- RadioButtonEx works on integers: the position of the target in
+    -- Session.TARGETS ("replace", "new_tab").
+    local targetIndex = IndexOf(Session.TARGETS, function(target)
+        return target == options.target
+    end)
 
-    if changed then
-        options.target = value
-    end
+    local labels = {"The current project (its tracks are replaced)", "A new project tab"}
 
-    changed, value = ImGui.RadioButtonEx(ctx, "A new project tab", options.target, "new_tab")
+    for index, label in ipairs(labels) do
 
-    if changed then
-        options.target = value
+        changed, value = ImGui.RadioButtonEx(ctx, label, targetIndex, index)
+
+        if changed then
+            targetIndex = value
+            options.target = Session.TARGETS[value]
+        end
+
     end
 
     ImGui.Spacing(ctx)

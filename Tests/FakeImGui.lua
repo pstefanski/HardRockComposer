@@ -128,6 +128,7 @@ function FakeImGui.New()
     end
 
     function api.Combo(_, label, current, items)
+        assert(math.type(current) == "integer", "Combo expects an integer index for " .. label)
         assert(type(items) == "string" and items:sub(-1) == "\0", "Combo items must end with \\0")
         return Widget(label, current)
     end
@@ -138,6 +139,7 @@ function FakeImGui.New()
     end
 
     function api.InputDouble(_, label, value)
+        assert(type(value) == "number", "InputDouble expects a number for " .. label)
         return Widget(label, value)
     end
 
@@ -146,15 +148,21 @@ function FakeImGui.New()
         return Widget(label, value)
     end
 
-    function api.SliderInt(_, label, value)
+    function api.SliderInt(_, label, value, min, max)
+        assert(math.type(value) == "integer" and math.type(min) == "integer" and math.type(max) == "integer",
+            "SliderInt expects integers for " .. label)
         return Widget(label, value)
     end
 
-    function api.SliderDouble(_, label, value)
+    function api.SliderDouble(_, label, value, min, max)
+        assert(type(value) == "number" and type(min) == "number" and type(max) == "number",
+            "SliderDouble expects numbers for " .. label)
         return Widget(label, value)
     end
 
     function api.RadioButtonEx(_, label, value, button)
+        assert(math.type(value) == "integer" and math.type(button) == "integer",
+            "RadioButtonEx expects integers for " .. label)
         if Scripted(label) then
             return true, button
         end
