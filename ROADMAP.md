@@ -55,12 +55,14 @@ Objectif : ajouter un style sans modifier `Core/`.
 - ✅ **Variantes de structure déterministes** : sections facultatives (`chance`) tirées à partir de `structure_seed`.
 - ⬜ **Validation à l'oreille dans REAPER**, style par style, avec EZdrummer.
 
-## Sprint 8 — Moteur musical étendu (v0.8) ⬜
+## Sprint 8 — Moteur musical étendu (v0.8) 🚧
 
-- ⬜ **Basse MIDI** calée sur la grosse caisse et une grille d'accords déclarée par section.
-- ⬜ **Guide d'accords** par section, pour les guitaristes.
-- ⬜ **Automation pilotée par l'énergie** des sections : volume des bus, envois FX.
-- ⬜ **Décompte** (count-in) optionnel avant l'intro.
+- ✅ **Grilles d'accords par section** (`chords`, `chord_bars`), lues par `Core/Harmony.lua`.
+- ✅ **Basse MIDI** sur une nouvelle piste Bass MIDI (EZbass, sinon ReaSynth), en trois modes : calée sur la grosse caisse, en croches, ou boogie. Lignes définies pour les cinq styles.
+- ✅ **Grille pour les guitaristes** : piste Chords, un item texte par changement d'accord.
+- ✅ **Automation pilotée par l'énergie** : Drum Bus, Bass Bus, Guitar Bus et retour Hall. Elle agit sur le niveau du retour, et non sur chaque envoi, pour rester simple à relire.
+- ✅ **Décompte** facultatif (`count_in`), désactivé par défaut.
+- ⬜ **Validation dans REAPER** : création des enveloppes de volume (action 40406), items texte, écoute des lignes de basse.
 
 ## Sprint 9 — Interface graphique (v0.9) ⬜
 
