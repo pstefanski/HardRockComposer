@@ -18,7 +18,7 @@ Légende : ✅ fait · 🚧 en cours · ⬜ à faire
 
 ---
 
-## Sprint 5 — Fondations et portabilité (v0.5) 🚧
+## Sprint 5 — Fondations et portabilité (v0.5) ✅
 
 Objectif : un socle fiable sur Windows **et** macOS.
 
@@ -28,9 +28,9 @@ Objectif : un socle fiable sur Windows **et** macOS.
 - ✅ **Validation des données** : `Core/Validator.lua` contrôle tout avant la moindre modification du projet et liste toutes les erreurs.
 - ✅ **Tests hors REAPER** : `lua Tests/run.lua`, avec un mock de l'API `reaper` et un test d'intégration du Builder complet.
 - ✅ **Ménage** : `ARCHITECTURE.md` renommé, README à jour, variable inutilisée supprimée.
-- ⬜ **Validation manuelle dans REAPER**, sur Windows et sur macOS.
+- ✅ **Validation manuelle dans REAPER**, sur Windows et sur macOS.
 
-## Sprint 6 — Plugins en mode dégradé (v0.6) 🚧
+## Sprint 6 — Plugins en mode dégradé (v0.6) ✅
 
 Objectif : générer un projet utilisable même si un plugin manque.
 
@@ -39,9 +39,9 @@ Objectif : générer un projet utilisable même si un plugin manque.
 - ✅ **Preset manquant** : simple warning, le plugin garde ses réglages par défaut.
 - ✅ **Rapport de fin de génération** : plugins chargés, remplacés, absents, presets manquants.
 - ✅ Le validateur accepte les listes de candidats.
-- 🚧 **Presets HRC versionnés** dans `Presets/` : `ExportPresets.lua` enregistre l'état de chaque plugin, et la génération l'applique quand REAPER ne connaît pas le preset. Reste à lancer l'export sur Windows, puis à vérifier que l'état VST3 se recharge bien sur macOS.
+- ✅ **Presets HRC versionnés** dans `Presets/` : `ExportPresets.lua` (lancé sur Windows) enregistre l'état de chaque plugin, et la génération l'applique quand REAPER ne connaît pas le preset. Validé sur macOS : 24 presets sur 24 rechargés.
 - ✅ **Console** : rapport final d'une ligne par catégorie, plus aucun warning pendant le chargement.
-- 🚧 **Validation manuelle dans REAPER** : macOS validé le 17/11 (25 plugins chargés, ValhallaDelay remplacé par ReaDelay). Windows reste à faire.
+- ✅ **Validation manuelle dans REAPER** : Windows (export des presets) et macOS (25 plugins chargés, ValhallaDelay remplacé par ReaDelay).
 - ↪️ **Scanner des plugins installés** (`EnumInstalledFX`) : reporté au sprint 9. C'est le chargement réel par REAPER qui fait foi. Un pré-scan devrait reproduire sa recherche par nom partiel et risquerait de déclarer absent un plugin pourtant chargeable. Le scanner sera utile pour afficher l'état des plugins dans l'interface.
 
 ## Sprint 7 — Styles (v0.7) 🚧
@@ -65,13 +65,15 @@ Objectif : ajouter un style sans modifier `Core/`.
 - ✅ **Décompte** facultatif (`count_in`), désactivé par défaut.
 - ⬜ **Validation dans REAPER** : création des enveloppes de volume (action 40406), items texte, écoute des lignes de basse.
 
-## Sprint 9 — Interface graphique (v0.9) ⬜
+## Sprint 9 — Interface graphique (v0.9) 🚧
 
-- ⬜ **ReaImGui** via ReaPack, avec repli sur la génération par défaut si l'extension est absente.
-- ⬜ **Écran de configuration** : style, tempo, signature, tonalité, seed, sections.
-- ⬜ **État des plugins** : `Core/PluginScanner.lua` (`EnumInstalledFX`), reporté du sprint 6.
-- ⬜ **Persistance** des choix avec `SetExtState`.
-- ⬜ **Génération non destructive** dans un nouvel onglet de projet.
+- ✅ **ReaImGui** (API 0.10, installé via ReaPack). Sans l'extension, `Main.lua` génère directement avec les derniers choix.
+- ✅ **Onglet Song** : style, tempo, tonalité (accords transposés), seed de structure, décompte, mode de basse, swing. La signature est affichée mais pas modifiable, car les patterns d'un style sont écrits pour sa signature.
+- ✅ **Onglet Sections** : nom, nombre de mesures, énergie, jeu (toujours / jamais / selon le seed), réordonnancement, duplication, suppression, durée estimée.
+- ✅ **Onglet Plugins** : `Core/PluginScanner.lua` (`EnumInstalledFX`) estime le candidat chargé pour chaque plugin et indique la présence du preset dans `Presets/`.
+- ✅ **Persistance** des choix par style avec `SetExtState`.
+- ✅ **Génération non destructive** dans un nouvel onglet de projet (action 40859).
+- ⬜ **Validation dans REAPER**, sur macOS et sur Windows.
 
 ## Sprint 10 — Stabilisation et distribution (v1.0) ⬜
 

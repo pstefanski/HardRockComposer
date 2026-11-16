@@ -31,6 +31,8 @@ HardRockComposer/
 │
 ├── Styles/
 │
+├── UI/
+│
 ├── Tests/
 │
 ├── Main.lua
@@ -441,6 +443,33 @@ dans l'enveloppe de volume, un point carré au début de chaque section.
 
 ---
 
+# Interface
+
+`Main.lua` ouvre la fenêtre si ReaImGui est installé, sinon il génère
+directement.
+
+```
+UI/App.lua      boucle ReaImGui (defer), API ReaImGui 0.10
+UI/Window.lua   dessin uniquement : reçoit ImGui en paramètre
+      │
+      ├── Session        choix de l'utilisateur, appliqués à une copie du style
+      ├── Generator      génération (aussi utilisée sans fenêtre)
+      └── PluginScanner  état estimé des plugins installés
+```
+
+La fenêtre ne contient aucune logique métier : tout passe par `Session`,
+`Generator` et `PluginScanner`, testés sans REAPER. Les tests font tourner la
+fenêtre avec un faux ReaImGui (`Tests/FakeImGui.lua`) qui n'expose que les
+fonctions utilisées.
+
+Les choix sont enregistrés par style dans l'ExtState de REAPER
+(`HardRockComposer/session.<Style>`), avec le dernier style utilisé.
+
+La tonalité du style est déclarée dans `SongSettings.key` ; choisir une
+autre tonalité transpose tous les accords (basse et piste Chords).
+
+---
+
 # Wrapper REAPER
 
 Aucun module ne doit appeler directement l'API REAPER.
@@ -480,6 +509,11 @@ Chaque module possède une responsabilité unique.
 | Automation | Enveloppes pilotées par l'énergie |
 | PresetStore | Lecture et écriture des états de plugins dans `Presets/` |
 | PresetExport | Export des presets HRC chargés |
+| Session | Choix de l'utilisateur, application au style, sauvegarde |
+| Serialize | Lecture et écriture de données Lua sans code |
+| Generator | Génération à partir d'un style et des choix |
+| PluginScanner | État estimé des plugins installés |
+| UI/Window | Fenêtre ReaImGui |
 | Tracks | Création des pistes |
 | Colors | Couleurs |
 | Routing | Routage audio |

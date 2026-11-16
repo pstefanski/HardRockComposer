@@ -1,5 +1,29 @@
 # Changelog
 
+## Commit #0049 — ReaImGui Window
+
+### Added
+
+- Fenêtre HardRock Composer (ReaImGui 0.10), avec trois onglets :
+  - **Song** : style, tempo, tonalité, seed de structure, décompte, basse,
+    swing, cible de génération ;
+  - **Sections** : nom, mesures, énergie, jeu, ordre, duplication,
+    suppression ;
+  - **Plugins** : état estimé des plugins installés et présence des presets
+    dans `Presets/`.
+- Choix mémorisés par style dans l'ExtState de REAPER.
+- Génération dans un nouvel onglet de projet.
+- Tonalité déclarée par style (`SongSettings.key`) et transposition des
+  accords.
+- Modules `Session`, `Serialize`, `Generator`, `PluginScanner`, `UI/`.
+
+### Changed
+
+- `Main.lua` ouvre la fenêtre si ReaImGui est installé, sinon génère
+  directement avec les derniers choix.
+- Le validateur refuse un morceau sans aucune section.
+- Version `0.9.0-alpha`.
+
 ## Commit #0048 — Bass Register & Hard Rock Eighths
 
 ### Fixed
