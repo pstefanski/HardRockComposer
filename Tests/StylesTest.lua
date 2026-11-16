@@ -21,6 +21,16 @@ local function Build(style)
     return state, context
 end
 
+local function ItemsOn(state, trackName)
+    local items = {}
+    for _, item in ipairs(state.items) do
+        if item.track.name == trackName then
+            table.insert(items, item)
+        end
+    end
+    return items
+end
+
 local function HasNoteAt(item, pitch, ppq)
     for _, note in ipairs(item.take.notes) do
         if note.pitch == pitch and math.abs(note.startPPQ - ppq) < 1e-6 then
@@ -52,16 +62,21 @@ for _, entry in ipairs(StyleLoader.Available()) do
 
         Test.Equal(state.tempoMarkers[1].numerator, style.settings.beats_per_bar)
         Test.Equal(state.tempoMarkers[1].denominator, style.settings.beat_unit)
-        Test.Equal(#state.items, #context.song)
+        for _, trackName in ipairs({"EZD MIDI", "Bass MIDI"}) do
+            local items = ItemsOn(state, trackName)
+            Test.Equal(#items, #context.song, trackName .. " items")
 
-        for index, item in ipairs(state.items) do
-            local section = context.song[index]
-            local lengthPPQ = (item.endQN - item.startQN) * PPQ
-            Test.Equal(item.endQN - item.startQN, section.bars * qnPerBar, section.id .. " length")
-            for _, note in ipairs(item.take.notes) do
-                Test.True(note.startPPQ >= -timing and note.startPPQ < lengthPPQ,
-                    section.id .. ": note at " .. note.startPPQ .. " outside 0.." .. lengthPPQ)
-                Test.True(note.endPPQ > note.startPPQ, section.id .. ": empty note")
+            for index, item in ipairs(items) do
+                local section = context.song[index]
+                local where = trackName .. " " .. section.id
+                local lengthPPQ = (item.endQN - item.startQN) * PPQ
+                Test.Equal(item.endQN - item.startQN, section.bars * qnPerBar, where .. " length")
+                Test.True(#item.take.notes > 0, where .. ": no notes")
+                for _, note in ipairs(item.take.notes) do
+                    Test.True(note.startPPQ >= -timing and note.startPPQ < lengthPPQ,
+                        where .. ": note at " .. note.startPPQ .. " outside 0.." .. lengthPPQ)
+                    Test.True(note.endPPQ > note.startPPQ, where .. ": empty note")
+                end
             end
         end
     end)
@@ -82,7 +97,7 @@ Test.Case("Styles: Blues Rock bars last six quarter notes (12/8)", function()
 
     -- Verse 1: shuffle backbeat on the 2nd and 4th dotted quarter of bar 1,
     -- and the triplet pickup fill at the end of its last bar.
-    local verse = state.items[2]
+    local verse = ItemsOn(state, "EZD MIDI")[2]
     Test.Equal(context.song[2].id, "verse_1")
     Test.True(HasNoteAt(verse, 38, 1.5 * PPQ), "snare on beat 2")
     Test.True(HasNoteAt(verse, 38, 4.5 * PPQ), "snare on beat 4")
@@ -95,7 +110,7 @@ Test.Case("Styles: Classic Rock swings the off-beat eighths", function()
         s.settings.humanization.enabled = false
     end)
     local state, context = Build(style)
-    local verse = state.items[2]
+    local verse = ItemsOn(state, "EZD MIDI")[2]
     Test.Equal(context.song[2].id, "verse_1")
     local amount = style.settings.swing.amount
     Test.True(HasNoteAt(verse, 42, 0), "on-beat hat stays on the grid")

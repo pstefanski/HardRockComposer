@@ -1,4 +1,22 @@
 local Layout = { ------------------------------------------------------------------
+-- GUIDE
+------------------------------------------------------------------
+{
+    id = "guide",
+    name = "GUIDE",
+    color = "guide",
+    folder = false,
+
+    tracks = {{
+        -- Chord symbols of each section, written as text items.
+        id = "chords",
+        name = "Chords",
+        type = "guide",
+        role = "chords",
+        color = "guide"
+    }}
+
+}, ------------------------------------------------------------------
 -- DRUMS
 ------------------------------------------------------------------
 {
@@ -222,6 +240,14 @@ local Layout = { ---------------------------------------------------------------
 
         }},
 
+        -- Quieter in calm sections, full level at energy 1.
+        automation = {
+            volume = {
+                low = -3,
+                high = 0
+            }
+        },
+
         routing = {
             output = "master_bus"
         }
@@ -236,6 +262,28 @@ local Layout = { ---------------------------------------------------------------
     color = "bass",
 
     tracks = {{
+        -- Generated bass line (sketch), replaced by the recorded DI later.
+        id = "bass_midi",
+        name = "Bass MIDI",
+        type = "midi",
+        role = "instrument",
+        color = "bass",
+
+        plugins = {{
+            id = "bass_instrument",
+            plugin = {"VST3: EZbass", "AU: EZbass", {
+                plugin = "VST: ReaSynth (Cockos)"
+            }}
+        }},
+
+        properties = {
+            volume = -12
+        },
+
+        routing = {
+            output = "bass_bus"
+        }
+    }, {
         id = "bass_di",
         name = "DI",
         type = "audio",
@@ -337,6 +385,13 @@ local Layout = { ---------------------------------------------------------------
             }},
             preset = "HRC Bass Bus 1176"
         }},
+
+        automation = {
+            volume = {
+                low = -2,
+                high = 0
+            }
+        },
 
         routing = {
             output = "master_bus"
@@ -466,6 +521,13 @@ local Layout = { ---------------------------------------------------------------
             optional = true,
             preset = "HRC Guitar Bus Studer"
         }},
+
+        automation = {
+            volume = {
+                low = -3,
+                high = 0
+            }
+        },
 
         routing = {
             output = "master_bus"
@@ -614,6 +676,13 @@ local Layout = { ---------------------------------------------------------------
         }},
         properties = {
             showInTCP = false
+        },
+        -- More hall in calm sections, less when the band hits hard.
+        automation = {
+            volume = {
+                low = 0,
+                high = -6
+            }
         },
         routing = {
             output = "master_bus"

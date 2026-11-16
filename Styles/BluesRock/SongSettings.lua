@@ -13,6 +13,20 @@ local SongSettings = {
     -- Picks the optional section (stop-time breakdown).
     structure_seed = 1,
 
+    -- Generated bass line: shuffle root, fifth, sixth, fifth.
+    bass = {
+
+        mode = "boogie",
+
+        velocity = 100,
+
+        legato = 0.9
+
+    },
+
+    -- Uncomment to start with a count-in on the drum track.
+    -- count_in = { bars = 1 },
+
     humanization = {
 
         enabled = true,

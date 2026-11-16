@@ -29,7 +29,8 @@ local suites = {
     "ValidatorTest",
     "BuildTest",
     "PluginsTest",
-    "StylesTest"
+    "StylesTest",
+    "MusicTest"
 }
 
 for _, suite in ipairs(suites) do

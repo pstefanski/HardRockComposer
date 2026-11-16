@@ -1,6 +1,7 @@
 local SongStructure = {{
     id = "intro",
     name = "Intro",
+    chords = {"G5", "G5", "C5", "D5"},
     bars = 4,
     color = "intro",
     energy = 0.8,
@@ -11,6 +12,7 @@ local SongStructure = {{
 }, {
     id = "verse_1",
     name = "Verse 1",
+    chords = {"G5", "C5", "D5", "C5"},
     bars = 8,
     color = "verse",
     energy = 0.75,
@@ -24,6 +26,7 @@ local SongStructure = {{
 }, {
     id = "chorus_1",
     name = "Chorus 1",
+    chords = {"C5", "G5", "D5", "G5"},
     bars = 8,
     color = "chorus",
     energy = 1.0,
@@ -37,6 +40,7 @@ local SongStructure = {{
 }, {
     id = "verse_2",
     name = "Verse 2",
+    chords = {"G5", "C5", "D5", "C5"},
     bars = 8,
     color = "verse",
     energy = 0.8,
@@ -50,6 +54,7 @@ local SongStructure = {{
 }, {
     id = "chorus_2",
     name = "Chorus 2",
+    chords = {"C5", "G5", "D5", "G5"},
     bars = 8,
     color = "chorus",
     energy = 1.0,
@@ -63,6 +68,7 @@ local SongStructure = {{
 }, {
     id = "bridge",
     name = "Bridge",
+    chords = {"E5", "C5", "D5", "D5"},
     bars = 8,
     color = "bridge",
     energy = 0.7,
@@ -74,6 +80,7 @@ local SongStructure = {{
 }, {
     id = "chorus_3",
     name = "Chorus 3",
+    chords = {"C5", "G5", "D5", "G5"},
     bars = 8,
     color = "chorus",
     energy = 1.0,
@@ -87,6 +94,7 @@ local SongStructure = {{
 }, {
     id = "chorus_4",
     name = "Chorus 4",
+    chords = {"C5", "G5", "D5", "G5"},
     bars = 8,
     color = "chorus",
     energy = 1.0,
@@ -101,6 +109,7 @@ local SongStructure = {{
 }, {
     id = "outro",
     name = "Outro",
+    chords = {"G5"},
     bars = 1,
     color = "outro",
     energy = 1.0,
