@@ -84,10 +84,17 @@ Test.Case("Harmony: rejects unknown symbols", function()
     Test.Equal(select(2, Harmony.Parse("C/X")), "unknown slash bass in 'C/X'")
 end)
 
-Test.Case("Harmony: bass notes stay between E1 and D#2", function()
-    Test.Equal(Harmony.BassPitch(4), 28)
-    Test.Equal(Harmony.BassPitch(3), 39)
-    Test.Equal(Harmony.BassPitch(0), 36)
+Test.Case("Harmony: bass notes stay between E2 and D#3 by default", function()
+    Test.Equal(Harmony.BassPitch(4), 40)
+    Test.Equal(Harmony.BassPitch(3), 51)
+    Test.Equal(Harmony.BassPitch(0), 48)
+end)
+
+Test.Case("Harmony: the bass register can start on any note", function()
+    Test.Equal(Harmony.BassPitch(4, 28), 28)
+    Test.Equal(Harmony.BassPitch(3, 28), 39)
+    Test.Equal(Harmony.BassPitch(0, 33), 36, "A1 register")
+    Test.Equal(Harmony.BassPitch(9, 33), 33)
 end)
 
 Test.Case("Harmony: the progression repeats through the section", function()
@@ -115,24 +122,28 @@ end)
 -- Bass
 --------------------------------------------------
 
+local function KickBass(style)
+    style.settings.bass.mode = "kick"
+end
+
 Test.Case("Bass: kick mode plays the root on every kick", function()
-    local state, context = Build(Load("HardRock"))
+    local state, context = Build(Load("HardRock", KickBass))
     Test.Equal(context.song[2].id, "verse_1")
     local verse = ItemsOn(state, "Bass MIDI")[2]
 
     -- Bar 1 (E5): verse_drive kicks on beats 1 and 3.
     local bar1 = NotesBetween(verse, 0, 4 * PPQ)
     Test.Equal(#bar1, 2)
-    Test.Equal(bar1[1].pitch, 28)
+    Test.Equal(bar1[1].pitch, 40, "E2")
     Test.Equal(bar1[2].startPPQ, 2 * PPQ)
 
-    -- Bar 3 (D5): D2.
+    -- Bar 3 (D5): D3.
     local bar3 = NotesBetween(verse, 8 * PPQ, 12 * PPQ)
-    Test.Equal(bar3[1].pitch, 38)
+    Test.Equal(bar3[1].pitch, 50)
 end)
 
 Test.Case("Bass: kick mode follows the extra kicks of variations", function()
-    local state = Build(Load("HardRock"))
+    local state = Build(Load("HardRock", KickBass))
     local verse = ItemsOn(state, "Bass MIDI")[2]
     -- Bar 4 uses verse_drive_alt, with an extra kick on position 10.
     local bar4 = NotesBetween(verse, 12 * PPQ, 16 * PPQ)
@@ -145,7 +156,7 @@ Test.Case("Bass: boogie mode walks root, fifth, sixth, fifth in 12/8", function(
     Test.Equal(context.song[2].id, "verse_1")
     local bar1 = NotesBetween(ItemsOn(state, "Bass MIDI")[2], 0, 6 * PPQ)
     Test.Equal(#bar1, 8)
-    local expected = {28, 28, 35, 35, 37, 37, 35, 35}
+    local expected = {40, 40, 47, 47, 49, 49, 47, 47}
     for index, note in ipairs(bar1) do
         Test.Equal(note.pitch, expected[index], "note " .. index)
     end
@@ -154,14 +165,33 @@ Test.Case("Bass: boogie mode walks root, fifth, sixth, fifth in 12/8", function(
     Test.Equal(bar1[3].startPPQ, 1.5 * PPQ)
 end)
 
+Test.Case("Bass: Hard Rock plays root eighth notes", function()
+    local state, context = Build(Load("HardRock"))
+    Test.Equal(context.song[2].id, "verse_1")
+    local bar1 = NotesBetween(ItemsOn(state, "Bass MIDI")[2], 0, 4 * PPQ)
+    Test.Equal(#bar1, 8)
+    for index, note in ipairs(bar1) do
+        Test.Equal(note.startPPQ, (index - 1) * PPQ / 2)
+        Test.Equal(note.pitch, 40, "E2")
+    end
+end)
+
 Test.Case("Bass: eighths mode drives every eighth note", function()
     local state = Build(Load("PunkRock"))
     local bar1 = NotesBetween(ItemsOn(state, "Bass MIDI")[2], 0, 4 * PPQ)
     Test.Equal(#bar1, 8)
     for index, note in ipairs(bar1) do
         Test.Equal(note.startPPQ, (index - 1) * PPQ / 2)
-        Test.Equal(note.pitch, 31, "G1")
+        Test.Equal(note.pitch, 43, "G2")
     end
+end)
+
+Test.Case("Bass: lowest_note moves the register", function()
+    local state = Build(Load("HardRock", function(style)
+        style.settings.bass.lowest_note = 28
+    end))
+    local bar1 = NotesBetween(ItemsOn(state, "Bass MIDI")[2], 0, 4 * PPQ)
+    Test.Equal(bar1[1].pitch, 28, "E1")
 end)
 
 Test.Case("Bass: no bass settings, no bass line", function()
@@ -263,6 +293,7 @@ Test.Case("Validator: checks chords, bass, count-in and automation", function()
     style.structure[2].chord_bars = 0
     style.structure[3].chords = {}
     style.settings.bass.mode = "slap"
+    style.settings.bass.lowest_note = 120
     style.settings.count_in = {bars = 0}
     style.layout[2].tracks[#style.layout[2].tracks].automation.volume.high = nil
     local errors = Validate(style)
@@ -270,6 +301,7 @@ Test.Case("Validator: checks chords, bass, count-in and automation", function()
     Test.Contains(errors, "chord_bars must be a positive number")
     Test.Contains(errors, "chords must be a non-empty list")
     Test.Contains(errors, "bass.mode must be kick, eighths or boogie")
+    Test.Contains(errors, "bass.lowest_note must be a MIDI note between 0 and 107")
     Test.Contains(errors, "count_in.bars must be a positive integer")
     Test.Contains(errors, "track 'drum_bus': automation.volume needs low and high levels")
 end)

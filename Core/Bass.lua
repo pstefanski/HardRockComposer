@@ -11,7 +11,8 @@ local MidiNotes = require("Patterns.MidiNotes")
 -- SongSettings.bass = {
 --     mode = "kick" | "eighths" | "boogie",
 --     velocity = 100,     -- base velocity
---     legato = 0.9        -- note length, as a share of the gap to the next note
+--     legato = 0.9,       -- note length, as a share of the gap to the next note
+--     lowest_note = 40    -- lowest MIDI note of the register (E2), optional
 -- }
 --
 --   kick     plays the chord root on every kick drum hit
@@ -137,7 +138,7 @@ local function BarNotes(section, bar, hits, options, qnPerBar, barLength)
         end
 
         table.insert(notes, {
-            pitch = Harmony.BassPitch(chord.bass) + hit.interval,
+            pitch = Harmony.BassPitch(chord.bass, options.lowest) + hit.interval,
             position = hit.position,
             length = (nextPosition - hit.position) * options.legato,
             velocity = velocity
@@ -166,7 +167,8 @@ function Bass.Apply(context, settings)
     local options = {
         mode = bass.mode or "kick",
         velocity = bass.velocity or 100,
-        legato = bass.legato or 0.9
+        legato = bass.legato or 0.9,
+        lowest = bass.lowest_note or Harmony.BASS_LOW
     }
 
     local qnPerBar = Timing.QNPerBar(settings)

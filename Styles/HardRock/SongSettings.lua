@@ -6,10 +6,10 @@ local SongSettings = {
 
     beat_unit = 4,
 
-    -- Generated bass line: root on every kick drum hit.
+    -- Generated bass line: driving root eighth notes.
     bass = {
 
-        mode = "kick",
+        mode = "eighths",
 
         velocity = 100,
 

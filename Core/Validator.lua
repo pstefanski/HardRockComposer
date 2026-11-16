@@ -164,6 +164,12 @@ local function ValidateSettings(report, settings)
                 report:Add(where, "bass.legato must be between 0 and 1")
             end
 
+            -- Leaves room for the boogie sixth (+9) above the register.
+            if bass.lowest_note ~= nil and
+                (not IsInteger(bass.lowest_note) or bass.lowest_note < 0 or bass.lowest_note > 107) then
+                report:Add(where, "bass.lowest_note must be a MIDI note between 0 and 107")
+            end
+
         end
 
     end

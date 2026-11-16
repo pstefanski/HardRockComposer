@@ -44,8 +44,10 @@ local QUALITIES = {
     ["aug"] = true
 }
 
--- Lowest bass note: E1 (MIDI 28), the open low string of a 4-string bass.
-Harmony.BASS_LOW = 28
+-- Default lowest bass note: E2 (MIDI 40). Bass instruments such as EZbass
+-- play the low E string from this note, one octave above the sounding
+-- pitch, like bass notation.
+Harmony.BASS_LOW = 40
 
 local function PitchClass(name)
 
@@ -109,16 +111,13 @@ function Harmony.Parse(symbol)
 
 end
 
--- MIDI pitch of a bass pitch class, in the E1..D#2 register.
-function Harmony.BassPitch(pitchClass)
+-- MIDI pitch of a bass pitch class, in the octave starting at `lowest`
+-- (default BASS_LOW: E2..D#3).
+function Harmony.BassPitch(pitchClass, lowest)
 
-    local pitch = 24 + pitchClass
+    lowest = lowest or Harmony.BASS_LOW
 
-    if pitch < Harmony.BASS_LOW then
-        pitch = pitch + 12
-    end
-
-    return pitch
+    return lowest + (pitchClass - lowest) % 12
 
 end
 
