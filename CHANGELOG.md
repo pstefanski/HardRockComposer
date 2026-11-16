@@ -1,5 +1,18 @@
 # Changelog
 
+## Commit #0048 — Bass Register
+
+### Fixed
+
+- La basse générée sonnait une octave trop grave dans EZbass : elle jouait
+  dans le registre E1–D#2 (MIDI 28 à 39). Le registre par défaut est
+  désormais E2–D#3 (MIDI 40 à 51).
+
+### Added
+
+- Réglage `bass.lowest_note` pour adapter le registre à l'instrument.
+- Version `0.8.2-alpha`.
+
 ## Commit #0047 — Portable Presets & Quiet Console
 
 ### Added

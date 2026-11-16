@@ -145,9 +145,15 @@ bass = {
                        -- eighths : fondamentale en croches
                        -- boogie : fondamentale, quinte, sixte, quinte en shuffle
     velocity = 100,
-    legato = 0.9       -- longueur des notes, part de l'écart avec la suivante
+    legato = 0.9,      -- longueur des notes, part de l'écart avec la suivante
+    lowest_note = 40   -- facultatif : note la plus grave du registre (E2 par défaut)
 }
 ```
+
+La basse joue dans l'octave qui commence à `lowest_note`. Le défaut E2 (40)
+correspond aux instruments qui, comme EZbass, jouent la corde de mi grave une
+octave au-dessus du son réel, comme en notation. Pour un instrument qui
+attend la hauteur réelle, utiliser `lowest_note = 28` (E1).
 
 En mode `kick`, la basse lit le plan de batterie de la section
 (`Arrangement.DrumPlan`) : elle suit les variations et les fills.
