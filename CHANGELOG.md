@@ -1,6 +1,6 @@
 # Changelog
 
-## Commit #0048 — Bass Register
+## Commit #0048 — Bass Register & Hard Rock Eighths
 
 ### Fixed
 
@@ -11,6 +11,11 @@
 ### Added
 
 - Réglage `bass.lowest_note` pour adapter le registre à l'instrument.
+
+### Changed
+
+- La basse du style Hard Rock joue la fondamentale en croches (mode
+  `eighths`) au lieu de suivre la grosse caisse.
 - Version `0.8.2-alpha`.
 
 ## Commit #0047 — Portable Presets & Quiet Console

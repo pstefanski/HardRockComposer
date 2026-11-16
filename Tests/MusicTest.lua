@@ -122,8 +122,12 @@ end)
 -- Bass
 --------------------------------------------------
 
+local function KickBass(style)
+    style.settings.bass.mode = "kick"
+end
+
 Test.Case("Bass: kick mode plays the root on every kick", function()
-    local state, context = Build(Load("HardRock"))
+    local state, context = Build(Load("HardRock", KickBass))
     Test.Equal(context.song[2].id, "verse_1")
     local verse = ItemsOn(state, "Bass MIDI")[2]
 
@@ -139,7 +143,7 @@ Test.Case("Bass: kick mode plays the root on every kick", function()
 end)
 
 Test.Case("Bass: kick mode follows the extra kicks of variations", function()
-    local state = Build(Load("HardRock"))
+    local state = Build(Load("HardRock", KickBass))
     local verse = ItemsOn(state, "Bass MIDI")[2]
     -- Bar 4 uses verse_drive_alt, with an extra kick on position 10.
     local bar4 = NotesBetween(verse, 12 * PPQ, 16 * PPQ)
@@ -159,6 +163,17 @@ Test.Case("Bass: boogie mode walks root, fifth, sixth, fifth in 12/8", function(
     -- Shuffle: second note of each beat on the third triplet.
     Test.Equal(bar1[2].startPPQ, PPQ)
     Test.Equal(bar1[3].startPPQ, 1.5 * PPQ)
+end)
+
+Test.Case("Bass: Hard Rock plays root eighth notes", function()
+    local state, context = Build(Load("HardRock"))
+    Test.Equal(context.song[2].id, "verse_1")
+    local bar1 = NotesBetween(ItemsOn(state, "Bass MIDI")[2], 0, 4 * PPQ)
+    Test.Equal(#bar1, 8)
+    for index, note in ipairs(bar1) do
+        Test.Equal(note.startPPQ, (index - 1) * PPQ / 2)
+        Test.Equal(note.pitch, 40, "E2")
+    end
 end)
 
 Test.Case("Bass: eighths mode drives every eighth note", function()
