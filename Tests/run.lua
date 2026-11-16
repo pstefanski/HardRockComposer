@@ -36,7 +36,8 @@ local suites = {
     "StylesTest",
     "MusicTest",
     "PresetsTest",
-    "SessionTest"
+    "SessionTest",
+    "WindowTest"
 }
 
 for _, suite in ipairs(suites) do
