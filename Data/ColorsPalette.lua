@@ -28,6 +28,10 @@ local Colors = {
 
     solo = {150, 90, 180},
 
+    bridge = {200, 160, 60},
+
+    breakdown = {110, 60, 60},
+
     outro = {90, 150, 100}
 
 }

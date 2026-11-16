@@ -1,40 +1,64 @@
+local Random = require("Random")
+
+--------------------------------------------------
+-- Lays the song sections out bar by bar.
+--
+-- A section with `chance` (0..1) is optional: it is kept or dropped by a
+-- generator seeded with `settings.structure_seed`, so the same seed always
+-- gives the same song. Change the seed to get another variant.
+--------------------------------------------------
+
 local Song = {}
 
-function Song.Apply(structure, context)
+function Song.Apply(structure, context, settings)
+
+    local generator = Random.New(Random.Mix((settings and settings.structure_seed) or 1))
 
     local currentBar = 1
 
     for _, section in ipairs(structure) do
 
-        local songEntry = {
+        local included = true
 
-            id = section.id,
+        if section.chance ~= nil then
 
-            name = section.name,
+            included = generator:Float() < section.chance
 
-            startBar = currentBar,
+        end
 
-            endBar = currentBar + section.bars - 1,
+        if included then
 
-            bars = section.bars,
+            local songEntry = {
 
-            patterns = section.patterns,
+                id = section.id,
 
-            fill = section.fill,
+                name = section.name,
 
-            color = section.color,
+                startBar = currentBar,
 
-            energy = section.energy,
+                endBar = currentBar + section.bars - 1,
 
-            transition = section.transition
+                bars = section.bars,
 
-        }
+                patterns = section.patterns,
 
-        table.insert(context.song, songEntry)
+                fill = section.fill,
 
-        context.registry.song[section.id] = songEntry
+                color = section.color,
 
-        currentBar = currentBar + section.bars
+                energy = section.energy,
+
+                transition = section.transition
+
+            }
+
+            table.insert(context.song, songEntry)
+
+            context.registry.song[section.id] = songEntry
+
+            currentBar = currentBar + section.bars
+
+        end
 
     end
 

@@ -1,6 +1,17 @@
 local Reaper = require("Reaper")
 local Humanizer = require("Humanizer")
 local Dynamics = require("Dynamics")
+local Timing = require("Timing")
+
+--------------------------------------------------
+-- Writes pattern notes into a MIDI take.
+--
+-- feel = {
+--     energy,          -- 0..1, scales velocities (Dynamics)
+--     humanization,    -- SongSettings.humanization
+--     swing            -- SongSettings.swing
+-- }
+--------------------------------------------------
 
 local MidiWriter = {}
 
@@ -9,39 +20,37 @@ function MidiWriter.CreateItem(track, startQN, endQN)
     return Reaper.CreateMidiItem(track, startQN, endQN)
 
 end
-function MidiWriter.WritePattern(take, pattern, patternStartQN, beatsPerBar, repeatCount, humanization)
 
-    repeatCount = repeatCount or 1
+-- Writes the notes of `pattern` whose grid position falls in
+-- [fromQN, toQN[, both relative to `barQN` (the start of the pattern).
+-- Notes are cut at `toQN`. Swing and humanization move the notes after
+-- the window test, so a note always belongs to the window of its grid
+-- position.
+function MidiWriter.WriteBetween(take, pattern, barQN, fromQN, toQN, feel)
 
-    local patternLengthQN = pattern.bars * beatsPerBar
+    feel = feel or {}
 
-    for repetition = 0, repeatCount - 1 do
-
-        local repetitionStartQN = patternStartQN + repetition * patternLengthQN
-
-        MidiWriter.WritePatternAtBar(take, pattern, repetitionStartQN, beatsPerBar, humanization)
-
-    end
-
-    Reaper.SortMidi(take)
-
-end
-
-local function WritePatternBetweenBeats(take, pattern, startQN, startBeat, endBeat, humanization, energy)
-
+    local humanization = feel.humanization
     local humanize = humanization and humanization.enabled
-    local windowStartQN = startQN + startBeat
-    local windowEndQN = startQN + endBeat
+
+    local windowStartQN = barQN + fromQN
+    local windowEndQN = barQN + toQN
 
     for _, note in ipairs(pattern.notes) do
 
-        local noteQN = startQN + note.position / 4
-        local noteEndQN = noteQN + note.length / 4
+        local gridQN = barQN + note.position / 4
 
-        if noteQN >= windowStartQN and noteQN < windowEndQN then
+        if gridQN >= windowStartQN and gridQN < windowEndQN then
 
-            local endQN = math.min(noteEndQN, windowEndQN)
-            local velocity = Dynamics.Velocity(note.velocity, energy)
+            local swingQN = Timing.SwingOffsetQN(note.position, feel.swing)
+            local noteQN = gridQN + swingQN
+            local endQN = math.min(gridQN + note.length / 4 + swingQN, windowEndQN)
+
+            if endQN <= noteQN then
+                endQN = math.min(noteQN + note.length / 4, windowEndQN + swingQN)
+            end
+
+            local velocity = Dynamics.Velocity(note.velocity, feel.energy)
             local timingOffset = 0
 
             if humanize then
@@ -53,28 +62,17 @@ local function WritePatternBetweenBeats(take, pattern, startQN, startBeat, endBe
             local endPPQ = Reaper.QNToPPQ(take, endQN) + timingOffset
 
             Reaper.InsertMidiNote(take, startPPQ, endPPQ, note.pitch, velocity)
+
         end
 
     end
 
 end
 
-function MidiWriter.WritePatternAtBar(take, pattern, startQN, beatsPerBar, humanization, energy)
+-- Writes a whole pattern starting at `barQN`.
+function MidiWriter.WritePattern(take, pattern, barQN, qnPerBar, feel)
 
-    WritePatternBetweenBeats(take, pattern, startQN, 0, pattern.bars * beatsPerBar, humanization, energy)
-
-end
-
-function MidiWriter.WritePatternUntilBeat(take, pattern, startQN, beatsPerBar, endBeat, humanization, energy)
-
-    WritePatternBetweenBeats(take, pattern, startQN, 0, endBeat, humanization, energy)
-
-end
-
-function MidiWriter.WritePatternBetweenBeats(take, pattern, startQN, beatsPerBar, startBeat, endBeat, humanization,
-                                              energy)
-
-    WritePatternBetweenBeats(take, pattern, startQN, startBeat, endBeat, humanization, energy)
+    MidiWriter.WriteBetween(take, pattern, barQN, 0, pattern.bars * qnPerBar, feel)
 
 end
 

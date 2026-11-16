@@ -1,10 +1,14 @@
 local Test = require("Test")
+local StyleLoader = require("StyleLoader")
+
+local Style = StyleLoader.Load("HardRock")
+local TrackLayout = Style.layout
+local SongStructure = Style.structure
+local SongSettings = Style.settings
+local DrumPatterns = Style.patternSets[1]
 local MockReaper = require("MockReaper")
 local Builder = require("Builder")
 
-local TrackLayout = require("TrackLayout")
-local SongStructure = require("SongStructure")
-local SongSettings = require("SongSettings")
 
 local function ExpectedTrackCount()
     local count = 0
@@ -50,13 +54,13 @@ end
 
 Test.Case("Build: creates every folder and track", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     Test.Equal(#state.tracks, ExpectedTrackCount())
 end)
 
 Test.Case("Build: applies tempo and time signature from SongSettings", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     Test.Equal(state.bpm, SongSettings.tempo)
     Test.Equal(#state.tempoMarkers, 1)
     Test.Equal(state.tempoMarkers[1].numerator, SongSettings.beats_per_bar)
@@ -65,14 +69,14 @@ end)
 
 Test.Case("Build: keeps one marker and one region per section", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     Test.Equal(CountMarkers(state, false), #SongStructure, "markers")
     Test.Equal(CountMarkers(state, true), #SongStructure, "regions")
 end)
 
 Test.Case("Build: markers are placed at the song tempo", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     local secondSectionQN = SongStructure[1].bars * SongSettings.beats_per_bar
     local expected = secondSectionQN * 60 / SongSettings.tempo
     Test.Near(state.markers[2].position, expected, 1e-9, "second marker")
@@ -80,7 +84,7 @@ end)
 
 Test.Case("Build: writes one drum item per section on the EZD MIDI track", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     Test.Equal(#state.items, SectionsWithDrums())
     for _, item in ipairs(state.items) do
         Test.Equal(item.track.name, "EZD MIDI")
@@ -90,17 +94,17 @@ end)
 
 Test.Case("Build: MIDI generation is deterministic", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     local first = NotesFingerprint(state)
     state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     Test.Equal(NotesFingerprint(state), first)
 end)
 
 Test.Case("Build: rebuilding replaces the previous project", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
+    Builder.Build(Style)
     Test.Equal(#state.tracks, ExpectedTrackCount())
     Test.Equal(CountMarkers(state, false), #SongStructure)
     Test.Equal(#state.tempoMarkers, 1)
@@ -111,7 +115,9 @@ Test.Case("Build: invalid data leaves the current project untouched", function()
     reaper.InsertTrackAtIndex(0)
     local layout = Test.DeepCopy(TrackLayout)
     layout[1].tracks[2].routing.output = "nowhere"
-    Test.Raises(function() Builder.Build(layout) end, "unknown destination 'nowhere'")
+    local style = Test.DeepCopy(Style)
+    style.layout = layout
+    Test.Raises(function() Builder.Build(style) end, "unknown destination 'nowhere'")
     Test.Equal(#state.tracks, 1)
 end)
 
@@ -120,14 +126,14 @@ Test.Case("Build: clears the FX of REAPER's master track", function()
     local state = MockReaper.Reset()
     reaper.TrackFX_AddByName(state.master, "VST3: UADx SSL G Bus Compressor")
     reaper.TrackFX_AddByName(state.master, "VST3: UADx Ampex ATR-102 Master Tape")
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     Test.Equal(#state.master.fx, 0)
     Test.True(table.concat(state.console):find("Removed from REAPER master: VST3: UADx SSL G Bus Compressor", 1, true) ~= nil)
 end)
 
 Test.Case("Build: the master processing lives on the Master Bus", function()
     local state = MockReaper.Reset()
-    Builder.Build(TrackLayout)
+    Builder.Build(Style)
     for _, track in ipairs(state.tracks) do
         if track.name == "Master Bus" then
             Test.Equal(#track.fx, 2)

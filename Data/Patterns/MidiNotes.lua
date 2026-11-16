@@ -6,6 +6,8 @@ local MidiNotes = {
 
         snare = 38,
 
+        side_stick = 37,
+
         closed_hat = 42,
 
         semi_open_hat = 15,

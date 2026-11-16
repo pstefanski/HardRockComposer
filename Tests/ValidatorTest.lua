@@ -1,11 +1,14 @@
 local Test = require("Test")
+local StyleLoader = require("StyleLoader")
+
+local Style = StyleLoader.Load("HardRock")
+local TrackLayout = Style.layout
+local SongStructure = Style.structure
+local SongSettings = Style.settings
+local DrumPatterns = Style.patternSets[1]
 local Validator = require("Validator")
 
-local TrackLayout = require("TrackLayout")
-local SongStructure = require("SongStructure")
-local SongSettings = require("SongSettings")
 local ColorsPalette = require("ColorsPalette")
-local DrumPatterns = require("Patterns.Drums")
 
 -- Returns a fresh, mutable copy of the project data.
 local function Data()
@@ -37,10 +40,14 @@ end)
 Test.Case("Validator: rejects unsupported settings", function()
     local data = Data()
     data.settings.tempo = 0
-    data.settings.beat_unit = 8
+    data.settings.beat_unit = 3
+    data.settings.swing = {amount = 2}
+    data.settings.structure_seed = 1.5
     local errors = Validator.Validate(data)
     Test.Contains(errors, "tempo must be")
-    Test.Contains(errors, "beat_unit must be 4")
+    Test.Contains(errors, "beat_unit must be 2, 4, 8 or 16")
+    Test.Contains(errors, "swing.amount must be between 0 and 1")
+    Test.Contains(errors, "structure_seed must be an integer")
 end)
 
 Test.Case("Validator: rejects duplicate track ids", function()
@@ -130,6 +137,28 @@ Test.Case("Validator: rejects invalid patterns", function()
     local errors = Validator.Validate(data)
     Test.Contains(errors, "invalid notes")
     Test.Contains(errors, "duplicate pattern id")
+end)
+
+Test.Case("Validator: rejects notes outside the pattern", function()
+    local data = Data()
+    data.patternSets[1][1].notes[1].position = 16
+    Test.Contains(Validator.Validate(data), "note at position 16 is outside the pattern (16 sixteenths)")
+    data = Data()
+    data.settings.beats_per_bar = 12
+    data.settings.beat_unit = 8
+    data.patternSets[1][1].notes[1].position = 20
+    Test.Equal(#Validator.Validate(data), 0, "12/8 bars are 24 sixteenths long")
+end)
+
+Test.Case("Validator: optional sections", function()
+    local data = Data()
+    data.structure[2].chance = 1.5
+    Test.Contains(Validator.Validate(data), "chance must be between 0 and 1")
+    data = Data()
+    for _, section in ipairs(data.structure) do
+        section.chance = 0.5
+    end
+    Test.Contains(Validator.Validate(data), "at least one section must be mandatory")
 end)
 
 Test.Case("Validator: Assert reports every error at once", function()

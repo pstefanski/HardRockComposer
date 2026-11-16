@@ -29,6 +29,8 @@ HardRockComposer/
 │
 ├── Data/
 │
+├── Styles/
+│
 ├── Tests/
 │
 ├── Main.lua
@@ -65,8 +67,65 @@ Aucune logique ne doit être présente dans ce dossier.
 
 Exemples :
 
-- TrackLayout
-- ColorPalette
+- TrackLayout (commun à tous les styles)
+- ColorsPalette
+- Patterns/MidiNotes (mapping des notes EZdrummer)
+
+---
+
+## Styles
+
+Un style décrit un morceau : un dossier par style dans `Styles/`, déclaré
+dans `Styles/Index.lua`.
+
+```
+Styles/HardRock/
+├── SongSettings.lua    tempo, signature, swing, humanisation, seeds
+├── SongStructure.lua   sections, énergie, couleurs, patterns
+├── Drums.lua           bibliothèque de patterns de batterie
+└── TrackLayout.lua     facultatif, remplace Data/TrackLayout.lua
+```
+
+Le style généré est choisi dans `Config.Style`. `Core/StyleLoader.lua` le
+charge et le transmet au Builder ; aucun module ne fait de `require` direct
+sur les données d'un style.
+
+Les patterns sont décrits avec le vocabulaire de `Core/PatternBuilder.lua`.
+Les positions sont en doubles croches depuis le début de la mesure, quelle
+que soit la signature : une mesure en 12/8 va de 0 à 23.
+
+### Réglages musicaux
+
+```lua
+{
+    tempo = 105,             -- en noires par minute (convention REAPER)
+    beats_per_bar = 12,
+    beat_unit = 8,           -- 2, 4, 8 ou 16
+
+    swing = {                -- facultatif
+        amount = 0.3,        -- 0 = droit, 1 = shuffle complet (triolet)
+        subdivision = 8      -- 8 : contretemps de croche, 16 : doubles croches impaires
+    },
+
+    structure_seed = 1,      -- tirage des sections facultatives
+
+    humanization = { enabled = true, seed = 123, velocity = 8, timing = 8 }
+}
+```
+
+### Sections facultatives
+
+Une section avec `chance` (entre 0 et 1) est facultative. Elle est gardée ou
+retirée par un tirage déterministe basé sur `structure_seed` : le même seed
+donne toujours le même morceau, un autre seed donne une autre variante.
+Au moins une section doit être obligatoire (sans `chance`).
+
+### Transitions
+
+Un fill (`fill = "…"`) remplace la fin de la dernière mesure d'une section.
+Sa durée `transitionBeats` est exprimée en noires (1,5 = une noire pointée en
+12/8). Une section `transition = "big"` utilise le pattern `fill_big` du
+style.
 
 ---
 
@@ -346,6 +405,11 @@ Chaque module possède une responsabilité unique.
 | Builder | Orchestration |
 | Validator | Validation des données avant génération |
 | Project | Réinitialisation, tempo et signature |
+| StyleLoader | Chargement d'un style |
+| Song | Disposition des sections, sections facultatives |
+| Timing | Conversions mesures / noires, swing |
+| PatternBuilder | Vocabulaire de description des patterns |
+| Random | Générateur pseudo-aléatoire déterministe |
 | Tracks | Création des pistes |
 | Colors | Couleurs |
 | Routing | Routage audio |
@@ -449,7 +513,7 @@ FindTrackByName("Kick")
 
 Le moteur ne contient jamais de valeurs métier codées en dur.
 
-Toutes les informations proviennent des fichiers présents dans `Data/`.
+Toutes les informations proviennent des fichiers présents dans `Data/` et `Styles/`.
 
 ---
 
