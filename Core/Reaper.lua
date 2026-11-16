@@ -24,6 +24,71 @@ function Reaper.ShowMessageBox(message, title, boxType)
 
 end
 
+function Reaper.Defer(fn)
+
+    reaper.defer(fn)
+
+end
+
+----------------------------------------------------------
+-- Persistent state (survives REAPER restarts)
+----------------------------------------------------------
+
+function Reaper.GetExtState(section, key)
+
+    if not reaper.HasExtState(section, key) then
+        return nil
+    end
+
+    return reaper.GetExtState(section, key)
+
+end
+
+function Reaper.SetExtState(section, key, value)
+
+    reaper.SetExtState(section, key, value, true)
+
+end
+
+----------------------------------------------------------
+-- Installed plugins
+----------------------------------------------------------
+
+-- Returns the names of every installed FX ("VST3: TONEX (IK Multimedia)").
+function Reaper.InstalledFX()
+
+    local names = {}
+    local index = 0
+
+    while true do
+
+        local found, name = reaper.EnumInstalledFX(index)
+
+        if not found then
+            break
+        end
+
+        table.insert(names, name)
+        index = index + 1
+
+    end
+
+    return names
+
+end
+
+----------------------------------------------------------
+-- Project tabs
+----------------------------------------------------------
+
+local ACTION_NEW_PROJECT_TAB = 40859
+
+function Reaper.NewProjectTab()
+
+    reaper.Main_OnCommand(ACTION_NEW_PROJECT_TAB, 0)
+
+end
+
 function Reaper.BeginUndo()
 
     reaper.Undo_BeginBlock()

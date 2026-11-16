@@ -134,6 +134,12 @@ local function ValidateSettings(report, settings)
 
     end
 
+    if settings.key ~= nil and not Harmony.KeyPitch(settings.key) then
+
+        report:Add(where, "key must be a note name such as E, F# or Bb")
+
+    end
+
     local countIn = settings.count_in
 
     if countIn ~= nil and (type(countIn) ~= "table" or not IsInteger(countIn.bars) or countIn.bars < 1) then
@@ -716,7 +722,11 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds,
 
     end
 
-    if #structure > 0 and not hasMandatorySection then
+    if #structure == 0 then
+
+        report:Add("SongStructure", "the song has no section")
+
+    elseif not hasMandatorySection then
 
         report:Add("SongStructure", "at least one section must be mandatory (without chance)")
 

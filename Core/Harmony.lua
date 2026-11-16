@@ -111,6 +111,51 @@ function Harmony.Parse(symbol)
 
 end
 
+--------------------------------------------------
+-- Keys and transposition
+--------------------------------------------------
+
+-- Spelling used for transposed chords and key names.
+Harmony.KEYS = {"C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"}
+
+-- Pitch class of a key or note name ("E", "F#", "Bb"), or nil.
+function Harmony.KeyPitch(name)
+
+    if type(name) ~= "string" or not name:match("^[A-G][#b]?$") then
+        return nil
+    end
+
+    return PitchClass(name)
+
+end
+
+-- Transposes a chord symbol by `semitones`, keeping its quality.
+function Harmony.Transpose(symbol, semitones)
+
+    if semitones % 12 == 0 then
+        return symbol
+    end
+
+    local function Shift(name)
+        return Harmony.KEYS[(PitchClass(name) + semitones) % 12 + 1]
+    end
+
+    local root, rest = symbol:match("^([A-G][#b]?)(.*)$")
+
+    if not root then
+        return symbol
+    end
+
+    local quality, slash = rest:match("^([^/]*)/([A-G][#b]?)$")
+
+    if quality then
+        return Shift(root) .. quality .. "/" .. Shift(slash)
+    end
+
+    return Shift(root) .. rest
+
+end
+
 -- MIDI pitch of a bass pitch class, in the octave starting at `lowest`
 -- (default BASS_LOW: E2..D#3).
 function Harmony.BassPitch(pitchClass, lowest)

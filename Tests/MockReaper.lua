@@ -37,7 +37,11 @@ function MockReaper.Reset()
         end,
         nextMarkerIndex = 1,
         messageBoxes = {},
-        messageBoxAnswer = 6
+        messageBoxAnswer = 6,
+        extState = {},
+        installedFX = {},
+        deferred = {},
+        newTabs = 0
     }
 
     return state
@@ -222,6 +226,41 @@ function api.TrackFX_SetNamedConfigParm(track, index, key, value)
     return false
 end
 
+function api.HasExtState(section, key)
+    return state.extState[section .. "/" .. key] ~= nil
+end
+
+function api.GetExtState(section, key)
+    return state.extState[section .. "/" .. key] or ""
+end
+
+function api.SetExtState(section, key, value)
+    state.extState[section .. "/" .. key] = value
+end
+
+function api.EnumInstalledFX(index)
+    local name = state.installedFX[index + 1]
+    if not name then
+        return false
+    end
+    return true, name, ""
+end
+
+function api.defer(fn)
+    table.insert(state.deferred, fn)
+end
+
+-- Runs the deferred callbacks, like REAPER does on each cycle.
+function MockReaper.RunDeferred(cycles)
+    for _ = 1, cycles or 1 do
+        local pending = state.deferred
+        state.deferred = {}
+        for _, fn in ipairs(pending) do
+            fn()
+        end
+    end
+end
+
 function api.ShowMessageBox(message, title, boxType)
     table.insert(state.messageBoxes, message)
     return state.messageBoxAnswer
@@ -327,6 +366,15 @@ function api.SetTrackSelected(track, selected)
 end
 
 function api.Main_OnCommand(command)
+    if command == 40859 then
+        -- New project tab: an empty project becomes the current one.
+        state.newTabs = state.newTabs + 1
+        state.tracks = {}
+        state.markers = {}
+        state.tempoMarkers = {}
+        state.items = {}
+        return
+    end
     if command == 40406 and state.selectedTrack then
         local track = state.selectedTrack
         track.envelopes = track.envelopes or {}
@@ -452,6 +500,11 @@ end
 -- Fail loudly when the engine uses an API function the mock lacks.
 setmetatable(api, {
     __index = function(_, name)
+        -- Functions of optional extensions are nil when the extension is
+        -- not installed, as in REAPER.
+        if type(name) == "string" and name:match("^ImGui_") then
+            return nil
+        end
         error("MockReaper: reaper." .. tostring(name) .. " is not implemented", 2)
     end
 })
