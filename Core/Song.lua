@@ -6,6 +6,9 @@ local Random = require("Random")
 -- A section with `chance` (0..1) is optional: it is kept or dropped by a
 -- generator seeded with `settings.structure_seed`, so the same seed always
 -- gives the same song. Change the seed to get another variant.
+--
+-- With `settings.count_in = { bars = n }`, the song starts after n bars of
+-- count-in (see Arrangement).
 --------------------------------------------------
 
 local Song = {}
@@ -15,6 +18,18 @@ function Song.Apply(structure, context, settings)
     local generator = Random.New(Random.Mix((settings and settings.structure_seed) or 1))
 
     local currentBar = 1
+
+    local countIn = settings and settings.count_in
+
+    if countIn then
+
+        context.countIn = {
+            bars = countIn.bars
+        }
+
+        currentBar = currentBar + countIn.bars
+
+    end
 
     for _, section in ipairs(structure) do
 
@@ -47,6 +62,10 @@ function Song.Apply(structure, context, settings)
                 color = section.color,
 
                 energy = section.energy,
+
+                chords = section.chords,
+
+                chord_bars = section.chord_bars,
 
                 transition = section.transition
 

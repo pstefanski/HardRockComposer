@@ -5,6 +5,12 @@ local Markers = {}
 
 function Markers.Apply(context, settings)
 
+    if context.countIn then
+
+        Reaper.AddMarker("Count-in", 0)
+
+    end
+
     for _, section in ipairs(context.song) do
 
         local positionQN = Timing.BarToQN(section.startBar, settings)

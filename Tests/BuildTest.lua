@@ -85,11 +85,14 @@ end)
 Test.Case("Build: writes one drum item per section on the EZD MIDI track", function()
     local state = MockReaper.Reset()
     Builder.Build(Style)
-    Test.Equal(#state.items, SectionsWithDrums())
+    local drumItems = 0
     for _, item in ipairs(state.items) do
-        Test.Equal(item.track.name, "EZD MIDI")
-        Test.True(#item.take.notes > 0, "item at QN " .. item.startQN .. " has no notes")
+        if item.track.name == "EZD MIDI" then
+            drumItems = drumItems + 1
+            Test.True(#item.take.notes > 0, "item at QN " .. item.startQN .. " has no notes")
+        end
     end
+    Test.Equal(drumItems, SectionsWithDrums())
 end)
 
 Test.Case("Build: MIDI generation is deterministic", function()
@@ -114,7 +117,13 @@ Test.Case("Build: invalid data leaves the current project untouched", function()
     local state = MockReaper.Reset()
     reaper.InsertTrackAtIndex(0)
     local layout = Test.DeepCopy(TrackLayout)
-    layout[1].tracks[2].routing.output = "nowhere"
+    for _, group in ipairs(layout) do
+        for _, track in ipairs(group.tracks) do
+            if track.id == "kick" then
+                track.routing.output = "nowhere"
+            end
+        end
+    end
     local style = Test.DeepCopy(Style)
     style.layout = layout
     Test.Raises(function() Builder.Build(style) end, "unknown destination 'nowhere'")

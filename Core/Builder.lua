@@ -7,6 +7,9 @@ local Regions = require("Regions")
 local Plugins = require("Plugins")
 local Patterns = require("Patterns")
 local Arrangement = require("Arrangement")
+local Bass = require("Bass")
+local ChordGuide = require("ChordGuide")
+local Automation = require("Automation")
 local ColorsPalette = require("ColorsPalette")
 local Project = require("Project")
 local Validator = require("Validator")
@@ -96,6 +99,30 @@ local stages = {{
     apply = function(style, context)
 
         Arrangement.Apply(context, style.settings)
+
+    end
+}, {
+    name = "Bass",
+
+    apply = function(style, context)
+
+        Bass.Apply(context, style.settings)
+
+    end
+}, {
+    name = "ChordGuide",
+
+    apply = function(style, context)
+
+        ChordGuide.Apply(context, style.settings)
+
+    end
+}, {
+    name = "Automation",
+
+    apply = function(style, context)
+
+        Automation.Apply(context, style.settings)
 
     end
 }}

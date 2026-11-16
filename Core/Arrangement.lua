@@ -3,8 +3,167 @@ local Timing = require("Timing")
 local MidiWriter = require("MidiWriter")
 local Humanizer = require("Humanizer")
 local Transitions = require("Transitions")
+local MidiNotes = require("Patterns.MidiNotes")
+
+--------------------------------------------------
+-- Writes the drum MIDI of every section.
+--
+-- The drum plan of a section says which pattern plays on which part of
+-- each bar (opening, variations every four bars, fill at the end). Other
+-- instruments read the same plan, e.g. the bass follows the kick drum.
+--------------------------------------------------
 
 local Arrangement = {}
+
+local DRUM_TRACK = "ezd_midi"
+
+local function Lookup(registry, role, id)
+
+    local pattern = registry.patterns[id]
+
+    if not pattern then
+
+        error("Unknown " .. role .. " pattern: " .. tostring(id))
+
+    end
+
+    return pattern
+
+end
+
+-- Returns the list of segments played in a section, in writing order:
+--
+--     { bar = 1..bars, barQN = offset from the section start,
+--       pattern, fromQN, toQN }   -- window inside the bar, in QN
+--
+-- Returns nil when the section has no drum pattern.
+function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
+
+    if not (section.patterns and section.patterns.drums) then
+
+        return nil
+
+    end
+
+    local definition = section.patterns.drums
+
+    local primaryId, variationId, openingId
+
+    if type(definition) == "string" then
+
+        primaryId = definition
+
+    else
+
+        primaryId = definition.primary
+        variationId = definition.variation
+        openingId = definition.opening
+
+    end
+
+    local primary = Lookup(registry, "drum", primaryId)
+    local variation = variationId and Lookup(registry, "drum variation", variationId)
+    local opening = openingId and Lookup(registry, "drum opening", openingId)
+
+    local fillId = Transitions.GetFill(section, nextSection)
+    local fill = fillId and Lookup(registry, "fill", fillId)
+
+    local segments = {}
+
+    local function Add(bar, pattern, fromQN, toQN)
+
+        table.insert(segments, {
+            bar = bar,
+            barQN = (bar - 1) * qnPerBar,
+            pattern = pattern,
+            fromQN = fromQN,
+            toQN = toQN
+        })
+
+    end
+
+    local completeBars = fill and section.bars - 1 or section.bars
+
+    for bar = 1, completeBars do
+
+        local pattern = primary
+
+        if opening and bar == 1 then
+
+            pattern = opening
+
+        elseif variation and bar % 4 == 0 then
+
+            pattern = variation
+
+        end
+
+        Add(bar, pattern, 0, pattern.bars * qnPerBar)
+
+    end
+
+    if fill then
+
+        local fillBeats = fill.transitionBeats or 1
+        local fillStartQN = qnPerBar - fillBeats
+
+        if fillBeats <= 0 or fillBeats > qnPerBar then
+
+            error("Invalid transition length for fill: " .. tostring(fillId))
+
+        end
+
+        local pattern = primary
+
+        if variation and section.bars % 4 == 0 then
+
+            pattern = variation
+
+        end
+
+        Add(section.bars, pattern, 0, fillStartQN)
+        Add(section.bars, fill, fillStartQN, qnPerBar)
+
+    end
+
+    return segments
+
+end
+
+-- Count-in: one side stick per felt beat, accent on the first beat of each
+-- bar. Written without humanization.
+local function WriteCountIn(track, countIn, settings, qnPerBar)
+
+    local count, beatLength = Timing.Beats(settings)
+
+    local notes = {}
+
+    for beat = 1, count do
+
+        table.insert(notes, {
+            pitch = MidiNotes.drums.side_stick,
+            position = (beat - 1) * beatLength,
+            length = 1,
+            velocity = beat == 1 and 110 or 90
+        })
+
+    end
+
+    local item = MidiWriter.CreateItem(track, 0, countIn.bars * qnPerBar)
+    local take = Reaper.GetActiveTake(item)
+
+    for bar = 1, countIn.bars do
+
+        MidiWriter.WritePattern(take, {
+            bars = 1,
+            notes = notes
+        }, (bar - 1) * qnPerBar, qnPerBar, {})
+
+    end
+
+    Reaper.SortMidi(take)
+
+end
 
 function Arrangement.Apply(context, settings)
 
@@ -22,11 +181,11 @@ function Arrangement.Apply(context, settings)
     -- MIDI Track
     --------------------------------------------------
 
-    local drumTrackEntry = context.registry.tracks.ezd_midi
+    local drumTrackEntry = context.registry.tracks[DRUM_TRACK]
 
     if not drumTrackEntry then
 
-        error("Missing MIDI track: ezd_midi")
+        error("Missing MIDI track: " .. DRUM_TRACK)
 
     end
 
@@ -40,176 +199,38 @@ function Arrangement.Apply(context, settings)
 
     for index, section in ipairs(context.song) do
 
-        local nextSection = context.song[index + 1]
+        local plan = Arrangement.DrumPlan(section, context.song[index + 1], context.registry, qnPerBar)
 
-        local feel = {
-            energy = section.energy or 1,
-            humanization = settings.humanization,
-            swing = settings.swing
-        }
+        if plan then
 
-        --------------------------------------------------
-        -- Drum pattern
-        --------------------------------------------------
-
-        if section.patterns and section.patterns.drums then
-
-            local drumDefinition = section.patterns.drums
-
-            local primaryId
-            local variationId
-            local openingId
-
-            if type(drumDefinition) == "string" then
-
-                primaryId = drumDefinition
-
-            else
-
-                primaryId = drumDefinition.primary
-
-                variationId = drumDefinition.variation
-
-                openingId = drumDefinition.opening
-
-            end
-
-            local pattern = context.registry.patterns[primaryId]
-
-            if not pattern then
-
-                error("Unknown drum pattern: " .. tostring(primaryId))
-
-            end
-
-            local variationPattern = nil
-
-            local openingPattern = nil
-
-            if variationId then
-
-                variationPattern = context.registry.patterns[variationId]
-
-                if not variationPattern then
-
-                    error("Unknown drum variation: " .. tostring(variationId))
-
-                end
-
-            end
-
-            if openingId then
-
-                openingPattern = context.registry.patterns[openingId]
-
-                if not openingPattern then
-
-                    error("Unknown drum opening pattern: " .. tostring(openingId))
-
-                end
-
-            end
-
-            --------------------------------------------------
-            -- Fill
-            --------------------------------------------------
-
-            local fillId = Transitions.GetFill(section, nextSection)
-
-            local fillPattern = nil
-
-            if fillId then
-
-                fillPattern = context.registry.patterns[fillId]
-
-                if not fillPattern then
-
-                    error("Unknown fill pattern: " .. tostring(fillId))
-
-                end
-
-            end
-
-            --------------------------------------------------
-            -- Section timing
-            --------------------------------------------------
+            local feel = {
+                energy = section.energy or 1,
+                humanization = settings.humanization,
+                swing = settings.swing
+            }
 
             local startQN = Timing.BarToQN(section.startBar, settings)
-
             local endQN = Timing.BarToQN(section.endBar + 1, settings)
 
-            --------------------------------------------------
-            -- MIDI item
-            --------------------------------------------------
-
             local item = MidiWriter.CreateItem(drumTrack, startQN, endQN)
-
             local take = Reaper.GetActiveTake(item)
 
-            --------------------------------------------------
-            -- Main pattern
-            --------------------------------------------------
+            for _, segment in ipairs(plan) do
 
-            local normalBars = section.bars
-
-            --------------------------------------------------
-            -- Pattern generation
-            --------------------------------------------------
-
-            local completeBars = fillPattern and normalBars - 1 or normalBars
-
-            for bar = 1, completeBars do
-
-                local selectedPattern = pattern
-
-                if openingPattern and bar == 1 then
-
-                    selectedPattern = openingPattern
-
-                elseif variationPattern and bar % 4 == 0 then
-
-                    selectedPattern = variationPattern
-
-                end
-
-                local barQN = startQN + ((bar - 1) * qnPerBar)
-
-                MidiWriter.WritePattern(take, selectedPattern, barQN, qnPerBar, feel)
-
-            end
-
-            --------------------------------------------------
-            -- Fill
-            --------------------------------------------------
-
-            if fillPattern then
-
-                local finalBarQN = startQN + ((normalBars - 1) * qnPerBar)
-                local fillBeats = fillPattern.transitionBeats or 1
-                local fillStartQN = qnPerBar - fillBeats
-                local selectedPattern = pattern
-
-                if fillBeats <= 0 or fillBeats > qnPerBar then
-
-                    error("Invalid transition length for fill: " .. tostring(fillId))
-
-                end
-
-                if variationPattern and normalBars % 4 == 0 then
-
-                    selectedPattern = variationPattern
-
-                end
-
-                MidiWriter.WriteBetween(take, selectedPattern, finalBarQN, 0, fillStartQN, feel)
-
-                MidiWriter.WriteBetween(take, fillPattern, finalBarQN, fillStartQN, qnPerBar, feel)
+                MidiWriter.WriteBetween(take, segment.pattern, startQN + segment.barQN, segment.fromQN, segment.toQN,
+                    feel)
 
             end
 
             Reaper.SortMidi(take)
 
         end
+
+    end
+
+    if context.countIn then
+
+        WriteCountIn(drumTrack, context.countIn, settings, qnPerBar)
 
     end
 
