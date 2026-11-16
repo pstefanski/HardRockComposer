@@ -29,10 +29,13 @@ Instead of starting from a static template, HardRock Composer generates a comple
   section dynamics and deterministic humanization
 * Five styles (Hard, Classic, Blues, Heavy, Punk Rock) with swing,
   12/8 support and seeded song structure variants
+* Chord progressions per section: chord guide track and generated bass
+  line (kick-locked, driving eighths or boogie)
+* Bus and reverb levels automated from the section energy
+* Optional count-in
 
 ### Planned
 
-* Bass MIDI and chord grid generation
 * Graphical user interface (ReaImGui)
 * ReaPack distribution
 

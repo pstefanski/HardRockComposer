@@ -120,6 +120,44 @@ retirée par un tirage déterministe basé sur `structure_seed` : le même seed
 donne toujours le même morceau, un autre seed donne une autre variante.
 Au moins une section doit être obligatoire (sans `chance`).
 
+### Accords et basse
+
+Une section peut déclarer sa grille :
+
+```lua
+chords = { "E5", "D5", "A5", "E5" },   -- répétée jusqu'à la fin de la section
+chord_bars = 1                          -- mesures par accord (0,5 = deux par mesure)
+```
+
+Symboles acceptés : fondamentale (A à G, avec # ou b), qualité facultative
+(`5`, `m`, `7`, `m7`, `maj7`, `sus4`, `dim`…) et basse facultative
+(`D/F#`).
+
+La grille sert à deux choses :
+
+- la piste **Chords** affiche un item texte par changement d'accord ;
+- la piste **Bass MIDI** reçoit une ligne de basse si le style déclare
+  `bass` dans `SongSettings` :
+
+```lua
+bass = {
+    mode = "kick",     -- kick : fondamentale sur chaque coup de grosse caisse
+                       -- eighths : fondamentale en croches
+                       -- boogie : fondamentale, quinte, sixte, quinte en shuffle
+    velocity = 100,
+    legato = 0.9       -- longueur des notes, part de l'écart avec la suivante
+}
+```
+
+En mode `kick`, la basse lit le plan de batterie de la section
+(`Arrangement.DrumPlan`) : elle suit les variations et les fills.
+
+### Décompte
+
+`count_in = { bars = 1 }` décale le morceau d'une mesure et écrit un
+décompte au side stick (un coup par temps ressenti : noire pointée en 12/8),
+avec un marqueur « Count-in ».
+
 ### Transitions
 
 Un fill (`fill = "…"`) remplace la fin de la dernière mesure d'une section.
@@ -378,6 +416,21 @@ remplacés, absents, et presets manquants.
 
 ---
 
+# Automation
+
+Une piste peut suivre l'énergie des sections :
+
+```lua
+automation = {
+    volume = { low = -3, high = 0 }    -- dB à l'énergie 0 et à l'énergie 1
+}
+```
+
+Le décalage s'ajoute au volume de la piste (`properties.volume`) et est écrit
+dans l'enveloppe de volume, un point carré au début de chaque section.
+
+---
+
 # Wrapper REAPER
 
 Aucun module ne doit appeler directement l'API REAPER.
@@ -410,6 +463,11 @@ Chaque module possède une responsabilité unique.
 | Timing | Conversions mesures / noires, swing |
 | PatternBuilder | Vocabulaire de description des patterns |
 | Random | Générateur pseudo-aléatoire déterministe |
+| Arrangement | Batterie MIDI, plan de batterie, décompte |
+| Harmony | Symboles d'accords, grille d'une section |
+| Bass | Ligne de basse MIDI |
+| ChordGuide | Piste de grille d'accords |
+| Automation | Enveloppes pilotées par l'énergie |
 | Tracks | Création des pistes |
 | Colors | Couleurs |
 | Routing | Routage audio |
@@ -441,7 +499,11 @@ Song → Markers → Regions
 
 ↓
 
-Patterns → Arrangement
+Patterns → Arrangement (batterie, décompte)
+
+↓
+
+Bass → ChordGuide → Automation
 ```
 
 Chaque étape peut utiliser les résultats des étapes précédentes.

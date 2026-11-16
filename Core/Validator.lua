@@ -1,6 +1,7 @@
 local Midi = require("Midi")
 local Transitions = require("Transitions")
 local Timing = require("Timing")
+local Harmony = require("Harmony")
 
 --------------------------------------------------
 -- Validates every declarative data file before the build starts.
@@ -22,6 +23,14 @@ local TRANSITIONS = {
 }
 
 local DRUM_MIDI_TRACK = "ezd_midi"
+local BASS_MIDI_TRACK = "bass_midi"
+local CHORD_TRACK = "chords"
+
+local BASS_MODES = {
+    kick = true,
+    eighths = true,
+    boogie = true
+}
 
 local BEAT_UNITS = {
     [2] = true,
@@ -122,6 +131,40 @@ local function ValidateSettings(report, settings)
     if settings.structure_seed ~= nil and not IsInteger(settings.structure_seed) then
 
         report:Add(where, "structure_seed must be an integer")
+
+    end
+
+    local countIn = settings.count_in
+
+    if countIn ~= nil and (type(countIn) ~= "table" or not IsInteger(countIn.bars) or countIn.bars < 1) then
+
+        report:Add(where, "count_in.bars must be a positive integer")
+
+    end
+
+    local bass = settings.bass
+
+    if bass ~= nil then
+
+        if type(bass) ~= "table" then
+
+            report:Add(where, "bass must be a table")
+
+        else
+
+            if bass.mode ~= nil and not BASS_MODES[bass.mode] then
+                report:Add(where, "bass.mode must be kick, eighths or boogie")
+            end
+
+            if bass.velocity ~= nil and (not IsInteger(bass.velocity) or bass.velocity < 1 or bass.velocity > 127) then
+                report:Add(where, "bass.velocity must be between 1 and 127")
+            end
+
+            if bass.legato ~= nil and (type(bass.legato) ~= "number" or bass.legato <= 0 or bass.legato > 1) then
+                report:Add(where, "bass.legato must be between 0 and 1")
+            end
+
+        end
 
     end
 
@@ -418,6 +461,15 @@ local function ValidateLayout(report, layout, palette)
 
                 ValidateRouting(report, track, trackIds)
 
+                local volume = track.automation and track.automation.volume
+
+                if volume ~= nil and (type(volume) ~= "table" or type(volume.low) ~= "number" or
+                    type(volume.high) ~= "number") then
+
+                    report:Add(where, "automation.volume needs low and high levels (dB)")
+
+                end
+
                 ValidatePlugins(report, track, trackIds, pluginIds)
 
             end
@@ -533,10 +585,45 @@ local function CheckPatternReference(report, where, role, id, patterns)
 
 end
 
-local function ValidateStructure(report, structure, patterns, palette, trackIds)
+local function ValidateChords(report, where, section)
+
+    if section.chords == nil then
+        return false
+    end
+
+    if type(section.chords) ~= "table" or #section.chords == 0 then
+
+        report:Add(where, "chords must be a non-empty list")
+
+        return false
+
+    end
+
+    for _, symbol in ipairs(section.chords) do
+
+        local chord, message = Harmony.Parse(symbol)
+
+        if not chord then
+            report:Add(where, message)
+        end
+
+    end
+
+    if section.chord_bars ~= nil and (type(section.chord_bars) ~= "number" or section.chord_bars <= 0) then
+
+        report:Add(where, "chord_bars must be a positive number")
+
+    end
+
+    return true
+
+end
+
+local function ValidateStructure(report, structure, patterns, palette, trackIds, settings)
 
     local sectionIds = {}
     local usesDrums = false
+    local usesChords = false
     local hasMandatorySection = false
 
     for index, section in ipairs(structure) do
@@ -587,6 +674,10 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds)
             report:Add(where, "unknown transition '" .. tostring(section.transition) .. "'")
         end
 
+        if ValidateChords(report, where, section) then
+            usesChords = true
+        end
+
         local drums = section.patterns and section.patterns.drums
 
         if drums ~= nil then
@@ -625,6 +716,18 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds)
 
     end
 
+    if usesChords and not trackIds[CHORD_TRACK] then
+
+        report:Add("TrackLayout", "chords require a '" .. CHORD_TRACK .. "' track")
+
+    end
+
+    if usesChords and settings.bass and not trackIds[BASS_MIDI_TRACK] then
+
+        report:Add("TrackLayout", "the bass line requires a '" .. BASS_MIDI_TRACK .. "' track")
+
+    end
+
     if usesDrums and not trackIds[DRUM_MIDI_TRACK] then
 
         report:Add("TrackLayout", "drum patterns require a '" .. DRUM_MIDI_TRACK .. "' track")
@@ -649,7 +752,7 @@ function Validator.Validate(data)
 
     local patterns = ValidatePatterns(report, data.patternSets, data.settings)
 
-    ValidateStructure(report, data.structure, patterns, data.palette, trackIds)
+    ValidateStructure(report, data.structure, patterns, data.palette, trackIds, data.settings)
 
     return report.errors
 

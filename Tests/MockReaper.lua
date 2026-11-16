@@ -251,6 +251,80 @@ function api.AddProjectMarker2(_, isRegion, position, regionEnd, name, _, color)
 end
 
 --------------------------------------------------
+-- Text items & envelopes
+--------------------------------------------------
+
+function api.AddMediaItemToTrack(track)
+    local item = {
+        track = track,
+        info = {}
+    }
+    track.textItems = track.textItems or {}
+    table.insert(track.textItems, item)
+    return item
+end
+
+function api.SetMediaItemInfo_Value(item, key, value)
+    item.info[key] = value
+    return true
+end
+
+function api.GetSetMediaItemInfo_String(item, key, value, set)
+    if set then
+        item.info[key] = value
+    end
+    return true, item.info[key]
+end
+
+function api.GetTrackEnvelopeByName(track, name)
+    return track.envelopes and track.envelopes[name]
+end
+
+function api.SetOnlyTrackSelected(track)
+    state.selectedTrack = track
+end
+
+function api.SetTrackSelected(track, selected)
+    if not selected and state.selectedTrack == track then
+        state.selectedTrack = nil
+    end
+end
+
+function api.Main_OnCommand(command)
+    if command == 40406 and state.selectedTrack then
+        local track = state.selectedTrack
+        track.envelopes = track.envelopes or {}
+        track.envelopes.Volume = track.envelopes.Volume or {
+            points = {}
+        }
+    end
+end
+
+function api.GetEnvelopeScalingMode()
+    return 0
+end
+
+function api.ScaleToEnvelopeMode(_, value)
+    return value
+end
+
+function api.InsertEnvelopePoint(envelope, time, value, shape)
+    table.insert(envelope.points, {
+        time = time,
+        value = value,
+        shape = shape
+    })
+    return true
+end
+
+function api.Envelope_SortPoints(envelope)
+    table.sort(envelope.points, function(a, b)
+        return a.time < b.time
+    end)
+    return true
+end
+
+--------------------------------------------------
 -- Tempo
 --------------------------------------------------
 

@@ -32,6 +32,20 @@ function Timing.PositionToQN(bar, position, settings)
 
 end
 
+-- Felt beats of a bar: returns the beat count and the beat length in
+-- sixteenths. Compound meters (6/8, 9/8, 12/8) count dotted quarters.
+function Timing.Beats(settings)
+
+    if settings.beat_unit == 8 and settings.beats_per_bar % 3 == 0 then
+
+        return settings.beats_per_bar / 3, 6
+
+    end
+
+    return settings.beats_per_bar, 16 / settings.beat_unit
+
+end
+
 --------------------------------------------------
 -- Swing
 --

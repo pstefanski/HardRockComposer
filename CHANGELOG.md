@@ -1,5 +1,28 @@
 # Changelog
 
+## Commit #0046 — Bass, Chords & Energy Automation
+
+### Added
+
+- Grilles d'accords par section (`chords`, `chord_bars`) et module
+  `Harmony` (symboles, fondamentale, basse, changements d'accords).
+- Piste **Chords** (groupe GUIDE) : un item texte par changement d'accord.
+- Piste **Bass MIDI** (EZbass, repli ReaSynth) routée vers le Bass Bus, et
+  ligne de basse générée selon `SongSettings.bass` : `kick`, `eighths` ou
+  `boogie`.
+- Automation du volume selon l'énergie des sections (`automation.volume`)
+  sur le Drum Bus, le Bass Bus, le Guitar Bus et le retour Hall.
+- Décompte facultatif (`count_in`) : side stick sur chaque temps ressenti et
+  marqueur « Count-in ».
+- Grilles et modes de basse pour les cinq styles.
+
+### Changed
+
+- `Arrangement.DrumPlan` expose le plan de batterie de chaque section ; la
+  batterie générée est inchangée pour tous les styles.
+- `Timing.Beats` donne les temps ressentis (noires pointées en 12/8).
+- Version `0.8.0-alpha`.
+
 ## Commit #0045 — Styles
 
 ### Added

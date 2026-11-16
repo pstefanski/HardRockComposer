@@ -9,6 +9,20 @@ local SongSettings = {
     -- Picks the optional section (half-time breakdown).
     structure_seed = 1,
 
+    -- Generated bass line: driving root eighth notes.
+    bass = {
+
+        mode = "eighths",
+
+        velocity = 100,
+
+        legato = 0.9
+
+    },
+
+    -- Uncomment to start with a count-in on the drum track.
+    -- count_in = { bars = 1 },
+
     humanization = {
 
         enabled = true,

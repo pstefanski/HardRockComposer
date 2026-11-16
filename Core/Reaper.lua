@@ -368,6 +368,71 @@ function Reaper.SortMidi(take)
 end
 
 --------------------------------------------------
+-- Text items
+--------------------------------------------------
+
+-- Creates an empty item showing `text` in the arrange view.
+function Reaper.CreateTextItem(track, startTime, endTime, text)
+
+    local item = reaper.AddMediaItemToTrack(track)
+
+    reaper.SetMediaItemInfo_Value(item, "D_POSITION", startTime)
+    reaper.SetMediaItemInfo_Value(item, "D_LENGTH", endTime - startTime)
+    reaper.GetSetMediaItemInfo_String(item, "P_NOTES", text, true)
+
+    return item
+
+end
+
+--------------------------------------------------
+-- Envelopes
+--------------------------------------------------
+
+local ACTION_TOGGLE_VOLUME_ENVELOPE = 40406
+
+-- Returns the volume envelope of a track, creating it when needed.
+function Reaper.GetVolumeEnvelope(track)
+
+    local envelope = reaper.GetTrackEnvelopeByName(track, "Volume")
+
+    if envelope then
+        return envelope
+    end
+
+    -- The API cannot create a track envelope directly: the action
+    -- "Track: Toggle track volume envelope visible" creates it on the
+    -- selected track.
+    reaper.SetOnlyTrackSelected(track)
+    reaper.Main_OnCommand(ACTION_TOGGLE_VOLUME_ENVELOPE, 0)
+    reaper.SetTrackSelected(track, false)
+
+    envelope = reaper.GetTrackEnvelopeByName(track, "Volume")
+
+    if not envelope then
+        error("Unable to create the volume envelope")
+    end
+
+    return envelope
+
+end
+
+-- Adds a square point (the value holds until the next point).
+function Reaper.AddEnvelopePointDB(envelope, time, db)
+
+    local mode = reaper.GetEnvelopeScalingMode(envelope)
+    local value = reaper.ScaleToEnvelopeMode(mode, 10 ^ (db / 20))
+
+    reaper.InsertEnvelopePoint(envelope, time, value, 1, 0, false, true)
+
+end
+
+function Reaper.SortEnvelope(envelope)
+
+    reaper.Envelope_SortPoints(envelope)
+
+end
+
+--------------------------------------------------
 -- Timing
 --------------------------------------------------
 
