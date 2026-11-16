@@ -16,6 +16,14 @@ function Reaper.ShowConsoleMsg(message)
 
 end
 
+-- Returns the button pressed: 1 OK, 2 Cancel, 6 Yes, 7 No.
+-- Types: 0 OK, 1 OK/Cancel, 4 Yes/No.
+function Reaper.ShowMessageBox(message, title, boxType)
+
+    return reaper.ShowMessageBox(message, title, boxType or 0)
+
+end
+
 function Reaper.BeginUndo()
 
     reaper.Undo_BeginBlock()
@@ -242,6 +250,35 @@ end
 function Reaper.LoadPreset(track, index, preset)
 
     return reaper.TrackFX_SetPreset(track, index, preset)
+
+end
+
+-- Plugin state (VST2/VST3 only), as REAPER's base64 chunk. Returns nil
+-- when the state cannot be read (e.g. AU plugins).
+function Reaper.GetFXState(track, index)
+
+    local success, state = reaper.TrackFX_GetNamedConfigParm(track, index, "vst_chunk")
+
+    if not success or state == "" then
+        return nil
+    end
+
+    return state
+
+end
+
+function Reaper.SetFXState(track, index, state)
+
+    return reaper.TrackFX_SetNamedConfigParm(track, index, "vst_chunk", state)
+
+end
+
+-- "VST3", "VST", "AU", "JS", "CLAP"...
+function Reaper.GetFXType(track, index)
+
+    local success, fxType = reaper.TrackFX_GetNamedConfigParm(track, index, "fx_type")
+
+    return success and fxType or nil
 
 end
 

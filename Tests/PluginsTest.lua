@@ -87,7 +87,7 @@ Test.Case("Plugins: falls back to stock REAPER plugins without preset", function
     Test.Equal(fx[1].preset, nil)
 end)
 
-Test.Case("Plugins: optional plugins are skipped with a warning", function()
+Test.Case("Plugins: optional plugins are skipped and reported", function()
     local state = MockReaper.Reset()
     state.isPluginMissing = function(name)
         return name:find("Studer", 1, true) ~= nil or name == "TONEX"
@@ -96,7 +96,8 @@ Test.Case("Plugins: optional plugins are skipped with a warning", function()
     Test.Equal(context.registry.plugins.drum_bus_studer, nil)
     Test.Equal(context.registry.plugins.tonex_guitar_lead, nil)
     Test.Equal(#Plugins.Summary(context).missing, 8)
-    Test.True(ConsoleContains(state, "Optional plugin skipped: drum_bus_studer"))
+    Plugins.LogSummary(context)
+    Test.True(ConsoleContains(state, "[WARNING]   Skipped (optional): drum_bus_studer (VST3: UADx Studer A800 Tape Recorder)"))
 end)
 
 Test.Case("Plugins: without EZdrummer the drum MIDI is still written", function()
@@ -116,7 +117,8 @@ Test.Case("Plugins: a missing preset keeps default settings", function()
     local summary = Plugins.Summary(context)
     Test.Equal(#summary.missingPresets, 1)
     Test.Equal(summary.missingPresets[1].missingPreset, "HRC Drum Bus EQ")
-    Test.True(ConsoleContains(state, "Preset 'HRC Drum Bus EQ' not found"))
+    Plugins.LogSummary(context)
+    Test.True(ConsoleContains(state, "[WARNING]   Not found, default settings kept: HRC Drum Bus EQ\n"))
 end)
 
 Test.Case("Plugins: a required plugin without candidates stops the build", function()
@@ -148,5 +150,23 @@ Test.Case("Plugins: the summary is printed to the console", function()
     local context = Builder.Build(Style)
     Plugins.LogSummary(context)
     Test.True(ConsoleContains(state, "6 missing"))
-    Test.True(ConsoleContains(state, "missing      tonex_bass: TONEX"))
+    Test.True(ConsoleContains(state, "tonex_bass (TONEX), tonex_bass_distortion (TONEX)"))
+end)
+
+Test.Case("Plugins: the build itself logs nothing, the summary has one line per category", function()
+    local state = MockReaper.Reset()
+    state.missingPlugins["TONEX"] = true
+    state.isPluginMissing = function(name)
+        return name:find("Valhalla", 1, true) ~= nil
+    end
+    state.isPresetMissing = function()
+        return true
+    end
+    local context = Builder.Build(Style)
+    Test.Equal(#state.console, 0, "console during the build")
+
+    Plugins.LogSummary(context)
+    Test.Equal(#state.console, 5, table.concat(state.console))
+    Test.True(ConsoleContains(state, "Plugins: 19 loaded, 1 substituted, 6 missing"))
+    Test.True(ConsoleContains(state, "Presets: 0 loaded, 0 from Presets/, 18 not found"))
 end)

@@ -1,5 +1,6 @@
 local Reaper = require("Reaper")
 local Logger = require("Logger")
+local PresetStore = require("PresetStore")
 
 --------------------------------------------------
 -- Inserts the plugins declared on each track.
@@ -15,8 +16,12 @@ local Logger = require("Logger")
 --     preset = "HRC Bass Bus 1176",
 --     optional = true
 --
--- A missing preset only produces a warning. A plugin that cannot be loaded
--- stops the build, unless it is declared `optional`.
+-- Presets are looked up in REAPER first, then in the repository (Presets/,
+-- see PresetStore and ExportPresets.lua). A missing preset keeps the
+-- default settings. A plugin that cannot be
+-- loaded stops the build, unless it is declared `optional`. Nothing is
+-- logged while plugins load: everything is summarized at the end of the
+-- build (LogSummary).
 --------------------------------------------------
 
 local Plugins = {}
@@ -91,6 +96,24 @@ local function CandidateNames(candidates)
     end
 
     return table.concat(names, ", ")
+
+end
+
+-- Applies the state saved in Presets/ when it was exported from the same
+-- plugin, in the same format.
+local function LoadStoredPreset(track, fx, candidate)
+
+    local stored = PresetStore.Load(candidate.preset)
+
+    if not stored or stored.plugin ~= candidate.plugin then
+        return false
+    end
+
+    if stored.fx_type ~= Reaper.GetFXType(track, fx.index) then
+        return false
+    end
+
+    return Reaper.SetFXState(track, fx.index, stored.state) == true
 
 end
 
@@ -179,8 +202,6 @@ local function ApplyPlugin(context, trackEntry, pluginData)
 
         reportEntry.status = "missing"
 
-        Logger.Warning("Optional plugin skipped: " .. pluginData.id .. " (tried " .. CandidateNames(candidates) .. ")")
-
         return
 
     end
@@ -188,12 +209,24 @@ local function ApplyPlugin(context, trackEntry, pluginData)
     reportEntry.status = rank == 1 and "loaded" or "substituted"
     reportEntry.used = candidate.plugin
 
-    if candidate.preset and not Reaper.LoadPreset(trackEntry.track, fx.index, candidate.preset) then
+    if candidate.preset then
 
-        reportEntry.missingPreset = candidate.preset
+        reportEntry.preset = candidate.preset
 
-        Logger.Warning("Preset '" .. candidate.preset .. "' not found for " .. pluginData.id ..
-                           ": default settings kept")
+        if Reaper.LoadPreset(trackEntry.track, fx.index, candidate.preset) then
+
+            reportEntry.presetStatus = "loaded"
+
+        elseif LoadStoredPreset(trackEntry.track, fx, candidate) then
+
+            reportEntry.presetStatus = "file"
+
+        else
+
+            reportEntry.presetStatus = "missing"
+            reportEntry.missingPreset = candidate.preset
+
+        end
 
     end
 
@@ -207,7 +240,11 @@ local function ApplyPlugin(context, trackEntry, pluginData)
 
         name = Reaper.GetFXName(trackEntry.track, fx.index),
 
-        plugin = candidate.plugin
+        plugin = candidate.plugin,
+
+        preset = candidate.preset,
+
+        presetStatus = reportEntry.presetStatus
 
     }
 
@@ -243,6 +280,8 @@ function Plugins.Summary(context)
         loaded = 0,
         substituted = {},
         missing = {},
+        presetsLoaded = 0,
+        presetsFromFile = 0,
         missingPresets = {}
     }
 
@@ -262,7 +301,15 @@ function Plugins.Summary(context)
 
         end
 
-        if entry.missingPreset then
+        if entry.presetStatus == "loaded" then
+
+            summary.presetsLoaded = summary.presetsLoaded + 1
+
+        elseif entry.presetStatus == "file" then
+
+            summary.presetsFromFile = summary.presetsFromFile + 1
+
+        elseif entry.presetStatus == "missing" then
 
             table.insert(summary.missingPresets, entry)
 
@@ -274,28 +321,56 @@ function Plugins.Summary(context)
 
 end
 
+local function Join(entries, format)
+
+    local parts = {}
+
+    for _, entry in ipairs(entries) do
+        table.insert(parts, format(entry))
+    end
+
+    return table.concat(parts, ", ")
+
+end
+
+-- One line per category.
 function Plugins.LogSummary(context)
 
     local summary = Plugins.Summary(context)
 
-    Logger.Info(string.format("Plugins: %d loaded, %d substituted, %d missing, %d preset(s) missing", summary.loaded,
-        #summary.substituted, #summary.missing, #summary.missingPresets))
+    Logger.Info(string.format("Plugins: %d loaded, %d substituted, %d missing", summary.loaded,
+        #summary.substituted, #summary.missing))
 
-    for _, entry in ipairs(summary.substituted) do
+    if #summary.substituted > 0 then
 
-        Logger.Info("  substituted  " .. entry.id .. ": " .. entry.requested .. " -> " .. entry.used)
-
-    end
-
-    for _, entry in ipairs(summary.missing) do
-
-        Logger.Info("  missing      " .. entry.id .. ": " .. entry.requested)
+        Logger.Info("  Substituted: " .. Join(summary.substituted, function(entry)
+            return entry.id .. " (" .. entry.requested .. " -> " .. entry.used .. ")"
+        end))
 
     end
 
-    for _, entry in ipairs(summary.missingPresets) do
+    if #summary.missing > 0 then
 
-        Logger.Info("  no preset    " .. entry.id .. ": " .. entry.missingPreset)
+        Logger.Warning("  Skipped (optional): " .. Join(summary.missing, function(entry)
+            return entry.id .. " (" .. entry.requested .. ")"
+        end))
+
+    end
+
+    local presetCount = summary.presetsLoaded + summary.presetsFromFile + #summary.missingPresets
+
+    if presetCount > 0 then
+
+        Logger.Info(string.format("Presets: %d loaded, %d from Presets/, %d not found", summary.presetsLoaded,
+            summary.presetsFromFile, #summary.missingPresets))
+
+    end
+
+    if #summary.missingPresets > 0 then
+
+        Logger.Warning("  Not found, default settings kept: " .. Join(summary.missingPresets, function(entry)
+            return entry.missingPreset
+        end))
 
     end
 

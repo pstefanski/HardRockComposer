@@ -1,5 +1,24 @@
 # Changelog
 
+## Commit #0047 — Portable Presets & Quiet Console
+
+### Added
+
+- `ExportPresets.lua` : action à lancer sur la machine qui possède les
+  presets HRC. Elle génère le projet puis enregistre l'état de chaque plugin
+  dans `Presets/<preset>.lua`.
+- Quand REAPER ne connaît pas un preset HRC, la génération applique l'état
+  enregistré dans `Presets/`, seulement pour le même plugin dans le même
+  format.
+- `Bootstrap.lua` : préparation commune des scripts d'entrée.
+
+### Changed
+
+- Plus aucun warning pendant le chargement des plugins : le rapport final
+  tient en une ligne par catégorie (plugins, remplacements, plugins ignorés,
+  presets, presets introuvables).
+- Version `0.8.1-alpha`.
+
 ## Commit #0046 — Bass, Chords & Energy Automation
 
 ### Added

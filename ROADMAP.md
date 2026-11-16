@@ -39,8 +39,9 @@ Objectif : générer un projet utilisable même si un plugin manque.
 - ✅ **Preset manquant** : simple warning, le plugin garde ses réglages par défaut.
 - ✅ **Rapport de fin de génération** : plugins chargés, remplacés, absents, presets manquants.
 - ✅ Le validateur accepte les listes de candidats.
-- ⬜ **Presets HRC versionnés** dans `Presets/` et installés via `GetResourcePath()`. Bloqué : les presets n'existent que sur la machine Windows et doivent d'abord en être exportés.
-- ⬜ **Validation manuelle dans REAPER**, sur Windows et sur macOS.
+- 🚧 **Presets HRC versionnés** dans `Presets/` : `ExportPresets.lua` enregistre l'état de chaque plugin, et la génération l'applique quand REAPER ne connaît pas le preset. Reste à lancer l'export sur Windows, puis à vérifier que l'état VST3 se recharge bien sur macOS.
+- ✅ **Console** : rapport final d'une ligne par catégorie, plus aucun warning pendant le chargement.
+- 🚧 **Validation manuelle dans REAPER** : macOS validé le 17/11 (25 plugins chargés, ValhallaDelay remplacé par ReaDelay). Windows reste à faire.
 - ↪️ **Scanner des plugins installés** (`EnumInstalledFX`) : reporté au sprint 9. C'est le chargement réel par REAPER qui fait foi. Un pré-scan devrait reproduire sa recherche par nom partiel et risquerait de déclarer absent un plugin pourtant chargeable. Le scanner sera utile pour afficher l'état des plugins dans l'interface.
 
 ## Sprint 7 — Styles (v0.7) 🚧

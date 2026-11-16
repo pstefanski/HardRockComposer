@@ -1,15 +1,6 @@
-local root = ({reaper.get_action_context()})[2]
-root = root:match("^(.*[\\/])")
+local root = ({reaper.get_action_context()})[2]:match("^(.*[\\/])")
 
--- Lua uses the platform separator as the first character of package.config.
-local separator = package.config:sub(1, 1)
-
-package.path = table.concat({
-    root .. "?.lua",
-    root .. "Core" .. separator .. "?.lua",
-    root .. "Data" .. separator .. "?.lua",
-    package.path
-}, ";")
+dofile(root .. "Bootstrap.lua")(root)
 
 local Version = require("Version")
 local Config = require("Config")

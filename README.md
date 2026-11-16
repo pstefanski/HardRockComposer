@@ -67,6 +67,16 @@ generation.
 3. Run the action. ⚠️ By default it **deletes every track** of the current
    project (see `Config.ResetProject`).
 
+### Presets
+
+The `HRC …` presets are created on one machine. To use them everywhere, run
+the **`ExportPresets.lua`** action once on that machine (it regenerates the
+project), then commit and push the `Presets/` folder. On the other machines,
+the generation applies these saved plugin states when REAPER does not know
+the preset. See [Presets/README.md](Presets/README.md).
+
+### Styles
+
 Choose the style in `Config.lua`:
 
 ```lua
@@ -107,8 +117,12 @@ HardRockComposer/
 ├── Version.lua
 
 ├── Core/             Engine logic (one responsibility per module)
+├── ExportPresets.lua Saves the HRC presets into Presets/
+├── Bootstrap.lua     Shared setup of the REAPER entry scripts
+
 ├── Data/             Shared data: track layout, colors, MIDI note map
 ├── Styles/           One folder per style: settings, structure, drums
+├── Presets/          Exported plugin states of the HRC presets
 └── Tests/            Test suite with a mocked REAPER API
 ```
 
