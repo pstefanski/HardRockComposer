@@ -1,5 +1,8 @@
 local SongSettings = {
 
+    -- Key the chords are written in (the window can transpose them).
+    key = "E",
+
     -- REAPER tempo is counted in quarter notes: 105 BPM = 70 dotted quarters
     -- per minute, the pulse of the 12/8 shuffle.
     tempo = 105,

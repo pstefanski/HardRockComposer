@@ -1,5 +1,8 @@
 local SongSettings = {
 
+    -- Key the chords are written in (the window can transpose them).
+    key = "E",
+
     tempo = 140,
 
     beats_per_bar = 4,

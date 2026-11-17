@@ -33,10 +33,12 @@ Instead of starting from a static template, HardRock Composer generates a comple
   line (kick-locked, driving eighths or boogie)
 * Bus and reverb levels automated from the section energy
 * Optional count-in
+* ReaImGui window: style, tempo, key (chords transposed), structure seed,
+  sections editor, plugin status, generation into a new project tab;
+  choices remembered per style
 
 ### Planned
 
-* Graphical user interface (ReaImGui)
 * ReaPack distribution
 
 See [ROADMAP.md](ROADMAP.md) for the detailed plan.
@@ -62,10 +64,21 @@ generation.
 # Usage
 
 1. Copy the `HardRockComposer` folder into REAPER's `Scripts` folder.
-2. In REAPER: *Actions → Show action list → New action → Load ReaScript…*
+2. Install [ReaPack](https://reapack.com), then **ReaImGui** from
+   *Extensions → ReaPack → Browse packages* (recommended).
+3. In REAPER: *Actions → Show action list → New action → Load ReaScript…*
    and select `Main.lua`.
-3. Run the action. ⚠️ By default it **deletes every track** of the current
-   project (see `Config.ResetProject`).
+4. Run the action:
+   - with ReaImGui, the **HardRock Composer window** opens: choose the
+     style, tempo, key, structure seed, count-in, bass and swing, edit the
+     sections (bars, energy, order, optional sections), check the plugins,
+     then click **Generate**. Choices are remembered per style;
+   - without ReaImGui, the project is generated directly with the last
+     choices made in the window (or the style defaults).
+
+⚠️ Generating into the current project **deletes every track** of that
+project (see `Config.ResetProject`). Choose *A new project tab* in the window
+to keep the current project.
 
 ### Presets
 
@@ -122,6 +135,7 @@ HardRockComposer/
 
 ├── Data/             Shared data: track layout, colors, MIDI note map
 ├── Styles/           One folder per style: settings, structure, drums
+├── UI/               ReaImGui window
 ├── Presets/          Exported plugin states of the HRC presets
 └── Tests/            Test suite with a mocked REAPER API
 ```

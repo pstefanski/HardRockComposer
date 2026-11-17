@@ -36,6 +36,12 @@ local function Find(id)
 
 end
 
+function StyleLoader.Exists(id)
+
+    return Find(id) ~= nil
+
+end
+
 local function AvailableIds()
 
     local ids = {}

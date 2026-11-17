@@ -14,6 +14,10 @@ package.path = table.concat({
     package.path
 }, ";")
 
+-- Locations used by the tests that run the REAPER entry scripts.
+TESTS_DIR = here
+REPO_ROOT = root
+
 local MockReaper = require("MockReaper")
 
 reaper = MockReaper.api
@@ -31,7 +35,9 @@ local suites = {
     "PluginsTest",
     "StylesTest",
     "MusicTest",
-    "PresetsTest"
+    "PresetsTest",
+    "SessionTest",
+    "WindowTest"
 }
 
 for _, suite in ipairs(suites) do
