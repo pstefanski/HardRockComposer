@@ -1,5 +1,7 @@
 # 🎸 HardRock Composer
 
+[![Tests](https://github.com/pstefanski/HardRockComposer/actions/workflows/tests.yml/badge.svg)](https://github.com/pstefanski/HardRockComposer/actions/workflows/tests.yml)
+
 > A professional REAPER project generator for rock and hard rock production.
 
 HardRock Composer is an open-source **ReaScript (Lua)** project that automatically creates a fully organized REAPER session for composing and producing energetic rock music.
@@ -118,6 +120,10 @@ The engine can be tested outside REAPER with Lua 5.4+:
 lua Tests/run.lua
 ```
 
+GitHub Actions runs the same suite on every push to `main` and on every pull
+request, with Lua 5.4 (the version REAPER uses) and Lua 5.5, after checking
+the syntax of every script.
+
 ---
 
 # Project Structure
@@ -135,6 +141,7 @@ HardRockComposer/
 
 ├── Data/             Shared data: track layout, colors, MIDI note map
 ├── Styles/           One folder per style: settings, structure, drums
+├── .github/          GitHub Actions workflow (tests)
 ├── UI/               ReaImGui window
 ├── Presets/          Exported plugin states of the HRC presets
 └── Tests/            Test suite with a mocked REAPER API
