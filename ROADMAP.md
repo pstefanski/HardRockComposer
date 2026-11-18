@@ -75,7 +75,16 @@ Objectif : ajouter un style sans modifier `Core/`.
 - ✅ **Génération non destructive** dans un nouvel onglet de projet (action 40859).
 - ⬜ **Validation dans REAPER**, sur macOS et sur Windows.
 
-## Sprint 10 — Stabilisation et distribution (v1.0) ⬜
+## Sprint 10 — Tests automatiques 🚧
+
+- ✅ **GitHub Actions** (`.github/workflows/tests.yml`) : à chaque push sur `main` et à chaque pull request, vérification de la syntaxe de tous les scripts puis `lua Tests/run.lua`, avec Lua 5.4 (celle de REAPER) et Lua 5.5.
+- ⬜ **Protection de `main`** : exiger le passage des tests avant la fusion d'une PR (réglage du dépôt GitHub).
+
+## Sprint 11 — Mise à jour du MIDI seul ⬜
+
+- ⬜ **Régénérer sans tout recréer** : mettre à jour la batterie, la basse, les accords, les marqueurs et les régions d'un projet déjà généré, sans supprimer les pistes, les plugins, les réglages ni les prises audio.
+
+## Sprint 12 — Stabilisation et distribution (v1.0) ⬜
 
 - ⬜ **Paquet ReaPack** : `index.xml` et en-tête de métadonnées.
 - ⬜ **Documentation** dans `Docs/` : installation, création d'un style, format des données.
@@ -86,6 +95,6 @@ Objectif : ajouter un style sans modifier `Core/`.
 
 ## Vérification à chaque sprint
 
-- `lua Tests/run.lua` passe.
+- `lua Tests/run.lua` passe, en local et sur GitHub Actions.
 - `Main.lua` s'exécute dans REAPER sous Windows et macOS : la console affiche « Done. » sans erreur.
 - Contrôles manuels : tempo et signature, pistes et couleurs, sends FX, régions alignées sur les sections, notes MIDI sur la grille.

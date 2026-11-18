@@ -1,5 +1,15 @@
 # Changelog
 
+## Commit #0050 — Continuous Integration
+
+### Added
+
+- Workflow GitHub Actions `Tests` : à chaque push sur `main` et à chaque
+  pull request, vérification de la syntaxe de tous les scripts puis
+  `lua Tests/run.lua`, avec Lua 5.4.9 (celle de REAPER) et Lua 5.5.1,
+  compilées depuis les sources officielles (empreintes SHA-256 vérifiées).
+- Badge des tests dans le README.
+
 ## Commit #0049 — ReaImGui Window
 
 ### Added
