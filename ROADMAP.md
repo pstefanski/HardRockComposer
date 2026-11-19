@@ -84,12 +84,13 @@ Objectif : ajouter un style sans modifier `Core/`.
 
 Constat : un style déclare un pattern d'une mesure rejoué à l'identique, avec une variante toutes les 4 mesures. On n'entend ni ghost notes, ni ouvertures de charley, ni accents, et le kit se limite à 12 notes.
 
-- ⬜ **Kit EZdrummer complet** (`Data/DrumKit.lua`) : articulations du charley, crash gauche et droit, crash étouffé, china, splash, cloche de ride, rimshot. Les numéros sont à vérifier dans la MIDI map d'EZdrummer 3.
-- ⬜ **Grammaire de groove par style** : pour chaque type de section, positions de grosse caisse (fixes et probables), backbeat, ghost notes, cymbale de tempo et débit, accents, ouvertures de charley, longueur de phrase.
-- ⬜ **`Core/DrumGroove.lua`** : génère une phrase de 2 ou 4 mesures (cellule, réponse, mutation de fin de phrase), déterministe avec `drum_seed`. Deux sections du même type partagent le même groove.
-- ⬜ **Plan de batterie par phrase** : `drums = { groove = "verse" }` à côté des patterns écrits à la main, qui restent pris en charge.
-- ⬜ **Placement par fût** : aléa centré et décalage moyen par fût (caisse claire en arrière, charley serré).
-- ⬜ **Migration** des 5 styles, seed de batterie dans la fenêtre, contrôles du validateur.
+- ✅ **Kit EZdrummer complet** (`Data/DrumKit.lua`) : articulations du charley, quatre crashes et leurs coups étouffés, china, splash, cloche de ride, rimshots, d'après la MIDI map d'EZdrummer 3.
+- ✅ **Grammaire de groove par style** : pour chaque type de section, positions de grosse caisse (fixes et probables), backbeat, ghost notes, cymbale de tempo et débit, accents, ouvertures de charley, longueur de phrase.
+- ✅ **`Core/DrumGroove.lua`** : génère une phrase de 2 ou 4 mesures (cellule, réponse, mutation de fin de phrase), déterministe avec `drum_seed`. Deux sections du même type partagent le même groove.
+- ✅ **Plan de batterie par phrase** : `drums = { groove = "verse" }` à côté des patterns écrits à la main, qui restent pris en charge.
+- ✅ **Placement par fût** : aléa centré et décalage moyen par fût (caisse claire en arrière, charley serré).
+- ✅ **Migration** des 5 styles, seed de batterie dans la fenêtre, contrôles du validateur.
+- ⬜ **Écoute dans REAPER** : articulations et rendu des grooves dans EZdrummer.
 
 ## Sprint 12 — Batterie générative : fills et transitions (v0.12) ⬜
 

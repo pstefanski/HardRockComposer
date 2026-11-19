@@ -1,5 +1,32 @@
 # Changelog
 
+## Commit #0051 — Generative Drum Grooves
+
+### Added
+
+- `Core/DrumGroove.lua` : génération des grooves de batterie à partir de
+  règles déclarées par chaque style (`Drums.grooves`) :
+  - cymbale de tempo avec accents et ouvertures de charley ;
+  - grosse caisse fixe et facultative ;
+  - backbeat avec rimshots ;
+  - ghost notes, coups supplémentaires, crash d'ouverture.
+- Phrases de 1, 2 ou 4 mesures en question-réponse, avec une variation en
+  fin de phrase. Elles ne dépendent que du seed de batterie (`drum_seed`) et
+  du nom du groove : deux refrains jouent la même phrase.
+- `Data/DrumKit.lua` : carte MIDI complète d'EZdrummer 3 (ouvertures de
+  charley, quatre crashes et leurs coups étouffés, china, splash, cloche de
+  ride, rimshots).
+- Placement moyen de chaque partie du kit (`humanization.feel`) et
+  humanisation du timing centrée sur ce placement.
+- Seed de batterie et bouton « Random grooves » dans l'onglet Song.
+
+### Changed
+
+- Les 5 styles jouent des grooves générés. Les fins, les stop-time, le
+  breakdown du Heavy Rock et les fills restent écrits à la main.
+- Le MIDI de batterie généré est différent de la version précédente.
+- Version `0.11.0-alpha`.
+
 ## Commit #0050 — Continuous Integration
 
 ### Added

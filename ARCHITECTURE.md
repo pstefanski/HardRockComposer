@@ -71,7 +71,8 @@ Exemples :
 
 - TrackLayout (commun à tous les styles)
 - ColorsPalette
-- Patterns/MidiNotes (mapping des notes EZdrummer)
+- DrumKit (carte MIDI d'EZdrummer 3 : articulations et parties du kit)
+- Patterns/MidiNotes (ancien nom de la carte, gardé pour les styles)
 
 ---
 
@@ -84,7 +85,7 @@ dans `Styles/Index.lua`.
 Styles/HardRock/
 ├── SongSettings.lua    tempo, signature, swing, humanisation, seeds
 ├── SongStructure.lua   sections, énergie, couleurs, patterns
-├── Drums.lua           bibliothèque de patterns de batterie
+├── Drums.lua           grooves générés et patterns de batterie écrits à la main
 └── TrackLayout.lua     facultatif, remplace Data/TrackLayout.lua
 ```
 
@@ -92,9 +93,47 @@ Le style généré est choisi dans `Config.Style`. `Core/StyleLoader.lua` le
 charge et le transmet au Builder ; aucun module ne fait de `require` direct
 sur les données d'un style.
 
-Les patterns sont décrits avec le vocabulaire de `Core/PatternBuilder.lua`.
 Les positions sont en doubles croches depuis le début de la mesure, quelle
 que soit la signature : une mesure en 12/8 va de 0 à 23.
+
+### Grooves générés
+
+Une section joue de préférence un groove généré :
+
+```lua
+patterns = { drums = { groove = "verse" } }
+```
+
+Le groove est décrit dans `Drums.grooves` par des règles, que
+`Core/DrumGroove.lua` transforme en une phrase de 1, 2 ou 4 mesures :
+
+```lua
+verse = {
+    phrase = 4,
+    pulse = {                                  -- cymbale de tempo
+        voice = "closed_hat", every = 2, velocity = 78, accent = 98,
+        open = { voice = "open_hat", positions = {14}, chance = 0.4 }
+    },
+    kick = { positions = {0, 8}, velocity = 112,
+             options = { {10, 0.5, 96}, {6, 0.25} } },   -- { position, chance [, vélocité] }
+    snare = { positions = {4, 12}, velocity = 114, rimshot = 0.3 },
+    ghosts = { positions = {7, 15}, chance = 0.35, velocity = 34, max = 2 },
+    extras = { { voice = "high_tom", position = 7, chance = 0.5, velocity = 92 } },
+    opening = { voice = "crash", velocity = 122 }   -- première mesure de la section
+}
+```
+
+La phrase suit une forme question-réponse (A, réponse, A, fin) : la réponse
+change une grosse caisse facultative et peut ouvrir le charley, la fin de
+phrase change une autre grosse caisse et ouvre toujours le charley. Les
+tirages ne dépendent que de `drum_seed` et du nom du groove : deux sections
+qui utilisent le même groove jouent la même phrase. Les voix sont les
+articulations de `Data/DrumKit.lua`.
+
+Les patterns écrits à la main restent possibles (`primary`, `variation`,
+`opening`), avec le vocabulaire de `Core/PatternBuilder.lua` ; la variation
+joue alors toutes les 4 mesures. Les fills, les fins et les stop-time
+utilisent encore des patterns écrits à la main.
 
 ### Réglages musicaux
 
@@ -110,10 +149,21 @@ que soit la signature : une mesure en 12/8 va de 0 à 23.
     },
 
     structure_seed = 1,      -- tirage des sections facultatives
+    drum_seed = 1,           -- tirage des grooves générés
 
-    humanization = { enabled = true, seed = 123, velocity = 8, timing = 8 }
+    humanization = {
+        enabled = true, seed = 123, velocity = 8, timing = 8,
+        -- facultatif : placement moyen de chaque partie du kit, en ticks
+        -- (960 par noire) ; positif = en arrière du temps
+        feel = { kick = 0, snare = 8, hats = -4, toms = 4, cymbals = 0 }
+    }
 }
 ```
+
+Avec `feel`, l'humanisation du timing se centre sur ce placement (la
+plupart des coups restent proches) et les ghost notes varient moins en
+vélocité. Les parties du kit sont `kick`, `snare`, `hats`, `toms`,
+`cymbals` et `percussion`.
 
 ### Sections facultatives
 
@@ -501,6 +551,7 @@ Chaque module possède une responsabilité unique.
 | Song | Disposition des sections, sections facultatives |
 | Timing | Conversions mesures / noires, swing |
 | PatternBuilder | Vocabulaire de description des patterns |
+| DrumGroove | Génération des grooves de batterie à partir des règles d'un style |
 | Random | Générateur pseudo-aléatoire déterministe |
 | Arrangement | Batterie MIDI, plan de batterie, décompte |
 | Harmony | Symboles d'accords, grille d'une section |
@@ -545,7 +596,7 @@ Song → Markers → Regions
 
 ↓
 
-Patterns → Arrangement (batterie, décompte)
+Patterns et grooves → Arrangement (batterie, décompte)
 
 ↓
 
