@@ -80,11 +80,48 @@ Objectif : ajouter un style sans modifier `Core/`.
 - ✅ **GitHub Actions** (`.github/workflows/tests.yml`) : à chaque push sur `main` et à chaque pull request, vérification de la syntaxe de tous les scripts puis `lua Tests/run.lua`, avec Lua 5.4 (celle de REAPER) et Lua 5.5.
 - ⬜ **Protection de `main`** : exiger le passage des tests avant la fusion d'une PR (réglage du dépôt GitHub).
 
-## Sprint 11 — Mise à jour du MIDI seul ⬜
+## Sprint 11 — Batterie générative : les grooves (v0.11) 🚧
 
-- ⬜ **Régénérer sans tout recréer** : mettre à jour la batterie, la basse, les accords, les marqueurs et les régions d'un projet déjà généré, sans supprimer les pistes, les plugins, les réglages ni les prises audio.
+Constat : un style déclare un pattern d'une mesure rejoué à l'identique, avec une variante toutes les 4 mesures. On n'entend ni ghost notes, ni ouvertures de charley, ni accents, et le kit se limite à 12 notes.
 
-## Sprint 12 — Stabilisation et distribution (v1.0) ⬜
+- ⬜ **Kit EZdrummer complet** (`Data/DrumKit.lua`) : articulations du charley, crash gauche et droit, crash étouffé, china, splash, cloche de ride, rimshot. Les numéros sont à vérifier dans la MIDI map d'EZdrummer 3.
+- ⬜ **Grammaire de groove par style** : pour chaque type de section, positions de grosse caisse (fixes et probables), backbeat, ghost notes, cymbale de tempo et débit, accents, ouvertures de charley, longueur de phrase.
+- ⬜ **`Core/DrumGroove.lua`** : génère une phrase de 2 ou 4 mesures (cellule, réponse, mutation de fin de phrase), déterministe avec `drum_seed`. Deux sections du même type partagent le même groove.
+- ⬜ **Plan de batterie par phrase** : `drums = { groove = "verse" }` à côté des patterns écrits à la main, qui restent pris en charge.
+- ⬜ **Placement par fût** : aléa centré et décalage moyen par fût (caisse claire en arrière, charley serré).
+- ⬜ **Migration** des 5 styles, seed de batterie dans la fenêtre, contrôles du validateur.
+
+## Sprint 12 — Batterie générative : fills et transitions (v0.12) ⬜
+
+- ⬜ **`Core/DrumFill.lua`** : fills assemblés à partir de cellules d'un temps (doubles, descentes de toms, flams, triolets en 12/8), en crescendo, avec la grosse caisse sur les temps et la cymbale de tempo coupée.
+- ⬜ **Fills de phrase** : pickup en fin de phrase de 4 mesures, fill de 1 à 2 temps en fin de phrase de 8 mesures, fill plus long en fin de section quand l'énergie monte.
+- ⬜ **Arrivée** : crash et grosse caisse sur le premier temps de la section suivante, crash gauche et droit en alternance.
+- ⬜ **Transitions déclaratives** : `none`, `pickup`, `fill`, `big`, `build` (roulement avant un refrain), modifiables dans l'onglet Sections.
+
+## Sprint 13 — Arrangement du morceau (v0.13) ⬜
+
+- ⬜ **Énergie évolutive** : rampe `energy = { from, to }` sur les vélocités, la densité du groove et l'automation.
+- ⬜ **Breaks et coups d'ensemble** (`hits`) joués par la batterie et la basse, affichés dans le guide d'accords.
+- ⬜ **Feels** `half_time` et `double_time` par section.
+- ⬜ **Vraies fins** : `ending = "hit" | "ring" | "choke"`.
+- ⬜ **Structures enrichies** : pré-refrain et pont pour le Hard Rock, breakdown ou stop-time selon le style.
+
+## Sprint 14 — Basse plus vivante (v0.14) ⬜
+
+- ⬜ **Notes de passage** avant les changements d'accord (chromatique, quinte, gamme), selon le seed.
+- ⬜ **Phrasé par section** et nouveaux modes `octaves` et `drive`.
+- ⬜ **Fills de basse** synchronisés avec ceux de la batterie, vers la fondamentale de la section suivante.
+- ⬜ **Breaks** : la basse joue les coups d'ensemble et se tait entre eux.
+- ⬜ **Tessiture** contrôlée par le validateur.
+
+## Sprint 15 — Mise à jour du MIDI seul (v0.15) ⬜
+
+- ⬜ **Marquage** de tout ce que le script crée (`P_EXT:HRC_ID`) : pistes, items, marqueurs, régions.
+- ⬜ **Mode `update_midi`** : réécrit le tempo, la structure, le MIDI, les accords et l'automation sans recréer les pistes, les plugins ni toucher aux prises audio.
+- ⬜ **Projets plus anciens** : pistes retrouvées par leur nom, refus clair si une piste MIDI manque.
+- ⬜ **Bouton « Update MIDI only »** dans la fenêtre.
+
+## Sprint 16 — Stabilisation et distribution (v1.0) ⬜
 
 - ⬜ **Paquet ReaPack** : `index.xml` et en-tête de métadonnées.
 - ⬜ **Documentation** dans `Docs/` : installation, création d'un style, format des données.
