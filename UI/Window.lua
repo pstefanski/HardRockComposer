@@ -188,6 +188,19 @@ function Window:DrawSong(ImGui, ctx)
     end
 
     ImGui.SetNextItemWidth(ctx, 160)
+    changed, value = ImGui.InputInt(ctx, "Drum seed", options.drum_seed)
+
+    if changed then
+        options.drum_seed = value
+    end
+
+    ImGui.SameLine(ctx)
+
+    if ImGui.Button(ctx, "Random grooves") then
+        options.drum_seed = math.random(1, 9999)
+    end
+
+    ImGui.SetNextItemWidth(ctx, 160)
     changed, value = ImGui.SliderInt(ctx, "Count-in (bars)", options.count_in, 0, 4)
 
     if changed then

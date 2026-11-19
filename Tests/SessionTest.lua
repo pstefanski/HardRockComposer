@@ -98,11 +98,13 @@ Test.Case("Session: settings are applied to a copy of the style", function()
     local options = Session.Defaults(style)
     options.tempo = 150
     options.structure_seed = 9
+    options.drum_seed = 42
     options.count_in = 2
     options.bass_mode = "kick"
     local applied = Session.Apply(style, options)
     Test.Equal(applied.settings.tempo, 150)
     Test.Equal(applied.settings.structure_seed, 9)
+    Test.Equal(applied.settings.drum_seed, 42)
     Test.Equal(applied.settings.count_in.bars, 2)
     Test.Equal(applied.settings.bass.mode, "kick")
     Test.Equal(style.settings.tempo, 140, "the loaded style is not modified")
@@ -172,6 +174,7 @@ Test.Case("Session: invalid saved choices fall back to the defaults", function()
         tempo = -5,
         key = "H",
         structure_seed = 1.5,
+        drum_seed = "seven",
         count_in = 99,
         swing = 0.4,
         target = "elsewhere",
@@ -180,6 +183,7 @@ Test.Case("Session: invalid saved choices fall back to the defaults", function()
     Test.Equal(options.tempo, defaults.tempo)
     Test.Equal(options.key, "E")
     Test.Equal(options.structure_seed, defaults.structure_seed)
+    Test.Equal(options.drum_seed, 1)
     Test.Equal(options.count_in, 0)
     Test.Equal(options.swing, nil, "Blues Rock has no swing setting")
     Test.Equal(options.target, "replace")
