@@ -110,7 +110,7 @@ end)
 
 Test.Case("Validator: rejects unknown pattern references", function()
     local data = Data()
-    data.structure[2].patterns.drums.primary = "polka"
+    data.structure[2].patterns.drums = {primary = "polka"}
     data.structure[1].fill = "fill_missing"
     local errors = Validator.Validate(data)
     Test.Contains(errors, "unknown primary pattern 'polka'")

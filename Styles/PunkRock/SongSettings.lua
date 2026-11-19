@@ -26,6 +26,10 @@ local SongSettings = {
     -- Uncomment to start with a count-in on the drum track.
     -- count_in = { bars = 1 },
 
+    -- Draws the generated drum grooves (Drums.grooves): change it to
+    -- hear other grooves.
+    drum_seed = 1,
+
     humanization = {
 
         enabled = true,
@@ -34,7 +38,11 @@ local SongSettings = {
 
         velocity = 10,
 
-        timing = 6
+        timing = 6,
+
+        -- Average placement of each part of the kit, in ticks
+        -- (960 per quarter note): pushing ahead of the beat.
+        feel = { kick = -2, snare = -2, hats = -6, toms = 0, cymbals = -2 }
 
     }
 

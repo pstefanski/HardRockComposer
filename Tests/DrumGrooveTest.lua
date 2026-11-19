@@ -114,6 +114,17 @@ Test.Case("DrumGroove: a four-bar phrase repeats its first bar and keeps the fix
     end
 end)
 
+Test.Case("DrumGroove: the end of the phrase never falls back on its first bar", function()
+    local groove = Groove()
+    groove.pulse.open = nil
+    groove.ghosts = nil
+    for seed = 1, 50 do
+        local phrase = DrumGroove.Phrase("verse", groove, seed, SETTINGS)
+        Test.True(Signature(phrase.bars[4]) ~= Signature(phrase.bars[1]), "seed " .. seed)
+        Test.True(Signature(phrase.bars[2]) ~= Signature(phrase.bars[1]), "seed " .. seed)
+    end
+end)
+
 Test.Case("DrumGroove: the hi-hat opens at the end of the phrase", function()
     for seed = 1, 10 do
         local last = DrumGroove.Phrase("verse", Groove(), seed, SETTINGS).bars[4]

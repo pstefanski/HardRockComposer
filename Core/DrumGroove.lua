@@ -144,15 +144,33 @@ local function CopyChoices(choices)
 
 end
 
-local function Flip(list, generator)
+-- Toggles one entry of `list`, other than `avoid` when possible, and
+-- returns its index.
+local function Flip(list, generator, avoid)
 
-    if #list > 0 then
+    if #list == 0 then
+        return nil
+    end
 
-        local index = generator:Int(1, #list)
+    local index
 
-        list[index] = not list[index]
+    if avoid and #list > 1 then
+
+        index = generator:Int(1, #list - 1)
+
+        if index >= avoid then
+            index = index + 1
+        end
+
+    else
+
+        index = generator:Int(1, #list)
 
     end
+
+    list[index] = not list[index]
+
+    return index
 
 end
 
@@ -214,7 +232,7 @@ local function AnswerChoices(groove, first, generator)
 
     local choices = CopyChoices(first)
 
-    Flip(choices.kicks, generator)
+    choices.flippedKick = Flip(choices.kicks, generator)
 
     local open = groove.pulse and groove.pulse.open
 
@@ -230,7 +248,9 @@ local function EndChoices(groove, answer, generator)
 
     local choices = CopyChoices(answer)
 
-    Flip(choices.kicks, generator)
+    -- Another kick than the answer bar, so that the end of the phrase
+    -- does not fall back on the first bar.
+    Flip(choices.kicks, generator, answer.flippedKick)
     Flip(choices.ghosts, generator)
 
     for index in ipairs(OpenPositions(groove)) do

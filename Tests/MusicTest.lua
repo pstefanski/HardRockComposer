@@ -4,6 +4,8 @@ local Builder = require("Builder")
 local Validator = require("Validator")
 local StyleLoader = require("StyleLoader")
 local Harmony = require("Harmony")
+local DrumGroove = require("DrumGroove")
+local DrumKit = require("DrumKit")
 
 local PPQ = MockReaper.PPQ
 
@@ -127,29 +129,49 @@ local function KickBass(style)
     style.settings.bass.mode = "kick"
 end
 
+-- Kick positions (sixteenths) of bar `bar` of a groove section.
+local function GrooveKicks(context, groove, bar)
+    local positions = {}
+    local pattern = DrumGroove.BarPattern(context.registry.grooves[groove], bar)
+    for _, note in ipairs(pattern.notes) do
+        if note.pitch == DrumKit.notes.kick then
+            table.insert(positions, note.position)
+        end
+    end
+    table.sort(positions)
+    return positions
+end
+
 Test.Case("Bass: kick mode plays the root on every kick", function()
     local state, context = Build(Load("HardRock", KickBass))
     Test.Equal(context.song[2].id, "verse_1")
     local verse = ItemsOn(state, "Bass MIDI")[2]
 
-    -- Bar 1 (E5): verse_drive kicks on beats 1 and 3.
+    -- Bar 1 (E5): one E2 on every kick of the verse groove.
+    local kicks = GrooveKicks(context, "verse", 1)
     local bar1 = NotesBetween(verse, 0, 4 * PPQ)
-    Test.Equal(#bar1, 2)
-    Test.Equal(bar1[1].pitch, 40, "E2")
-    Test.Equal(bar1[2].startPPQ, 2 * PPQ)
+    Test.Equal(#bar1, #kicks)
+    for index, note in ipairs(bar1) do
+        Test.Equal(note.pitch, 40, "E2")
+        Test.Equal(note.startPPQ, kicks[index] / 4 * PPQ)
+    end
 
     -- Bar 3 (D5): D3.
     local bar3 = NotesBetween(verse, 8 * PPQ, 12 * PPQ)
     Test.Equal(bar3[1].pitch, 50)
 end)
 
-Test.Case("Bass: kick mode follows the extra kicks of variations", function()
-    local state = Build(Load("HardRock", KickBass))
+Test.Case("Bass: kick mode follows the optional kicks of the groove", function()
+    local state, context = Build(Load("HardRock", KickBass))
     local verse = ItemsOn(state, "Bass MIDI")[2]
-    -- Bar 4 uses verse_drive_alt, with an extra kick on position 10.
-    local bar4 = NotesBetween(verse, 12 * PPQ, 16 * PPQ)
-    Test.Equal(#bar4, 3)
-    Test.Equal(bar4[3].startPPQ, 12 * PPQ + 2.5 * PPQ)
+    local counts = {}
+    for bar = 1, 4 do
+        local kicks = GrooveKicks(context, "verse", bar)
+        local notes = NotesBetween(verse, (bar - 1) * 4 * PPQ, bar * 4 * PPQ)
+        Test.Equal(#notes, #kicks, "bar " .. bar)
+        counts[#kicks] = true
+    end
+    Test.True(next(counts, next(counts)) ~= nil, "the bars of the phrase differ")
 end)
 
 Test.Case("Bass: boogie mode walks root, fifth, sixth, fifth in 12/8", function()
