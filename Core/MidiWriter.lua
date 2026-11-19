@@ -83,8 +83,9 @@ function MidiWriter.WriteBetween(take, pattern, barQN, fromQN, toQN, feel)
 
             end
 
-            local startPPQ = Reaper.QNToPPQ(take, noteQN) + timingOffset
-            local endPPQ = Reaper.QNToPPQ(take, endQN) + timingOffset
+            -- REAPER stores whole ticks: grace notes and swing fall between them.
+            local startPPQ = math.floor(Reaper.QNToPPQ(take, noteQN) + timingOffset + 0.5)
+            local endPPQ = math.floor(Reaper.QNToPPQ(take, endQN) + timingOffset + 0.5)
 
             Reaper.InsertMidiNote(take, startPPQ, endPPQ, note.pitch, velocity)
 
