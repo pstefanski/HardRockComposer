@@ -80,7 +80,7 @@ Objectif : ajouter un style sans modifier `Core/`.
 - ✅ **GitHub Actions** (`.github/workflows/tests.yml`) : à chaque push sur `main` et à chaque pull request, vérification de la syntaxe de tous les scripts puis `lua Tests/run.lua`, avec Lua 5.4 (celle de REAPER) et Lua 5.5.
 - ⬜ **Protection de `main`** : exiger le passage des tests avant la fusion d'une PR (réglage du dépôt GitHub).
 
-## Sprint 11 — Batterie générative : les grooves (v0.11) 🚧
+## Sprint 11 — Batterie générative : les grooves (v0.11) ✅
 
 Constat : un style déclare un pattern d'une mesure rejoué à l'identique, avec une variante toutes les 4 mesures. On n'entend ni ghost notes, ni ouvertures de charley, ni accents, et le kit se limite à 12 notes.
 
@@ -90,7 +90,7 @@ Constat : un style déclare un pattern d'une mesure rejoué à l'identique, avec
 - ✅ **Plan de batterie par phrase** : `drums = { groove = "verse" }` à côté des patterns écrits à la main, qui restent pris en charge.
 - ✅ **Placement par fût** : aléa centré et décalage moyen par fût (caisse claire en arrière, charley serré).
 - ✅ **Migration** des 5 styles, seed de batterie dans la fenêtre, contrôles du validateur.
-- ⬜ **Écoute dans REAPER** : articulations et rendu des grooves dans EZdrummer.
+- ✅ **Écoute dans REAPER** : articulations et rendu des grooves dans EZdrummer.
 
 ## Sprint 12 — Batterie générative : fills et transitions (v0.12) ⬜
 
