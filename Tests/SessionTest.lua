@@ -145,10 +145,31 @@ Test.Case("Session: sections can be edited, reordered, duplicated and skipped", 
         structure = applied.structure,
         patternSets = applied.patternSets,
         grooves = applied.grooves,
+        fills = applied.fills,
         settings = applied.settings,
         palette = require("ColorsPalette")
     })
     Test.Equal(#errors, 0, table.concat(errors, "\n"))
+end)
+
+Test.Case("Session: a chosen transition replaces the fill of the style", function()
+    local style = Style("HardRock")
+    local options = Session.Defaults(style)
+    Test.Equal(options.sections[1].transition, "auto")
+    options.sections[1].transition = "build"
+
+    local applied = Session.Apply(style, options)
+    Test.Equal(applied.structure[1].transition, "build")
+    Test.Equal(applied.structure[1].fill, nil, "the chosen transition wins")
+    Test.Equal(applied.structure[2].transition, style.structure[2].transition, "auto keeps the style's choice")
+    Test.Equal(applied.structure[2].fill, style.structure[2].fill)
+
+    local normalized = Session.Normalize(style, {
+        style = "HardRock",
+        sections = {{source = "intro", transition = "build"}, {source = "verse_1", transition = "explode"}}
+    })
+    Test.Equal(normalized.sections[1].transition, "build")
+    Test.Equal(normalized.sections[2].transition, "auto")
 end)
 
 Test.Case("Session: the last section cannot be removed, moves stay in range", function()

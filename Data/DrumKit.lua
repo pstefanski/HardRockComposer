@@ -120,6 +120,19 @@ local RINGING = {
     splash = true
 }
 
+local NAMES = {}
+
+for name, pitch in pairs(DrumKit.notes) do
+    NAMES[pitch] = name
+end
+
+-- Articulation name of a MIDI note.
+function DrumKit.NameOf(pitch)
+
+    return NAMES[pitch]
+
+end
+
 function DrumKit.Exists(name)
 
     return DrumKit.notes[name] ~= nil

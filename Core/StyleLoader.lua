@@ -11,6 +11,7 @@ local Styles = require("Styles.Index")
 --         structure,     -- SongStructure
 --         patternSets,   -- { Drums }
 --         grooves,       -- Drums.grooves (see DrumGroove)
+--         fills,         -- Drums.fills, nil when the fills are written by hand (see DrumFill)
 --         layout         -- the style TrackLayout, or Data/TrackLayout.lua
 --     }
 --------------------------------------------------
@@ -90,6 +91,8 @@ function StyleLoader.Load(id)
         patternSets = {drums},
 
         grooves = drums.grooves or {},
+
+        fills = drums.fills,
 
         layout = require(layoutModule)
 

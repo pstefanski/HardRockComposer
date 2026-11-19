@@ -52,6 +52,15 @@ local PLAY_LABELS = {
     seed = "Seed"
 }
 
+local TRANSITION_LABELS = {
+    auto = "Auto",
+    none = "None",
+    pickup = "Pickup",
+    fill = "Fill",
+    big = "Big fill",
+    build = "Build"
+}
+
 local function ComboItems(labels)
 
     return table.concat(labels, "\0") .. "\0"
@@ -281,12 +290,13 @@ function Window:DrawSections(ImGui, ctx)
 
     local flags = ImGui.TableFlags_Borders | ImGui.TableFlags_RowBg
 
-    if ImGui.BeginTable(ctx, "sections", 5, flags) then
+    if ImGui.BeginTable(ctx, "sections", 6, flags) then
 
         ImGui.TableSetupColumn(ctx, "Section", ImGui.TableColumnFlags_WidthStretch)
         ImGui.TableSetupColumn(ctx, "Bars", ImGui.TableColumnFlags_WidthFixed, 90)
         ImGui.TableSetupColumn(ctx, "Energy", ImGui.TableColumnFlags_WidthFixed, 110)
         ImGui.TableSetupColumn(ctx, "Play", ImGui.TableColumnFlags_WidthFixed, 90)
+        ImGui.TableSetupColumn(ctx, "Transition", ImGui.TableColumnFlags_WidthFixed, 100)
         ImGui.TableSetupColumn(ctx, "", ImGui.TableColumnFlags_WidthFixed, 110)
         ImGui.TableHeadersRow(ctx)
 
@@ -344,6 +354,26 @@ function Window:DrawSections(ImGui, ctx)
 
             if changed then
                 section.play = choices[value + 1]
+            end
+
+            -- How the section hands over to the next one ("Auto": the style decides).
+            ImGui.TableNextColumn(ctx)
+            ImGui.SetNextItemWidth(ctx, -1)
+
+            local transitionLabels = {}
+
+            for _, transition in ipairs(Session.TRANSITIONS) do
+                table.insert(transitionLabels, TRANSITION_LABELS[transition])
+            end
+
+            local transitionIndex = IndexOf(Session.TRANSITIONS, function(transition)
+                return transition == section.transition
+            end)
+
+            changed, value = ImGui.Combo(ctx, "##transition", transitionIndex - 1, ComboItems(transitionLabels))
+
+            if changed then
+                section.transition = Session.TRANSITIONS[value + 1]
             end
 
             ImGui.TableNextColumn(ctx)

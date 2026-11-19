@@ -1,5 +1,32 @@
 # Changelog
 
+## Commit #0052 — Generative Drum Fills
+
+### Added
+
+- `Core/DrumFill.lua` : fills assemblés à partir de cellules d'un temps
+  (caisse claire, descente de toms, caisse claire puis tom, caisse claire et
+  grosse caisse, flams), en crescendo, avec la grosse caisse sur les temps
+  et la cymbale de tempo coupée. Triolets en 12/8.
+- Transitions déclaratives : `none`, `pickup`, `fill`, `big`, `build`
+  (roulement de caisse claire). Sans transition déclarée, l'énergie de la
+  section suivante choisit.
+- Fills de phrase dans les grooves générés : relance après 4 mesures, fill
+  après 8 mesures.
+- Arrivée sur la section suivante : crash et grosse caisse, crashes à tour
+  de rôle.
+- Règles de fills par style (`Drums.fills`) et contrôles du validateur.
+- Colonne « Transition » dans l'onglet Sections, enregistrée avec la
+  session.
+
+### Changed
+
+- Les 5 styles jouent des fills générés ; les fills écrits à la main restent
+  disponibles avec `fill = "…"`.
+- Les notes MIDI sont écrites sur des ticks entiers.
+- Le MIDI de batterie généré est différent de la version précédente.
+- Version `0.12.0-alpha`.
+
 ## Commit #0051 — Generative Drum Grooves
 
 ### Added

@@ -17,8 +17,11 @@ local Serialize = require("Serialize")
 --         swing = 0.3,             -- nil when the style has no swing setting
 --         target = "replace",      -- "replace" the current project or "new_tab"
 --         sections = {
---             { source = "intro", name = "Intro", bars = 8, energy = 0.3, play = "always" },
+--             { source = "intro", name = "Intro", bars = 8, energy = 0.3, play = "always",
+--               transition = "auto" },
 --             ...                  -- play: "always", "never" or "seed" (sections with chance)
+--                                  -- transition: "auto" (the style decides) or a
+--                                  -- Transitions kind, which replaces the style's fill
 --         }
 --     }
 --
@@ -31,6 +34,7 @@ local EXT_SECTION = "HardRockComposer"
 
 Session.PLAY = {"always", "never", "seed"}
 Session.TARGETS = {"replace", "new_tab"}
+Session.TRANSITIONS = {"auto", "none", "pickup", "fill", "big", "build"}
 
 local function DeepCopy(value)
 
@@ -75,7 +79,8 @@ local function DefaultSections(style)
             name = section.name,
             bars = section.bars,
             energy = section.energy or 1,
-            play = section.chance ~= nil and "seed" or "always"
+            play = section.chance ~= nil and "seed" or "always",
+            transition = "auto"
         })
 
     end
@@ -181,7 +186,8 @@ function Session.Normalize(style, options)
                     bars = math.type(entry.bars) == "integer" and entry.bars >= 1 and entry.bars or source.bars,
                     energy = IsNumber(entry.energy) and entry.energy >= 0 and entry.energy <= 1 and entry.energy or
                         (source.energy or 1),
-                    play = Contains(Session.PLAY, entry.play) and entry.play or "always"
+                    play = Contains(Session.PLAY, entry.play) and entry.play or "always",
+                    transition = Contains(Session.TRANSITIONS, entry.transition) and entry.transition or "auto"
                 }
 
                 if section.play == "seed" and source.chance == nil then
@@ -272,6 +278,11 @@ function Session.Apply(style, options)
 
             if entry.play == "always" then
                 section.chance = nil
+            end
+
+            if entry.transition and entry.transition ~= "auto" then
+                section.transition = entry.transition
+                section.fill = nil
             end
 
             if section.chords then

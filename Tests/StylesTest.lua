@@ -49,6 +49,7 @@ for _, entry in ipairs(StyleLoader.Available()) do
             structure = style.structure,
             patternSets = style.patternSets,
             grooves = style.grooves,
+            fills = style.fills,
             settings = style.settings,
             palette = require("ColorsPalette")
         })
@@ -116,6 +117,45 @@ Test.Case("Styles: the snare sits behind the hi-hat in Hard Rock", function()
     Test.Near(Average(offsets[K.closed_hat]), -4, 2, "hi-hat placement")
 end)
 
+Test.Case("Styles: Hard Rock hands over with generated fills and arrival crashes", function()
+    local style = Load("HardRock", function(s)
+        s.settings.humanization.enabled = false
+    end)
+    local state, context = Build(style)
+    local K = require("DrumKit").notes
+    local items = ItemsOn(state, "EZD MIDI")
+    Test.Equal(context.song[2].id, "verse_1")
+    Test.Equal(context.song[3].id, "chorus_1")
+
+    -- The intro (energy 0.3) jumps to the verse (0.6): a whole-bar fill,
+    -- without hi-hat, then a crash and a kick on the first beat of the verse.
+    local intro, verse = items[1], items[2]
+    local lastBar = (context.song[1].bars - 1) * 4 * PPQ
+    for _, note in ipairs(intro.take.notes) do
+        if note.startPPQ >= lastBar then
+            Test.True(note.pitch ~= K.closed_hat and note.pitch ~= K.crash, "no cymbal during the fill")
+        end
+    end
+    Test.True(HasNoteAt(verse, K.crash, 0), "crash on the verse")
+    Test.True(HasNoteAt(verse, K.kick, 0))
+    Test.True(not HasNoteAt(verse, K.closed_hat, 0), "the crash replaces the hi-hat")
+
+    -- The chorus after the next fill lands on the other crash.
+    Test.True(HasNoteAt(items[3], K.crash_1, 0), "crashes alternate")
+
+    -- Verse 2 builds up to the chorus on the snare.
+    local verse2 = items[4]
+    Test.Equal(context.song[4].id, "verse_2")
+    local snares = 0
+    local lastVerseBar = (context.song[4].bars - 1) * 4 * PPQ
+    for _, note in ipairs(verse2.take.notes) do
+        if note.startPPQ >= lastVerseBar and note.pitch == K.snare then
+            snares = snares + 1
+        end
+    end
+    Test.True(snares >= 12, "a snare build over the last bar (" .. snares .. " snares)")
+end)
+
 Test.Case("Styles: an unknown style lists the available ones", function()
     Test.Raises(function() StyleLoader.Load("Polka") end, "Unknown style 'Polka' (available: HardRock, ClassicRock")
 end)
@@ -129,13 +169,22 @@ Test.Case("Styles: Blues Rock bars last six quarter notes (12/8)", function()
     Test.Equal(state.tempoMarkers[1].denominator, 8)
 
     -- Verse 1: shuffle backbeat on the 2nd and 4th dotted quarter of bar 1,
-    -- and the triplet pickup fill at the end of its last bar.
+    -- and a generated triplet fill over its last bar (the chorus is louder).
     local verse = ItemsOn(state, "EZD MIDI")[2]
     Test.Equal(context.song[2].id, "verse_1")
     Test.True(HasNoteAt(verse, 38, 1.5 * PPQ), "snare on beat 2")
     Test.True(HasNoteAt(verse, 38, 4.5 * PPQ), "snare on beat 4")
     local lastBarPPQ = (context.song[2].bars - 1) * 6 * PPQ
-    Test.True(HasNoteAt(verse, 38, lastBarPPQ + 5.5 * PPQ), "last triplet of the fill")
+    local endPPQ = context.song[2].bars * 6 * PPQ
+    for beat = 0, 3 do
+        Test.True(HasNoteAt(verse, 36, lastBarPPQ + beat * 1.5 * PPQ), "kick under the fill, beat " .. beat + 1)
+    end
+    for _, note in ipairs(verse.take.notes) do
+        if note.startPPQ >= lastBarPPQ and note.startPPQ < endPPQ then
+            Test.True(note.pitch ~= 42 and note.pitch ~= 51, "no hi-hat or ride during the fill")
+            Test.True(math.abs((note.startPPQ - lastBarPPQ) % (PPQ / 2)) < 1e-6, "triplet grid")
+        end
+    end
 end)
 
 Test.Case("Styles: Classic Rock swings the off-beat eighths", function()
@@ -146,9 +195,11 @@ Test.Case("Styles: Classic Rock swings the off-beat eighths", function()
     local verse = ItemsOn(state, "EZD MIDI")[2]
     Test.Equal(context.song[2].id, "verse_1")
     local amount = style.settings.swing.amount
-    Test.True(HasNoteAt(verse, 42, 0), "on-beat hat stays on the grid")
-    Test.True(HasNoteAt(verse, 42, (0.5 + amount / 6) * PPQ), "off-beat hat is delayed")
-    Test.True(not HasNoteAt(verse, 42, 0.5 * PPQ), "no straight off-beat hat")
+    -- Bar 2 (bar 1 lands on a crash after the intro fill).
+    local bar = 4 * PPQ
+    Test.True(HasNoteAt(verse, 42, bar), "on-beat hat stays on the grid")
+    Test.True(HasNoteAt(verse, 42, bar + (0.5 + amount / 6) * PPQ), "off-beat hat is delayed")
+    Test.True(not HasNoteAt(verse, 42, bar + 0.5 * PPQ), "no straight off-beat hat")
 end)
 
 Test.Case("Styles: the structure seed picks the optional sections", function()

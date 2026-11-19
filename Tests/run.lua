@@ -30,6 +30,7 @@ local suites = {
     "DynamicsTest",
     "TransitionsTest",
     "DrumGrooveTest",
+    "DrumFillTest",
     "SongTest",
     "ValidatorTest",
     "BuildTest",

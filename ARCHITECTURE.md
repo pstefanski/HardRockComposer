@@ -85,7 +85,7 @@ dans `Styles/Index.lua`.
 Styles/HardRock/
 ├── SongSettings.lua    tempo, signature, swing, humanisation, seeds
 ├── SongStructure.lua   sections, énergie, couleurs, patterns
-├── Drums.lua           grooves générés et patterns de batterie écrits à la main
+├── Drums.lua           grooves et fills générés, patterns de batterie écrits à la main
 └── TrackLayout.lua     facultatif, remplace Data/TrackLayout.lua
 ```
 
@@ -132,8 +132,8 @@ articulations de `Data/DrumKit.lua`.
 
 Les patterns écrits à la main restent possibles (`primary`, `variation`,
 `opening`), avec le vocabulaire de `Core/PatternBuilder.lua` ; la variation
-joue alors toutes les 4 mesures. Les fills, les fins et les stop-time
-utilisent encore des patterns écrits à la main.
+joue alors toutes les 4 mesures. Les fins et les stop-time utilisent encore
+des patterns écrits à la main.
 
 ### Réglages musicaux
 
@@ -218,10 +218,51 @@ avec un marqueur « Count-in ».
 
 ### Transitions
 
-Un fill (`fill = "…"`) remplace la fin de la dernière mesure d'une section.
-Sa durée `transitionBeats` est exprimée en noires (1,5 = une noire pointée en
-12/8). Une section `transition = "big"` utilise le pattern `fill_big` du
-style.
+Une section déclare comment elle passe à la suivante :
+
+```lua
+transition = "none"     -- le groove joue jusqu'au bout
+           | "pickup"   -- relance légère sur le dernier temps
+           | "fill"     -- fill de 2 temps (3 quand l'énergie monte)
+           | "big"      -- fill sur toute la dernière mesure
+           | "build"    -- roulement de caisse claire sur les 1 ou 2 dernières mesures
+```
+
+Quand le style déclare `Drums.fills`, `Core/DrumFill.lua` génère les
+transitions. Sans `transition`, une section prend celle que donne l'énergie
+de la suivante : aucune à la fin du morceau, `big` quand l'énergie monte d'au
+moins 0,3, `fill` sinon. L'onglet Sections permet de choisir la transition de
+chaque section (« Auto » laisse le style décider).
+
+```lua
+Drums.fills = {
+    toms = { "high_tom", "mid_tom", "low_tom", "floor_tom" },   -- de l'aigu au grave
+    cells = { "snare", "toms", "snare_toms", "kick_snare", "flam" },
+    velocity = { from = 92, to = 124 },   -- crescendo d'un fill
+    kick = 104,                           -- grosse caisse sous le fill
+    pickup = 0.5,                         -- chance d'une relance après 4 mesures
+    phrase = 0.7,                         -- chance d'un fill après 8 mesures
+    crashes = { "crash", "crash_1" },     -- crashes d'arrivée, à tour de rôle
+    crash = 122
+}
+```
+
+- **Fill** : assemblé à partir de cellules d'un temps tirées avec le seed de
+  batterie, la caisse claire au début et les toms à la fin, qui descendent
+  jusqu'au plus grave. Les vélocités montent, la grosse caisse joue chaque
+  temps et la cymbale de tempo s'arrête. En 12/8, les cellules suivent la
+  grille de triolets de la noire pointée.
+- **Fills de phrase** : dans un groove généré, une relance peut venir après
+  4 mesures et un fill de 1 ou 2 temps après 8 mesures, suivi d'un crash.
+- **Arrivée** : après une transition, la section suivante commence par un
+  crash et une grosse caisse, à la place du charley ; les crashes de
+  `crashes` jouent à tour de rôle.
+
+Un fill écrit à la main (`fill = "…"`) reste prioritaire. Il remplace la fin
+de la dernière mesure ; sa durée `transitionBeats` est exprimée en noires
+(1,5 = une noire pointée en 12/8). Sans `Drums.fills`, une section
+`transition = "big"` utilise le pattern `fill_big` du style, et le MIDI est
+identique à celui des versions précédentes.
 
 ---
 
@@ -552,6 +593,8 @@ Chaque module possède une responsabilité unique.
 | Timing | Conversions mesures / noires, swing |
 | PatternBuilder | Vocabulaire de description des patterns |
 | DrumGroove | Génération des grooves de batterie à partir des règles d'un style |
+| DrumFill | Fills, roulements et crashes d'arrivée générés |
+| Transitions | Choix de la transition d'une section |
 | Random | Générateur pseudo-aléatoire déterministe |
 | Arrangement | Batterie MIDI, plan de batterie, décompte |
 | Harmony | Symboles d'accords, grille d'une section |
@@ -596,7 +639,7 @@ Song → Markers → Regions
 
 ↓
 
-Patterns et grooves → Arrangement (batterie, décompte)
+Patterns, grooves et fills → Arrangement (batterie, décompte)
 
 ↓
 

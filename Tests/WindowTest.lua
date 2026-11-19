@@ -183,6 +183,16 @@ Test.Case("Window: section buttons reorder and duplicate", function()
     Test.True(fake:HasText("Length:"))
 end)
 
+Test.Case("Window: the transition of a section is chosen in the Sections tab", function()
+    local window, fake, Frame = Open()
+    fake:Set("2/##transition", 5) -- Build
+    Frame()
+    Test.Equal(window.options.sections[2].transition, "build")
+    fake:Click("Generate")
+    Frame()
+    Test.True(window.result.ok, window.result.message)
+end)
+
 Test.Case("Window: a failed generation is shown", function()
     local window, fake, Frame = Open()
     for _, section in ipairs(window.options.sections) do

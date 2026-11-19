@@ -83,7 +83,7 @@ Pattern("pk_fill_snare", "Snare Sixteenths", {
     Note(D.snare, 15, 122)
 }, 1)
 
--- Used by `transition = "big"` sections.
+-- Played by sections with `fill = "fill_big"`.
 Pattern("fill_big", "Snare and Toms", {
     Note(D.snare, 8, 108),
     Note(D.snare, 9, 104),
@@ -134,6 +134,17 @@ Drums.grooves = {
         snare = { positions = {4, 12}, velocity = 118 }
     }
 
+}
+
+-- Generated fills (see Core/DrumFill.lua): short snare fills replace the
+-- fills above, which sections can still force with `fill`.
+Drums.fills = {
+    toms = { "high_tom", "floor_tom" },
+    cells = { "snare", "snare_toms", "toms" },
+    velocity = { from = 96, to = 124 },
+    kick = 110,
+    pickup = 0.6,
+    phrase = 0.5
 }
 
 return Drums

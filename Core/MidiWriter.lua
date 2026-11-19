@@ -49,7 +49,8 @@ function MidiWriter.WriteBetween(take, pattern, barQN, fromQN, toQN, feel)
 
         if gridQN >= windowStartQN and gridQN < windowEndQN then
 
-            local swingQN = Timing.SwingOffsetQN(note.position, feel.swing)
+            -- A grace note swings with the note it decorates.
+            local swingQN = Timing.SwingOffsetQN(note.swingPosition or note.position, feel.swing)
             local noteQN = gridQN + swingQN
             local endQN = math.min(gridQN + note.length / 4 + swingQN, windowEndQN)
 
@@ -82,8 +83,9 @@ function MidiWriter.WriteBetween(take, pattern, barQN, fromQN, toQN, feel)
 
             end
 
-            local startPPQ = Reaper.QNToPPQ(take, noteQN) + timingOffset
-            local endPPQ = Reaper.QNToPPQ(take, endQN) + timingOffset
+            -- REAPER stores whole ticks: grace notes and swing fall between them.
+            local startPPQ = math.floor(Reaper.QNToPPQ(take, noteQN) + timingOffset + 0.5)
+            local endPPQ = math.floor(Reaper.QNToPPQ(take, endQN) + timingOffset + 0.5)
 
             Reaper.InsertMidiNote(take, startPPQ, endPPQ, note.pitch, velocity)
 

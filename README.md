@@ -31,8 +31,11 @@ Instead of starting from a static template, HardRock Composer generates a comple
   (hi-hat or ride pulse, optional kicks, ghost notes, open hi-hats,
   rimshots, crashes) and a drum seed draws 4-bar phrases that answer and
   vary at their end; full EZdrummer 3 articulation map
-* Fills, transitions, section dynamics and deterministic humanization,
-  with a placement per part of the kit (laid back snare, tight hi-hat)
+* Generated fills: tom descents, flams, snare builds and pickups that
+  follow the energy of the song, with crashes landing on the next section;
+  the transition of each section can be chosen in the window
+* Section dynamics and deterministic humanization, with a placement per
+  part of the kit (laid back snare, tight hi-hat)
 * Five styles (Hard, Classic, Blues, Heavy, Punk Rock) with swing,
   12/8 support and seeded song structure variants
 * Chord progressions per section: chord guide track and generated bass
@@ -111,7 +114,7 @@ Config.Style = "BluesRock"
 | `HeavyRock` | 145 BPM, gallop and double kick, optional breakdown |
 | `PunkRock` | 190 BPM, eighth-note drive and skank beat |
 
-Each style lives in `Styles/<Style>/` (settings, structure, drum grooves).
+Each style lives in `Styles/<Style>/` (settings, structure, drum grooves and fills).
 Change `structure_seed` in its `SongSettings.lua` to get another variant of
 the song (optional bridge, breakdown or extra chorus), and `drum_seed` to
 get other grooves.
@@ -177,7 +180,7 @@ Examples:
 
 The objective is to generate a production-ready REAPER project in a single click.
 
-Routing, FX buses, drum grooves and the song structure are already generated.
+Routing, FX buses, drum grooves, fills and the song structure are already generated.
 Future versions will also:
 
 * Generate bass lines and chord guides

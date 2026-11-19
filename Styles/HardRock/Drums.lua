@@ -231,4 +231,13 @@ Drums.grooves = {
 
 }
 
+-- Generated fills (see Core/DrumFill.lua): pickups, fills and builds
+-- replace the fills above, which sections can still force with `fill`.
+Drums.fills = {
+    toms = { "high_tom", "mid_tom", "low_tom", "floor_tom" },
+    velocity = { from = 92, to = 124 },
+    pickup = 0.5,
+    phrase = 0.7
+}
+
 return Drums
