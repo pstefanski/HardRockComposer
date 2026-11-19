@@ -11,6 +11,7 @@ local Serialize = require("Serialize")
 --         tempo = 140,
 --         key = "E",
 --         structure_seed = 1,
+--         drum_seed = 1,           -- draws the generated drum grooves
 --         count_in = 0,            -- bars, 0 = none
 --         bass_mode = "eighths",   -- nil when the style has no bass
 --         swing = 0.3,             -- nil when the style has no swing setting
@@ -92,6 +93,7 @@ function Session.Defaults(style)
         tempo = settings.tempo,
         key = settings.key or "E",
         structure_seed = settings.structure_seed or 1,
+        drum_seed = settings.drum_seed or 1,
         count_in = settings.count_in and settings.count_in.bars or 0,
         bass_mode = settings.bass and (settings.bass.mode or "kick") or nil,
         swing = settings.swing and settings.swing.amount or nil,
@@ -141,6 +143,10 @@ function Session.Normalize(style, options)
 
     if math.type(options.structure_seed) == "integer" then
         result.structure_seed = options.structure_seed
+    end
+
+    if math.type(options.drum_seed) == "integer" then
+        result.drum_seed = options.drum_seed
     end
 
     if math.type(options.count_in) == "integer" and options.count_in >= 0 and options.count_in <= 8 then
@@ -226,6 +232,7 @@ function Session.Apply(style, options)
 
     settings.tempo = options.tempo
     settings.structure_seed = options.structure_seed
+    settings.drum_seed = options.drum_seed
     settings.count_in = options.count_in > 0 and {
         bars = options.count_in
     } or nil

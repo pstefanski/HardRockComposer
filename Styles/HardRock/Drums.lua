@@ -155,4 +155,80 @@ Pattern("fill_big", "Big Drum Fill", {
     Note(MidiNotes.drums.low_tom, 15, 124)
 }, 1)
 
+--------------------------------------------------
+-- Generated grooves (see Core/DrumGroove.lua). The patterns above stay
+-- available for sections that name them.
+--------------------------------------------------
+
+Drums.grooves = {
+
+    -- Floor tom drive with tom answers.
+    intro = {
+        phrase = 4,
+        pulse = { voice = "floor_tom", every = 2, velocity = 96, accent = 108 },
+        kick = { positions = {0}, velocity = 104, options = { {8, 0.5} } },
+        snare = { positions = {4, 12}, velocity = 104 },
+        extras = {
+            { voice = "high_tom", position = 7, chance = 0.7, velocity = 92 },
+            { voice = "mid_tom", position = 15, chance = 0.6, velocity = 96 },
+            { voice = "mid_tom", position = 3, chance = 0.3, velocity = 90 },
+            { voice = "high_tom", position = 11, chance = 0.3, velocity = 94 }
+        }
+    },
+
+    -- Eighth notes on the hi-hat, syncopated kicks, a few ghost notes.
+    verse = {
+        phrase = 4,
+        pulse = {
+            voice = "closed_hat", every = 2, velocity = 78, accent = 98,
+            open = { voice = "open_hat", positions = {14}, chance = 0.4, velocity = 92 }
+        },
+        kick = {
+            positions = {0, 8}, velocity = 112,
+            options = { {10, 0.5, 96}, {6, 0.25, 92}, {14, 0.15, 90}, {3, 0.15, 88} }
+        },
+        snare = { positions = {4, 12}, velocity = 114 },
+        ghosts = { positions = {7, 15, 9, 1}, chance = 0.35, velocity = 34, max = 2 }
+    },
+
+    -- Washy semi-open hi-hat, rimshots, crash on the first bar.
+    chorus = {
+        phrase = 4,
+        pulse = { voice = "semi_open_hat", every = 2, velocity = 92, accent = 108 },
+        kick = {
+            positions = {0, 8}, velocity = 118,
+            options = { {10, 0.6, 100}, {6, 0.3, 98}, {14, 0.2, 96} }
+        },
+        snare = { positions = {4, 12}, velocity = 120, rimshot = 0.5 },
+        opening = { voice = "crash", velocity = 124 }
+    },
+
+    -- Ride with a few bell hits.
+    solo = {
+        phrase = 4,
+        pulse = { voice = "ride", every = 2, velocity = 84, accent = 100 },
+        kick = {
+            positions = {0, 8}, velocity = 114,
+            options = { {10, 0.5, 96}, {6, 0.3, 94}, {14, 0.2, 92} }
+        },
+        snare = { positions = {4, 12}, velocity = 116 },
+        ghosts = { positions = {7, 15}, chance = 0.3, velocity = 34, max = 1 },
+        extras = {
+            { voice = "ride_bell", position = 2, chance = 0.4, velocity = 96 },
+            { voice = "ride_bell", position = 10, chance = 0.4, velocity = 96 }
+        },
+        opening = { voice = "crash", velocity = 122 }
+    },
+
+    -- Crash on every beat, full rimshots.
+    outro = {
+        phrase = 2,
+        pulse = { voice = "crash", every = 4, velocity = 112, accent = 116 },
+        kick = { positions = {0, 8}, velocity = 120, options = { {10, 0.6, 104}, {14, 0.3, 100} } },
+        snare = { positions = {4, 12}, velocity = 122, rimshot = 1 },
+        opening = { voice = "crash", velocity = 127 }
+    }
+
+}
+
 return Drums

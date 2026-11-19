@@ -7,7 +7,9 @@ local SongStructure = {{
     energy = 0.4,
     fill = "cr_fill_snare",
     patterns = {
-        drums = "cr_intro"
+        drums = {
+            groove = "intro"
+        }
     }
 }, {
     id = "verse_1",
@@ -19,8 +21,7 @@ local SongStructure = {{
     fill = "cr_fill_snare",
     patterns = {
         drums = {
-            primary = "cr_verse",
-            variation = "cr_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -33,8 +34,7 @@ local SongStructure = {{
     fill = "cr_fill_toms",
     patterns = {
         drums = {
-            opening = "cr_chorus_crash",
-            primary = "cr_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -47,8 +47,7 @@ local SongStructure = {{
     fill = "cr_fill_snare",
     patterns = {
         drums = {
-            primary = "cr_verse",
-            variation = "cr_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -61,8 +60,7 @@ local SongStructure = {{
     fill = "cr_fill_toms",
     patterns = {
         drums = {
-            opening = "cr_chorus_crash",
-            primary = "cr_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -75,7 +73,9 @@ local SongStructure = {{
     chance = 0.5,
     fill = "cr_fill_toms",
     patterns = {
-        drums = "cr_bridge"
+        drums = {
+            groove = "bridge"
+        }
     }
 }, {
     id = "solo",
@@ -87,8 +87,7 @@ local SongStructure = {{
     fill = "cr_fill_toms",
     patterns = {
         drums = {
-            opening = "cr_chorus_crash",
-            primary = "cr_solo"
+            groove = "solo"
         }
     }
 }, {
@@ -101,8 +100,7 @@ local SongStructure = {{
     fill = "cr_fill_snare",
     patterns = {
         drums = {
-            opening = "cr_chorus_crash",
-            primary = "cr_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -116,8 +114,7 @@ local SongStructure = {{
     fill = "cr_fill_toms",
     patterns = {
         drums = {
-            opening = "cr_chorus_crash",
-            primary = "cr_chorus"
+            groove = "chorus"
         }
     }
 }, {

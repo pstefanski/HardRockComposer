@@ -4,13 +4,25 @@ local MidiWriter = require("MidiWriter")
 local Humanizer = require("Humanizer")
 local Transitions = require("Transitions")
 local MidiNotes = require("Patterns.MidiNotes")
+local DrumGroove = require("DrumGroove")
+local DrumKit = require("DrumKit")
 
 --------------------------------------------------
 -- Writes the drum MIDI of every section.
 --
 -- The drum plan of a section says which pattern plays on which part of
--- each bar (opening, variations every four bars, fill at the end). Other
--- instruments read the same plan, e.g. the bass follows the kick drum.
+-- each bar (opening, variations, fill at the end). Other instruments read
+-- the same plan, e.g. the bass follows the kick drum.
+--
+-- A section plays either a generated groove (see DrumGroove):
+--
+--     patterns = { drums = { groove = "verse" } }
+--
+-- or patterns written by hand:
+--
+--     patterns = { drums = { primary = "...", variation = "...", opening = "..." } }
+--
+-- With patterns, the variation plays every fourth bar.
 --------------------------------------------------
 
 local Arrangement = {}
@@ -47,9 +59,17 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
 
     local definition = section.patterns.drums
 
-    local primaryId, variationId, openingId
+    local primaryId, variationId, openingId, groove
 
-    if type(definition) == "string" then
+    if type(definition) == "table" and definition.groove then
+
+        groove = registry.grooves and registry.grooves[definition.groove]
+
+        if not groove then
+            error("Unknown drum groove: " .. tostring(definition.groove))
+        end
+
+    elseif type(definition) == "string" then
 
         primaryId = definition
 
@@ -61,7 +81,7 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
 
     end
 
-    local primary = Lookup(registry, "drum", primaryId)
+    local primary = not groove and Lookup(registry, "drum", primaryId)
     local variation = variationId and Lookup(registry, "drum variation", variationId)
     local opening = openingId and Lookup(registry, "drum opening", openingId)
 
@@ -88,7 +108,11 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
 
         local pattern = primary
 
-        if opening and bar == 1 then
+        if groove then
+
+            pattern = DrumGroove.BarPattern(groove, bar)
+
+        elseif opening and bar == 1 then
 
             pattern = opening
 
@@ -115,7 +139,11 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
 
         local pattern = primary
 
-        if variation and section.bars % 4 == 0 then
+        if groove then
+
+            pattern = DrumGroove.BarPattern(groove, section.bars)
+
+        elseif variation and section.bars % 4 == 0 then
 
             pattern = variation
 
@@ -193,6 +221,10 @@ function Arrangement.Apply(context, settings)
 
     local qnPerBar = Timing.QNPerBar(settings)
 
+    -- Each part of the kit sits slightly ahead of or behind the beat.
+    local humanization = settings.humanization
+    local offsets = humanization and humanization.feel and DrumKit.OffsetsByPitch(humanization.feel)
+
     --------------------------------------------------
     -- Sections
     --------------------------------------------------
@@ -206,7 +238,8 @@ function Arrangement.Apply(context, settings)
             local feel = {
                 energy = section.energy or 1,
                 humanization = settings.humanization,
-                swing = settings.swing
+                swing = settings.swing,
+                offsets = offsets
             }
 
             local startQN = Timing.BarToQN(section.startBar, settings)

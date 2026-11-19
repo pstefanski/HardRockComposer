@@ -95,4 +95,45 @@ Pattern("fill_big", "Snare and Toms", {
     Note(D.floor_tom, 15, 124)
 }, 2)
 
+--------------------------------------------------
+-- Generated grooves (see Core/DrumGroove.lua). The patterns above stay
+-- available for sections that name them.
+--------------------------------------------------
+
+Drums.grooves = {
+
+    intro = {
+        phrase = 2,
+        pulse = { voice = "floor_tom", every = 2, velocity = 104, accent = 116 },
+        kick = { every = 4, velocity = 116 }
+    },
+
+    verse = {
+        phrase = 4,
+        pulse = {
+            voice = "closed_hat", every = 2, velocity = 90, accent = 106,
+            open = { voice = "open_hat", positions = {14}, chance = 0.3, velocity = 100 }
+        },
+        kick = { positions = {0, 8}, velocity = 118, options = { {10, 0.6}, {6, 0.35, 112} } },
+        snare = { positions = {4, 12}, velocity = 122 }
+    },
+
+    -- "Skank" beat: kick on every beat, snare on every off-beat eighth.
+    chorus = {
+        phrase = 2,
+        pulse = { voice = "crash", every = 4, velocity = 114 },
+        kick = { every = 4, velocity = 120 },
+        snare = { positions = {2, 6, 10, 14}, velocity = 116 },
+        opening = { voice = "crash", velocity = 127 }
+    },
+
+    bridge = {
+        phrase = 4,
+        pulse = { voice = "floor_tom", every = 2, velocity = 96, accent = 110 },
+        kick = { positions = {0, 8}, velocity = 114, options = { {6, 0.3, 106}, {14, 0.3, 106} } },
+        snare = { positions = {4, 12}, velocity = 118 }
+    }
+
+}
+
 return Drums

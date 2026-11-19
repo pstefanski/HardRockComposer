@@ -101,4 +101,57 @@ Pattern("cr_fill_toms", "Two Beat Tom Fill", {
     PatternBuilder.Note(D.floor_tom, 15, 122)
 }, 2)
 
+--------------------------------------------------
+-- Generated grooves (see Core/DrumGroove.lua). The patterns above stay
+-- available for sections that name them.
+--------------------------------------------------
+
+Drums.grooves = {
+
+    intro = {
+        phrase = 2,
+        pulse = { voice = "closed_hat", every = 2, velocity = 70, accent = 90 },
+        kick = { positions = {0, 8}, velocity = 100, options = { {10, 0.3, 92} } }
+    },
+
+    verse = {
+        phrase = 4,
+        pulse = {
+            voice = "closed_hat", every = 2, velocity = 76, accent = 96,
+            open = { voice = "open_hat", positions = {14}, chance = 0.35, velocity = 90 }
+        },
+        kick = { positions = {0, 8}, velocity = 110, options = { {10, 0.6, 104}, {6, 0.3, 100} } },
+        snare = { positions = {4, 12}, velocity = 112 },
+        ghosts = { positions = {7, 15, 3}, chance = 0.4, velocity = 46, max = 2 }
+    },
+
+    chorus = {
+        phrase = 4,
+        pulse = { voice = "ride", every = 2, velocity = 84, accent = 98 },
+        kick = { positions = {0, 8}, velocity = 116, options = { {10, 0.7, 108}, {6, 0.3, 104} } },
+        snare = { positions = {4, 12}, velocity = 118 },
+        ghosts = { positions = {7, 15}, chance = 0.25, velocity = 44, max = 1 },
+        opening = { voice = "crash", velocity = 122 }
+    },
+
+    -- Half-time feel: snare on beat 3 only.
+    bridge = {
+        phrase = 2,
+        pulse = { voice = "ride", every = 4, velocity = 92 },
+        kick = { positions = {0}, velocity = 104, options = { {6, 0.6}, {10, 0.3, 96} } },
+        snare = { positions = {8}, velocity = 110 },
+        ghosts = { positions = {14, 3}, chance = 0.3, velocity = 42, max = 1 }
+    },
+
+    solo = {
+        phrase = 4,
+        pulse = { voice = "ride", every = 2, velocity = 86, accent = 100 },
+        kick = { positions = {0, 8}, velocity = 114, options = { {6, 0.5, 106}, {10, 0.6, 106} } },
+        snare = { positions = {4, 12}, velocity = 116 },
+        ghosts = { positions = {7, 15, 3}, chance = 0.5, velocity = 50, max = 2 },
+        opening = { voice = "crash", velocity = 120 }
+    }
+
+}
+
 return Drums

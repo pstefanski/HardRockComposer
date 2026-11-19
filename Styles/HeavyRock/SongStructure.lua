@@ -8,8 +8,7 @@ local SongStructure = {{
     transition = "big",
     patterns = {
         drums = {
-            opening = "hv_intro_crash",
-            primary = "hv_intro_toms"
+            groove = "intro"
         }
     }
 }, {
@@ -22,8 +21,7 @@ local SongStructure = {{
     fill = "hv_fill_toms",
     patterns = {
         drums = {
-            primary = "hv_verse",
-            variation = "hv_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -36,8 +34,7 @@ local SongStructure = {{
     transition = "big",
     patterns = {
         drums = {
-            opening = "hv_chorus_crash",
-            primary = "hv_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -50,8 +47,7 @@ local SongStructure = {{
     fill = "hv_fill_toms",
     patterns = {
         drums = {
-            primary = "hv_verse",
-            variation = "hv_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -64,8 +60,7 @@ local SongStructure = {{
     transition = "big",
     patterns = {
         drums = {
-            opening = "hv_chorus_crash",
-            primary = "hv_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -90,8 +85,7 @@ local SongStructure = {{
     fill = "hv_fill_toms",
     patterns = {
         drums = {
-            opening = "hv_chorus_crash",
-            primary = "hv_solo"
+            groove = "solo"
         }
     }
 }, {
@@ -104,8 +98,7 @@ local SongStructure = {{
     transition = "big",
     patterns = {
         drums = {
-            opening = "hv_chorus_crash",
-            primary = "hv_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -117,8 +110,7 @@ local SongStructure = {{
     energy = 1.0,
     patterns = {
         drums = {
-            opening = "hv_chorus_crash",
-            primary = "hv_outro"
+            groove = "outro"
         }
     }
 }}

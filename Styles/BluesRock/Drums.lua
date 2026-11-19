@@ -119,4 +119,53 @@ Pattern("bl_fill_toms", "Triplet Tom Fill", {
     Note(D.floor_tom, 22, 122)
 }, 3)
 
+--------------------------------------------------
+-- Generated grooves (see Core/DrumGroove.lua). The patterns above stay
+-- available for sections that name them.
+--------------------------------------------------
+
+Drums.grooves = {
+
+    intro = {
+        phrase = 2,
+        pulse = { voice = "closed_hat", positions = SHUFFLE, velocity = 66, accent = 86 },
+        kick = { positions = {0, 12}, velocity = 96 },
+        snare = { voice = "side_stick", positions = {6, 18}, velocity = 96 }
+    },
+
+    verse = {
+        phrase = 4,
+        pulse = {
+            voice = "closed_hat", positions = SHUFFLE, velocity = 72, accent = 94,
+            open = { voice = "open_hat", positions = {22}, chance = 0.3, velocity = 88 }
+        },
+        kick = {
+            positions = {0, 12}, velocity = 108,
+            options = { {10, 0.6, 100}, {22, 0.3, 96}, {16, 0.2, 92} }
+        },
+        snare = { positions = {6, 18}, velocity = 112 },
+        ghosts = { positions = {16, 4, 10}, chance = 0.4, velocity = 44, max = 2 }
+    },
+
+    chorus = {
+        phrase = 4,
+        pulse = { voice = "ride", positions = SHUFFLE, velocity = 84, accent = 100 },
+        kick = { positions = {0, 12}, velocity = 116, options = { {10, 0.7, 108}, {22, 0.3, 104} } },
+        snare = { positions = {6, 18}, velocity = 118, rimshot = 0.3 },
+        ghosts = { positions = {16, 4}, chance = 0.3, velocity = 46, max = 1 },
+        opening = { voice = "crash", velocity = 122 }
+    },
+
+    -- Every triplet on the ride.
+    solo = {
+        phrase = 4,
+        pulse = { voice = "ride", every = 2, velocity = 80, accent = 102 },
+        kick = { positions = {0, 12}, velocity = 114, options = { {10, 0.5, 104}, {4, 0.3, 100} } },
+        snare = { positions = {6, 18}, velocity = 116 },
+        ghosts = { positions = {16, 22, 10}, chance = 0.4, velocity = 46, max = 2 },
+        opening = { voice = "crash", velocity = 120 }
+    }
+
+}
+
 return Drums

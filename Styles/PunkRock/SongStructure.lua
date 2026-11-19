@@ -7,7 +7,9 @@ local SongStructure = {{
     energy = 0.8,
     fill = "pk_fill_snare",
     patterns = {
-        drums = "pk_intro"
+        drums = {
+            groove = "intro"
+        }
     }
 }, {
     id = "verse_1",
@@ -19,8 +21,7 @@ local SongStructure = {{
     fill = "pk_fill_snare",
     patterns = {
         drums = {
-            primary = "pk_verse",
-            variation = "pk_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -33,8 +34,7 @@ local SongStructure = {{
     transition = "big",
     patterns = {
         drums = {
-            opening = "pk_chorus_crash",
-            primary = "pk_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -47,8 +47,7 @@ local SongStructure = {{
     fill = "pk_fill_snare",
     patterns = {
         drums = {
-            primary = "pk_verse",
-            variation = "pk_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -61,8 +60,7 @@ local SongStructure = {{
     transition = "big",
     patterns = {
         drums = {
-            opening = "pk_chorus_crash",
-            primary = "pk_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -75,7 +73,9 @@ local SongStructure = {{
     chance = 0.5,
     transition = "big",
     patterns = {
-        drums = "pk_bridge"
+        drums = {
+            groove = "bridge"
+        }
     }
 }, {
     id = "chorus_3",
@@ -87,8 +87,7 @@ local SongStructure = {{
     fill = "pk_fill_snare",
     patterns = {
         drums = {
-            opening = "pk_chorus_crash",
-            primary = "pk_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -102,8 +101,7 @@ local SongStructure = {{
     fill = "pk_fill_snare",
     patterns = {
         drums = {
-            opening = "pk_chorus_crash",
-            primary = "pk_chorus"
+            groove = "chorus"
         }
     }
 }, {

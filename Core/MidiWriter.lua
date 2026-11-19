@@ -9,11 +9,18 @@ local Timing = require("Timing")
 -- feel = {
 --     energy,          -- 0..1, scales velocities (Dynamics)
 --     humanization,    -- SongSettings.humanization
---     swing            -- SongSettings.swing
+--     swing,           -- SongSettings.swing
+--     offsets          -- drums only: { [pitch] = ticks }, the average
+--                      -- placement of each part of the kit
 -- }
+--
+-- With `offsets`, the timing humanization is centred on that placement
+-- and ghost notes (velocity below GHOST_VELOCITY) vary half as much.
 --------------------------------------------------
 
 local MidiWriter = {}
+
+MidiWriter.GHOST_VELOCITY = 60
 
 function MidiWriter.CreateItem(track, startQN, endQN)
 
@@ -54,8 +61,25 @@ function MidiWriter.WriteBetween(take, pattern, barQN, fromQN, toQN, feel)
             local timingOffset = 0
 
             if humanize then
-                velocity = Humanizer.Velocity(velocity, humanization.velocity)
-                timingOffset = Humanizer.Timing(humanization.timing)
+
+                if feel.offsets then
+
+                    local amount = humanization.velocity
+
+                    if note.velocity < MidiWriter.GHOST_VELOCITY then
+                        amount = amount // 2
+                    end
+
+                    velocity = Humanizer.Velocity(velocity, amount)
+                    timingOffset = (feel.offsets[note.pitch] or 0) + Humanizer.CenteredTiming(humanization.timing)
+
+                else
+
+                    velocity = Humanizer.Velocity(velocity, humanization.velocity)
+                    timingOffset = Humanizer.Timing(humanization.timing)
+
+                end
+
             end
 
             local startPPQ = Reaper.QNToPPQ(take, noteQN) + timingOffset

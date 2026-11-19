@@ -9,7 +9,9 @@ local SongStructure = {{
     energy = 0.4,
     fill = "bl_fill_triplet",
     patterns = {
-        drums = "bl_intro"
+        drums = {
+            groove = "intro"
+        }
     }
 }, {
     id = "verse_1",
@@ -21,8 +23,7 @@ local SongStructure = {{
     fill = "bl_fill_triplet",
     patterns = {
         drums = {
-            primary = "bl_verse",
-            variation = "bl_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -35,8 +36,7 @@ local SongStructure = {{
     fill = "bl_fill_toms",
     patterns = {
         drums = {
-            opening = "bl_chorus_crash",
-            primary = "bl_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -49,8 +49,7 @@ local SongStructure = {{
     fill = "bl_fill_triplet",
     patterns = {
         drums = {
-            primary = "bl_verse",
-            variation = "bl_verse_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -63,8 +62,7 @@ local SongStructure = {{
     fill = "bl_fill_toms",
     patterns = {
         drums = {
-            opening = "bl_chorus_crash",
-            primary = "bl_chorus"
+            groove = "chorus"
         }
     }
 }, {
@@ -77,8 +75,7 @@ local SongStructure = {{
     fill = "bl_fill_toms",
     patterns = {
         drums = {
-            opening = "bl_chorus_crash",
-            primary = "bl_solo"
+            groove = "solo"
         }
     }
 }, {
@@ -103,8 +100,7 @@ local SongStructure = {{
     fill = "bl_fill_triplet",
     patterns = {
         drums = {
-            opening = "bl_chorus_crash",
-            primary = "bl_chorus"
+            groove = "chorus"
         }
     }
 }, {

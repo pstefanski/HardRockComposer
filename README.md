@@ -27,15 +27,20 @@ Instead of starting from a static template, HardRock Composer generates a comple
 * UAD bus, vocal and master processing chains
 * FX returns: Plate, Room, Hall and Delay (Valhalla)
 * Song structure, markers and colored regions
-* MIDI drum engine: section grooves, variations, fills, transitions,
-  section dynamics and deterministic humanization
+* Generative MIDI drums: each style describes its grooves with rules
+  (hi-hat or ride pulse, optional kicks, ghost notes, open hi-hats,
+  rimshots, crashes) and a drum seed draws 4-bar phrases that answer and
+  vary at their end; full EZdrummer 3 articulation map
+* Fills, transitions, section dynamics and deterministic humanization,
+  with a placement per part of the kit (laid back snare, tight hi-hat)
 * Five styles (Hard, Classic, Blues, Heavy, Punk Rock) with swing,
   12/8 support and seeded song structure variants
 * Chord progressions per section: chord guide track and generated bass
   line (kick-locked, driving eighths or boogie)
 * Bus and reverb levels automated from the section energy
 * Optional count-in
-* ReaImGui window: style, tempo, key (chords transposed), structure seed,
+* ReaImGui window: style, tempo, key (chords transposed), structure and
+  drum seeds,
   sections editor, plugin status, generation into a new project tab;
   choices remembered per style
 
@@ -106,9 +111,10 @@ Config.Style = "BluesRock"
 | `HeavyRock` | 145 BPM, gallop and double kick, optional breakdown |
 | `PunkRock` | 190 BPM, eighth-note drive and skank beat |
 
-Each style lives in `Styles/<Style>/` (settings, structure, drum patterns).
+Each style lives in `Styles/<Style>/` (settings, structure, drum grooves).
 Change `structure_seed` in its `SongSettings.lua` to get another variant of
-the song (optional bridge, breakdown or extra chorus).
+the song (optional bridge, breakdown or extra chorus), and `drum_seed` to
+get other grooves.
 
 ---
 

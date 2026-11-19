@@ -48,6 +48,7 @@ for _, entry in ipairs(StyleLoader.Available()) do
             layout = style.layout,
             structure = style.structure,
             patternSets = style.patternSets,
+            grooves = style.grooves,
             settings = style.settings,
             palette = require("ColorsPalette")
         })
@@ -57,7 +58,12 @@ for _, entry in ipairs(StyleLoader.Available()) do
     Test.Case("Styles: " .. entry.id .. " builds with every note inside its section", function()
         local style = Load(entry.id)
         local state, context = Build(style)
+        -- Humanization can move a note before the section: its timing
+        -- range plus the earliest placement of a part of the kit.
         local timing = style.settings.humanization.timing
+        for _, ticks in pairs(style.settings.humanization.feel or {}) do
+            timing = math.max(timing, style.settings.humanization.timing - ticks)
+        end
         local qnPerBar = Timing.QNPerBar(style.settings)
 
         Test.Equal(state.tempoMarkers[1].numerator, style.settings.beats_per_bar)
@@ -82,6 +88,33 @@ for _, entry in ipairs(StyleLoader.Available()) do
     end)
 
 end
+
+Test.Case("Styles: the snare sits behind the hi-hat in Hard Rock", function()
+    local style = Load("HardRock")
+    local state, context = Build(style)
+    local K = require("DrumKit").notes
+    local offsets = {[K.snare] = {}, [K.closed_hat] = {}}
+    for index, item in ipairs(ItemsOn(state, "EZD MIDI")) do
+        if context.song[index] and context.song[index].id == "verse_1" then
+            for _, note in ipairs(item.take.notes) do
+                if offsets[note.pitch] then
+                    local grid = math.floor(note.startPPQ / (PPQ / 4) + 0.5) * (PPQ / 4)
+                    table.insert(offsets[note.pitch], note.startPPQ - grid)
+                end
+            end
+        end
+    end
+    local function Average(list)
+        local sum = 0
+        for _, value in ipairs(list) do
+            sum = sum + value
+        end
+        return sum / #list
+    end
+    Test.True(#offsets[K.snare] > 16 and #offsets[K.closed_hat] > 16)
+    Test.Near(Average(offsets[K.snare]), 8, 2, "snare placement")
+    Test.Near(Average(offsets[K.closed_hat]), -4, 2, "hi-hat placement")
+end)
 
 Test.Case("Styles: an unknown style lists the available ones", function()
     Test.Raises(function() StyleLoader.Load("Polka") end, "Unknown style 'Polka' (available: HardRock, ClassicRock")

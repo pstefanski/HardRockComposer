@@ -121,4 +121,70 @@ Pattern("fill_big", "Big Fill", {
     Note(D.kick, 15, 120)
 }, 1)
 
+--------------------------------------------------
+-- Generated grooves (see Core/DrumGroove.lua). The patterns above stay
+-- available for sections that name them.
+--------------------------------------------------
+
+Drums.grooves = {
+
+    intro = {
+        phrase = 4,
+        pulse = { voice = "floor_tom", every = 2, velocity = 100, accent = 114 },
+        kick = { positions = {0, 8}, velocity = 118, options = { {3, 0.4, 110}, {10, 0.5, 112} } },
+        snare = { positions = {4, 12}, velocity = 118 },
+        opening = { voice = "crash", velocity = 124 }
+    },
+
+    -- Gallop kicks under eighth notes on the hi-hat.
+    verse = {
+        phrase = 4,
+        pulse = {
+            voice = "closed_hat", every = 2, velocity = 84, accent = 100,
+            open = { voice = "open_hat", positions = {14}, chance = 0.3, velocity = 96 }
+        },
+        kick = {
+            positions = {0, 8}, velocity = 116,
+            options = { {3, 0.8}, {10, 0.7}, {2, 0.4, 108}, {11, 0.4, 108} }
+        },
+        snare = { positions = {4, 12}, velocity = 120, rimshot = 0.3 }
+    },
+
+    -- Sixteenth-note double kick, crash on every beat, china answers.
+    chorus = {
+        phrase = 2,
+        pulse = { voice = "crash", every = 4, velocity = 116 },
+        kick = { every = 1, velocity = 104, accent = 120 },
+        snare = { positions = {4, 12}, velocity = 124, rimshot = 0.7 },
+        extras = {
+            { voice = "china", position = 14, chance = 0.4, velocity = 108 }
+        },
+        opening = { voice = "crash", velocity = 127 }
+    },
+
+    solo = {
+        phrase = 4,
+        pulse = { voice = "ride", every = 2, velocity = 88, accent = 104 },
+        kick = { every = 2, velocity = 104, accent = 116 },
+        snare = { positions = {4, 12}, velocity = 120 },
+        extras = {
+            { voice = "ride_bell", position = 6, chance = 0.4, velocity = 100 },
+            { voice = "ride_bell", position = 14, chance = 0.4, velocity = 100 }
+        },
+        opening = { voice = "crash", velocity = 122 }
+    },
+
+    outro = {
+        phrase = 2,
+        pulse = { voice = "crash", every = 4, velocity = 120 },
+        kick = { every = 1, velocity = 106, accent = 122 },
+        snare = { positions = {4, 12}, velocity = 124, rimshot = 1 },
+        extras = {
+            { voice = "china", position = 12, chance = 0.5, velocity = 112 }
+        },
+        opening = { voice = "crash", velocity = 127 }
+    }
+
+}
+
 return Drums

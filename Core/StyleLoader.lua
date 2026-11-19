@@ -10,6 +10,7 @@ local Styles = require("Styles.Index")
 --         settings,      -- SongSettings
 --         structure,     -- SongStructure
 --         patternSets,   -- { Drums }
+--         grooves,       -- Drums.grooves (see DrumGroove)
 --         layout         -- the style TrackLayout, or Data/TrackLayout.lua
 --     }
 --------------------------------------------------
@@ -72,6 +73,8 @@ function StyleLoader.Load(id)
 
     local prefix = "Styles." .. entry.id .. "."
 
+    local drums = require(prefix .. "Drums")
+
     local layoutModule = HasModule(prefix .. "TrackLayout") and prefix .. "TrackLayout" or "TrackLayout"
 
     return {
@@ -84,7 +87,9 @@ function StyleLoader.Load(id)
 
         structure = require(prefix .. "SongStructure"),
 
-        patternSets = {require(prefix .. "Drums")},
+        patternSets = {drums},
+
+        grooves = drums.grooves or {},
 
         layout = require(layoutModule)
 

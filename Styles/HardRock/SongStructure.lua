@@ -8,8 +8,7 @@ local SongStructure = {{
     fill = "fill_snare_pickup",
     patterns = {
         drums = {
-            primary = "intro_toms",
-            variation = "intro_toms_alt"
+            groove = "intro"
         }
     }
 }, {
@@ -23,8 +22,7 @@ local SongStructure = {{
 
     patterns = {
         drums = {
-            primary = "verse_drive",
-            variation = "verse_drive_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -37,9 +35,7 @@ local SongStructure = {{
 
     patterns = {
         drums = {
-            opening = "chorus_crash",
-            primary = "chorus_drive",
-            variation = "chorus_crash_alt"
+            groove = "chorus"
         }
     }
 
@@ -54,8 +50,7 @@ local SongStructure = {{
 
     patterns = {
         drums = {
-            primary = "verse_drive",
-            variation = "verse_drive_alt"
+            groove = "verse"
         }
     }
 }, {
@@ -68,9 +63,7 @@ local SongStructure = {{
     fill = "fill_tom_2beat",
     patterns = {
         drums = {
-            opening = "chorus_crash",
-            primary = "chorus_drive",
-            variation = "chorus_crash_alt"
+            groove = "chorus"
         }
     }
 }, {
@@ -83,9 +76,7 @@ local SongStructure = {{
     fill = "fill_tom_2beat",
     patterns = {
         drums = {
-            opening = "solo_crash",
-            primary = "solo_ride",
-            variation = "solo_drive_alt"
+            groove = "solo"
         }
     }
 }, {
@@ -97,8 +88,7 @@ local SongStructure = {{
     energy = 1.0,
     patterns = {
         drums = {
-            opening = "outro_crash",
-            primary = "outro_drive"
+            groove = "outro"
         }
     }
 }}
