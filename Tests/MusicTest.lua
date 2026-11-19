@@ -56,6 +56,7 @@ local function Validate(style)
         layout = style.layout,
         structure = style.structure,
         patternSets = style.patternSets,
+        grooves = style.grooves,
         settings = style.settings,
         palette = require("ColorsPalette")
     })

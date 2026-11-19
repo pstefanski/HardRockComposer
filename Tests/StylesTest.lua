@@ -48,6 +48,7 @@ for _, entry in ipairs(StyleLoader.Available()) do
             layout = style.layout,
             structure = style.structure,
             patternSets = style.patternSets,
+            grooves = style.grooves,
             settings = style.settings,
             palette = require("ColorsPalette")
         })

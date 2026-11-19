@@ -1,33 +1,12 @@
-local MidiNotes = {
+--------------------------------------------------
+-- Kept for the style files written before Data/DrumKit.lua:
+-- MidiNotes.drums is the EZdrummer 3 drum map.
+--------------------------------------------------
 
-    drums = {
+local DrumKit = require("DrumKit")
 
-        kick = 36,
+return {
 
-        snare = 38,
-
-        side_stick = 37,
-
-        closed_hat = 42,
-
-        semi_open_hat = 15,
-
-        open_hat = 46,
-
-        crash = 49,
-
-        ride = 51,
-
-        floor_tom = 43,
-
-        low_tom = 45,
-
-        mid_tom = 47,
-
-        high_tom = 48
-
-    }
+    drums = DrumKit.notes
 
 }
-
-return MidiNotes

@@ -38,4 +38,18 @@ function Humanizer.Timing(amount)
 
 end
 
+-- Timing offset in [-amount, amount], most often close to 0 (average of
+-- two draws), like a drummer who is mostly on time.
+function Humanizer.CenteredTiming(amount)
+
+    if amount <= 0 then
+        return 0
+    end
+
+    local sum = Humanizer.Random(-amount, amount) + Humanizer.Random(-amount, amount)
+
+    return math.floor(sum / 2 + 0.5)
+
+end
+
 return Humanizer

@@ -2,6 +2,8 @@ local Midi = require("Midi")
 local Transitions = require("Transitions")
 local Timing = require("Timing")
 local Harmony = require("Harmony")
+local DrumKit = require("DrumKit")
+local DrumGroove = require("DrumGroove")
 
 --------------------------------------------------
 -- Validates every declarative data file before the build starts.
@@ -134,6 +136,12 @@ local function ValidateSettings(report, settings)
 
     end
 
+    if settings.drum_seed ~= nil and not IsInteger(settings.drum_seed) then
+
+        report:Add(where, "drum_seed must be an integer")
+
+    end
+
     if settings.key ~= nil and not Harmony.KeyPitch(settings.key) then
 
         report:Add(where, "key must be a note name such as E, F# or Bb")
@@ -204,6 +212,37 @@ local function ValidateSettings(report, settings)
 
                 if type(value) ~= "number" or value < 0 then
                     report:Add(where, "humanization." .. field .. " must be a positive number")
+                end
+
+            end
+
+        end
+
+        local feel = humanization.feel
+
+        if feel ~= nil then
+
+            if type(feel) ~= "table" then
+
+                report:Add(where, "humanization.feel must be a table of offsets in ticks")
+
+            else
+
+                local groups = {}
+
+                for _, group in ipairs(DrumKit.GROUP_NAMES) do
+                    groups[group] = true
+                end
+
+                for group, ticks in pairs(feel) do
+
+                    if not groups[group] then
+                        report:Add(where, "humanization.feel: unknown part of the kit '" .. tostring(group) ..
+                            "' (use " .. table.concat(DrumKit.GROUP_NAMES, ", ") .. ")")
+                    elseif not IsInteger(ticks) or ticks < -120 or ticks > 120 then
+                        report:Add(where, "humanization.feel." .. group .. " must be an integer between -120 and 120")
+                    end
+
                 end
 
             end
@@ -580,6 +619,255 @@ local function ValidatePatterns(report, patternSets, settings)
 end
 
 --------------------------------------------------
+-- Grooves
+--------------------------------------------------
+
+local function IsChance(value)
+
+    return type(value) == "number" and value >= 0 and value <= 1
+
+end
+
+local function IsVelocity(value)
+
+    return IsInteger(value) and value >= 1 and value <= 127
+
+end
+
+local function CheckVoice(report, where, voice, required)
+
+    if voice == nil and not required then
+        return
+    end
+
+    if not DrumKit.Exists(voice) then
+        report:Add(where, "unknown drum voice '" .. tostring(voice) .. "'")
+    end
+
+end
+
+local function CheckPosition(report, where, position, barLength)
+
+    if not IsInteger(position) or position < 0 or (barLength and position >= barLength) then
+
+        report:Add(where, string.format("position %s is outside the bar (0 to %s)", tostring(position),
+            barLength and tostring(barLength - 1) or "?"))
+
+        return false
+
+    end
+
+    return true
+
+end
+
+local function CheckVelocity(report, where, velocity, required)
+
+    if velocity == nil and not required then
+        return
+    end
+
+    if not IsVelocity(velocity) then
+        report:Add(where, "velocity must be an integer between 1 and 127")
+    end
+
+end
+
+-- A part with `positions` or `every`.
+local function CheckPositions(report, where, part, barLength)
+
+    if part.positions ~= nil then
+
+        if type(part.positions) ~= "table" then
+            report:Add(where, "positions must be a list")
+            return
+        end
+
+        for _, position in ipairs(part.positions) do
+
+            if not CheckPosition(report, where, position, barLength) then
+                return
+            end
+
+        end
+
+    elseif part.every ~= nil then
+
+        if not IsInteger(part.every) or part.every < 1 then
+            report:Add(where, "every must be a positive integer")
+        end
+
+        if part.from ~= nil then
+            CheckPosition(report, where .. " (from)", part.from, barLength)
+        end
+
+    else
+
+        report:Add(where, "needs positions or every")
+
+    end
+
+end
+
+local function ValidateGroove(report, name, groove, barLength)
+
+    local where = "groove '" .. tostring(name) .. "'"
+
+    if type(groove) ~= "table" then
+        report:Add(where, "must be a table")
+        return
+    end
+
+    if groove.phrase ~= nil and not DrumGroove.PHRASES[groove.phrase] then
+        report:Add(where, "phrase must be 1, 2 or 4 bars")
+    end
+
+    local pulse = groove.pulse
+
+    if pulse ~= nil then
+
+        CheckVoice(report, where .. " pulse", pulse.voice, true)
+        CheckPositions(report, where .. " pulse", pulse, barLength)
+        CheckVelocity(report, where .. " pulse", pulse.velocity, true)
+        CheckVelocity(report, where .. " pulse accent", pulse.accent)
+
+        local open = pulse.open
+
+        if open ~= nil then
+
+            CheckVoice(report, where .. " pulse.open", open.voice)
+            CheckPositions(report, where .. " pulse.open", open, barLength)
+            CheckVelocity(report, where .. " pulse.open", open.velocity)
+
+            if open.chance ~= nil and not IsChance(open.chance) then
+                report:Add(where .. " pulse.open", "chance must be between 0 and 1")
+            end
+
+        end
+
+    end
+
+    local kick = groove.kick
+
+    if kick ~= nil then
+
+        CheckVelocity(report, where .. " kick", kick.velocity, true)
+        CheckVelocity(report, where .. " kick accent", kick.accent)
+
+        if kick.positions ~= nil or kick.every ~= nil then
+            CheckPositions(report, where .. " kick", kick, barLength)
+        end
+
+        for index, option in ipairs(kick.options or {}) do
+
+            local at = where .. " kick option #" .. index
+
+            if type(option) ~= "table" then
+                report:Add(at, "must be { position, chance [, velocity] }")
+            else
+                CheckPosition(report, at, option[1], barLength)
+
+                if not IsChance(option[2]) then
+                    report:Add(at, "chance must be between 0 and 1")
+                end
+
+                CheckVelocity(report, at, option[3])
+            end
+
+        end
+
+    end
+
+    local snare = groove.snare
+
+    if snare ~= nil then
+
+        CheckVoice(report, where .. " snare", snare.voice)
+        CheckPositions(report, where .. " snare", snare, barLength)
+        CheckVelocity(report, where .. " snare", snare.velocity, true)
+        CheckVelocity(report, where .. " snare accent", snare.accent)
+
+        if snare.rimshot ~= nil and not IsChance(snare.rimshot) then
+            report:Add(where .. " snare", "rimshot must be a chance between 0 and 1")
+        end
+
+    end
+
+    local ghosts = groove.ghosts
+
+    if ghosts ~= nil then
+
+        CheckVoice(report, where .. " ghosts", ghosts.voice)
+
+        if type(ghosts.positions) ~= "table" then
+            report:Add(where .. " ghosts", "positions must be a list")
+        else
+            CheckPositions(report, where .. " ghosts", ghosts, barLength)
+        end
+
+        CheckVelocity(report, where .. " ghosts", ghosts.velocity)
+
+        if ghosts.chance ~= nil and not IsChance(ghosts.chance) then
+            report:Add(where .. " ghosts", "chance must be between 0 and 1")
+        end
+
+        if ghosts.max ~= nil and (not IsInteger(ghosts.max) or ghosts.max < 0) then
+            report:Add(where .. " ghosts", "max must be a positive integer")
+        end
+
+    end
+
+    for index, extra in ipairs(groove.extras or {}) do
+
+        local at = where .. " extra #" .. index
+
+        CheckVoice(report, at, extra.voice, true)
+        CheckPosition(report, at, extra.position, barLength)
+        CheckVelocity(report, at, extra.velocity, true)
+
+        if extra.chance ~= nil and not IsChance(extra.chance) then
+            report:Add(at, "chance must be between 0 and 1")
+        end
+
+    end
+
+    local opening = groove.opening
+
+    if opening ~= nil then
+
+        CheckVoice(report, where .. " opening", opening.voice)
+        CheckVelocity(report, where .. " opening", opening.velocity)
+
+    end
+
+end
+
+local function ValidateGrooves(report, grooves, settings)
+
+    local barLength = nil
+
+    if IsInteger(settings.beats_per_bar) and BEAT_UNITS[settings.beat_unit] then
+        barLength = math.floor(Timing.QNPerBar(settings) * 4 + 0.5)
+    end
+
+    if grooves == nil then
+        return {}
+    end
+
+    if type(grooves) ~= "table" then
+        report:Add("Drums", "grooves must be a table")
+        return {}
+    end
+
+    for name, groove in pairs(grooves) do
+        ValidateGroove(report, name, groove, barLength)
+    end
+
+    return grooves
+
+end
+
+--------------------------------------------------
 -- Song structure
 --------------------------------------------------
 
@@ -631,7 +919,7 @@ local function ValidateChords(report, where, section)
 
 end
 
-local function ValidateStructure(report, structure, patterns, palette, trackIds, settings)
+local function ValidateStructure(report, structure, patterns, grooves, palette, trackIds, settings)
 
     local sectionIds = {}
     local usesDrums = false
@@ -700,10 +988,20 @@ local function ValidateStructure(report, structure, patterns, palette, trackIds,
 
                 CheckPatternReference(report, where, "drum", drums, patterns)
 
+            elseif type(drums) == "table" and drums.groove ~= nil then
+
+                if not grooves[drums.groove] then
+                    report:Add(where, "unknown drum groove '" .. tostring(drums.groove) .. "'")
+                end
+
+                if drums.primary ~= nil or drums.variation ~= nil or drums.opening ~= nil then
+                    report:Add(where, "drums.groove cannot be combined with primary, variation or opening")
+                end
+
             elseif type(drums) == "table" then
 
                 if drums.primary == nil then
-                    report:Add(where, "drums.primary is required")
+                    report:Add(where, "drums.primary (or drums.groove) is required")
                 end
 
                 CheckPatternReference(report, where, "primary", drums.primary, patterns)
@@ -756,7 +1054,7 @@ end
 -- Public
 --------------------------------------------------
 
--- data = { layout, structure, patternSets, settings, palette }
+-- data = { layout, structure, patternSets, grooves, settings, palette }
 -- Returns the list of error messages (empty when the data is valid).
 function Validator.Validate(data)
 
@@ -768,7 +1066,9 @@ function Validator.Validate(data)
 
     local patterns = ValidatePatterns(report, data.patternSets, data.settings)
 
-    ValidateStructure(report, data.structure, patterns, data.palette, trackIds, data.settings)
+    local grooves = ValidateGrooves(report, data.grooves, data.settings)
+
+    ValidateStructure(report, data.structure, patterns, grooves, data.palette, trackIds, data.settings)
 
     return report.errors
 
