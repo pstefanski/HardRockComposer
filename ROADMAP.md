@@ -92,13 +92,13 @@ Constat : un style déclare un pattern d'une mesure rejoué à l'identique, avec
 - ✅ **Migration** des 5 styles, seed de batterie dans la fenêtre, contrôles du validateur.
 - ✅ **Écoute dans REAPER** : articulations et rendu des grooves dans EZdrummer.
 
-## Sprint 12 — Batterie générative : fills et transitions (v0.12) 🚧
+## Sprint 12 — Batterie générative : fills et transitions (v0.12) ✅
 
 - ✅ **`Core/DrumFill.lua`** : fills assemblés à partir de cellules d'un temps (doubles, descentes de toms, flams, triolets en 12/8), en crescendo, avec la grosse caisse sur les temps et la cymbale de tempo coupée.
 - ✅ **Fills de phrase** : pickup en fin de phrase de 4 mesures, fill de 1 à 2 temps en fin de phrase de 8 mesures, fill plus long en fin de section quand l'énergie monte.
 - ✅ **Arrivée** : crash et grosse caisse sur le premier temps de la section suivante, crash gauche et droit en alternance.
 - ✅ **Transitions déclaratives** : `none`, `pickup`, `fill`, `big`, `build` (roulement avant un refrain), modifiables dans l'onglet Sections.
-- ⬜ **Écoute dans REAPER** : fills, roulements et arrivées dans EZdrummer.
+- ✅ **Écoute dans REAPER** : fills, roulements et arrivées dans EZdrummer.
 
 ## Sprint 13 — Arrangement du morceau (v0.13) ⬜
 
