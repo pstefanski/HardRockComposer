@@ -178,7 +178,9 @@ function Bass.Apply(context, settings)
 
         if section.chords and #section.chords > 0 then
 
-            local plan = Arrangement.DrumPlan(section, context.song[index + 1], context.registry, qnPerBar)
+            local plan = Arrangement.DrumPlan(section, context.song[index + 1], context.registry, qnPerBar, {
+                previous = context.song[index - 1]
+            })
 
             local feel = {
                 energy = section.energy or 1,

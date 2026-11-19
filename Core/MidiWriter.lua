@@ -49,7 +49,8 @@ function MidiWriter.WriteBetween(take, pattern, barQN, fromQN, toQN, feel)
 
         if gridQN >= windowStartQN and gridQN < windowEndQN then
 
-            local swingQN = Timing.SwingOffsetQN(note.position, feel.swing)
+            -- A grace note swings with the note it decorates.
+            local swingQN = Timing.SwingOffsetQN(note.swingPosition or note.position, feel.swing)
             local noteQN = gridQN + swingQN
             local endQN = math.min(gridQN + note.length / 4 + swingQN, windowEndQN)
 

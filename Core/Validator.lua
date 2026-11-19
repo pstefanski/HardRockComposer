@@ -4,6 +4,7 @@ local Timing = require("Timing")
 local Harmony = require("Harmony")
 local DrumKit = require("DrumKit")
 local DrumGroove = require("DrumGroove")
+local DrumFill = require("DrumFill")
 
 --------------------------------------------------
 -- Validates every declarative data file before the build starts.
@@ -18,10 +19,6 @@ local SEND_MODES = {
     post_fader = true,
     pre_fx = true,
     post_fx = true
-}
-
-local TRANSITIONS = {
-    big = true
 }
 
 local DRUM_MIDI_TRACK = "ezd_midi"
@@ -867,6 +864,83 @@ local function ValidateGrooves(report, grooves, settings)
 
 end
 
+local function ValidateFills(report, fills)
+
+    if fills == nil then
+        return
+    end
+
+    local where = "fills"
+
+    if type(fills) ~= "table" then
+        report:Add(where, "must be a table")
+        return
+    end
+
+    if fills.toms ~= nil then
+
+        if type(fills.toms) ~= "table" or #fills.toms == 0 then
+            report:Add(where, "toms must be a non-empty list")
+        else
+            for _, voice in ipairs(fills.toms) do
+                CheckVoice(report, where .. " toms", voice, true)
+            end
+        end
+
+    end
+
+    if fills.cells ~= nil then
+
+        if type(fills.cells) ~= "table" or #fills.cells == 0 then
+            report:Add(where, "cells must be a non-empty list")
+        else
+            for _, cell in ipairs(fills.cells) do
+                if not DrumFill.CELLS[cell] then
+                    report:Add(where, "unknown fill cell '" .. tostring(cell) .. "'")
+                end
+            end
+        end
+
+    end
+
+    if fills.velocity ~= nil then
+
+        if type(fills.velocity) ~= "table" then
+            report:Add(where, "velocity must be { from, to }")
+        else
+            CheckVelocity(report, where .. " velocity.from", fills.velocity.from, true)
+            CheckVelocity(report, where .. " velocity.to", fills.velocity.to, true)
+
+            if IsVelocity(fills.velocity.from) and fills.velocity.from <= 20 then
+                report:Add(where .. " velocity.from", "must be above 20 (pickups play 20 softer)")
+            end
+        end
+
+    end
+
+    CheckVelocity(report, where .. " kick", fills.kick)
+    CheckVelocity(report, where .. " crash", fills.crash)
+
+    for _, key in ipairs({"pickup", "phrase"}) do
+        if fills[key] ~= nil and not IsChance(fills[key]) then
+            report:Add(where, key .. " must be a chance between 0 and 1")
+        end
+    end
+
+    if fills.crashes ~= nil then
+
+        if type(fills.crashes) ~= "table" or #fills.crashes == 0 then
+            report:Add(where, "crashes must be a non-empty list")
+        else
+            for _, voice in ipairs(fills.crashes) do
+                CheckVoice(report, where .. " crashes", voice, true)
+            end
+        end
+
+    end
+
+end
+
 --------------------------------------------------
 -- Song structure
 --------------------------------------------------
@@ -919,7 +993,7 @@ local function ValidateChords(report, where, section)
 
 end
 
-local function ValidateStructure(report, structure, patterns, grooves, palette, trackIds, settings)
+local function ValidateStructure(report, structure, patterns, grooves, generated, palette, trackIds, settings)
 
     local sectionIds = {}
     local usesDrums = false
@@ -970,7 +1044,7 @@ local function ValidateStructure(report, structure, patterns, grooves, palette, 
 
         end
 
-        if section.transition ~= nil and not TRANSITIONS[section.transition] then
+        if section.transition ~= nil and not Transitions.KINDS[section.transition] then
             report:Add(where, "unknown transition '" .. tostring(section.transition) .. "'")
         end
 
@@ -1014,7 +1088,9 @@ local function ValidateStructure(report, structure, patterns, grooves, palette, 
 
             end
 
-            CheckPatternReference(report, where, "fill", Transitions.GetFill(section, structure[index + 1]), patterns)
+            local transition = Transitions.Resolve(section, structure[index + 1], generated)
+
+            CheckPatternReference(report, where, "fill", transition and transition.pattern, patterns)
 
         end
 
@@ -1054,7 +1130,7 @@ end
 -- Public
 --------------------------------------------------
 
--- data = { layout, structure, patternSets, grooves, settings, palette }
+-- data = { layout, structure, patternSets, grooves, fills, settings, palette }
 -- Returns the list of error messages (empty when the data is valid).
 function Validator.Validate(data)
 
@@ -1068,7 +1144,10 @@ function Validator.Validate(data)
 
     local grooves = ValidateGrooves(report, data.grooves, data.settings)
 
-    ValidateStructure(report, data.structure, patterns, grooves, data.palette, trackIds, data.settings)
+    ValidateFills(report, data.fills)
+
+    ValidateStructure(report, data.structure, patterns, grooves, data.fills ~= nil, data.palette, trackIds,
+        data.settings)
 
     return report.errors
 

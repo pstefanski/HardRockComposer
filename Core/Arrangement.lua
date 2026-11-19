@@ -6,6 +6,7 @@ local Transitions = require("Transitions")
 local MidiNotes = require("Patterns.MidiNotes")
 local DrumGroove = require("DrumGroove")
 local DrumKit = require("DrumKit")
+local DrumFill = require("DrumFill")
 
 --------------------------------------------------
 -- Writes the drum MIDI of every section.
@@ -43,19 +44,96 @@ local function Lookup(registry, role, id)
 
 end
 
+-- Fills of a registry built without DrumFill.Apply (tests, old callers).
+local function FillSetup(registry, qnPerBar)
+
+    return registry.drumFills or {
+        rules = DrumFill.Rules(nil),
+        seed = 1,
+        timing = {
+            barLength = qnPerBar * 4,
+            beatLength = 4,
+            count = qnPerBar,
+            triplet = false
+        },
+        generated = false
+    }
+
+end
+
+-- Generated transition at the end of a section: { fills = { [bar] = pattern },
+-- builds = { [bar] = pattern } }.
+local function GeneratedEnding(kind, section, nextSection, setup)
+
+    local rules, timing = setup.rules, setup.timing
+    local bars = section.bars
+    local generator = DrumFill.Generator(setup.seed, section.id, bars)
+
+    local ending = {
+        fills = {},
+        builds = {}
+    }
+
+    if kind == "build" then
+
+        local count = (bars >= 8 and generator:Float() < 0.5) and 2 or 1
+        count = math.min(count, bars)
+
+        for index, pattern in ipairs(DrumFill.Build(rules, timing, count)) do
+            ending.builds[bars - count + index] = pattern
+        end
+
+    elseif kind == "pickup" then
+
+        ending.fills[bars] = DrumFill.Fill(rules, timing, generator, 1, {
+            pickup = true
+        })
+
+    else
+
+        local beats = timing.count
+
+        if kind == "fill" then
+
+            beats = 2
+
+            if nextSection and (nextSection.energy or 1) > (section.energy or 1) then
+                beats = 3
+            end
+
+            beats = math.min(beats, timing.count)
+
+        end
+
+        ending.fills[bars] = DrumFill.Fill(rules, timing, generator, beats)
+
+    end
+
+    return ending
+
+end
+
 -- Returns the list of segments played in a section, in writing order:
 --
 --     { bar = 1..bars, barQN = offset from the section start,
 --       pattern, fromQN, toQN }   -- window inside the bar, in QN
 --
+-- options = {
+--     previous = section,         -- the section before (for the arrival crash)
+--     state = { crashes = 0 }     -- shared by the sections of a song, so that
+--                                 -- the arrival crashes alternate
+-- }
+--
 -- Returns nil when the section has no drum pattern.
-function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
+function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar, options)
 
     if not (section.patterns and section.patterns.drums) then
 
         return nil
 
     end
+
+    options = options or {}
 
     local definition = section.patterns.drums
 
@@ -85,12 +163,93 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
     local variation = variationId and Lookup(registry, "drum variation", variationId)
     local opening = openingId and Lookup(registry, "drum opening", openingId)
 
-    local fillId = Transitions.GetFill(section, nextSection)
-    local fill = fillId and Lookup(registry, "fill", fillId)
+    local setup = FillSetup(registry, qnPerBar)
+    local rules = setup.rules
+
+    --------------------------------------------------
+    -- What ends the bars: fills, builds, arrivals
+    --------------------------------------------------
+
+    local fills = {}
+    local builds = {}
+    local arrivals = {}
+
+    local transition = Transitions.Resolve(section, nextSection, setup.generated)
+
+    if transition and transition.pattern then
+
+        local fill = Lookup(registry, "fill", transition.pattern)
+        local fillBeats = fill.transitionBeats or 1
+
+        if fillBeats <= 0 or fillBeats > qnPerBar then
+
+            error("Invalid transition length for fill: " .. tostring(transition.pattern))
+
+        end
+
+        fills[section.bars] = fill
+
+    elseif transition then
+
+        local ending = GeneratedEnding(transition.kind, section, nextSection, setup)
+
+        fills, builds = ending.fills, ending.builds
+
+    end
+
+    if setup.generated then
+
+        -- The section lands with a crash after the transition of the previous one.
+        if options.previous and Transitions.Resolve(options.previous, section, true) then
+            arrivals[1] = true
+        end
+
+        -- Phrase fills inside a generated groove: a pickup after 4 bars, a
+        -- fill after 8 bars, followed by a crash.
+        if groove then
+
+            for bar = 4, section.bars - 1, 4 do
+
+                if not (fills[bar] or builds[bar] or builds[bar + 1]) then
+
+                    local generator = DrumFill.Generator(setup.seed, section.id, bar)
+
+                    if bar % 8 == 0 and generator:Float() < rules.phrase then
+
+                        fills[bar] = DrumFill.Fill(rules, setup.timing, generator, generator:Int(1, 2))
+                        arrivals[bar + 1] = true
+
+                    elseif generator:Float() < rules.pickup then
+
+                        fills[bar] = DrumFill.Fill(rules, setup.timing, generator, 1, {
+                            pickup = true
+                        })
+
+                    end
+
+                end
+
+            end
+
+        end
+
+    end
+
+    --------------------------------------------------
+    -- Segments
+    --------------------------------------------------
+
+    local state = options.state or {
+        crashes = 0
+    }
 
     local segments = {}
 
     local function Add(bar, pattern, fromQN, toQN)
+
+        if toQN <= fromQN then
+            return
+        end
 
         table.insert(segments, {
             bar = bar,
@@ -102,15 +261,20 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
 
     end
 
-    local completeBars = fill and section.bars - 1 or section.bars
-
-    for bar = 1, completeBars do
+    for bar = 1, section.bars do
 
         local pattern = primary
 
         if groove then
 
             pattern = DrumGroove.BarPattern(groove, bar)
+
+        elseif fills[bar] and bar == section.bars then
+
+            -- The bar of a fill written by hand never uses the opening.
+            if variation and bar % 4 == 0 then
+                pattern = variation
+            end
 
         elseif opening and bar == 1 then
 
@@ -122,35 +286,35 @@ function Arrangement.DrumPlan(section, nextSection, registry, qnPerBar)
 
         end
 
-        Add(bar, pattern, 0, pattern.bars * qnPerBar)
+        if builds[bar] then
 
-    end
+            pattern = builds[bar]
 
-    if fill then
+        elseif arrivals[bar] then
 
-        local fillBeats = fill.transitionBeats or 1
-        local fillStartQN = qnPerBar - fillBeats
+            local crashes = rules.crashes
+            local voice = crashes[state.crashes % #crashes + 1]
 
-        if fillBeats <= 0 or fillBeats > qnPerBar then
+            state.crashes = state.crashes + 1
 
-            error("Invalid transition length for fill: " .. tostring(fillId))
-
-        end
-
-        local pattern = primary
-
-        if groove then
-
-            pattern = DrumGroove.BarPattern(groove, section.bars)
-
-        elseif variation and section.bars % 4 == 0 then
-
-            pattern = variation
+            pattern = DrumFill.Arrival(pattern, voice, rules.crash)
 
         end
 
-        Add(section.bars, pattern, 0, fillStartQN)
-        Add(section.bars, fill, fillStartQN, qnPerBar)
+        local fill = fills[bar]
+
+        if fill then
+
+            local fillStartQN = qnPerBar - (fill.transitionBeats or 1)
+
+            Add(bar, pattern, 0, fillStartQN)
+            Add(bar, fill, fillStartQN, qnPerBar)
+
+        else
+
+            Add(bar, pattern, 0, pattern.bars * qnPerBar)
+
+        end
 
     end
 
@@ -229,9 +393,17 @@ function Arrangement.Apply(context, settings)
     -- Sections
     --------------------------------------------------
 
+    -- Shared by the sections, so that the arrival crashes alternate.
+    local state = {
+        crashes = 0
+    }
+
     for index, section in ipairs(context.song) do
 
-        local plan = Arrangement.DrumPlan(section, context.song[index + 1], context.registry, qnPerBar)
+        local plan = Arrangement.DrumPlan(section, context.song[index + 1], context.registry, qnPerBar, {
+            previous = context.song[index - 1],
+            state = state
+        })
 
         if plan then
 

@@ -8,6 +8,7 @@ local Plugins = require("Plugins")
 local Patterns = require("Patterns")
 local Arrangement = require("Arrangement")
 local DrumGroove = require("DrumGroove")
+local DrumFill = require("DrumFill")
 local Bass = require("Bass")
 local ChordGuide = require("ChordGuide")
 local Automation = require("Automation")
@@ -93,6 +94,7 @@ local stages = {{
 
         Patterns.Apply(style.patternSets, context)
         DrumGroove.Apply(style.grooves, context, style.settings)
+        DrumFill.Apply(style.fills, context, style.settings)
 
     end
 }, {
@@ -142,6 +144,7 @@ function Builder.Build(style)
         structure = style.structure,
         patternSets = style.patternSets,
         grooves = style.grooves,
+        fills = style.fills,
         settings = style.settings,
         palette = ColorsPalette
 
