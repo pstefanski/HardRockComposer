@@ -59,6 +59,7 @@ local function Validate(style)
         structure = style.structure,
         patternSets = style.patternSets,
         grooves = style.grooves,
+        fills = style.fills,
         settings = style.settings,
         palette = require("ColorsPalette")
     })
@@ -165,7 +166,8 @@ Test.Case("Bass: kick mode follows the optional kicks of the groove", function()
     local state, context = Build(Load("HardRock", KickBass))
     local verse = ItemsOn(state, "Bass MIDI")[2]
     local counts = {}
-    for bar = 1, 4 do
+    -- Bars 1 to 3 of the phrase (bar 4 may end with a pickup).
+    for bar = 1, 3 do
         local kicks = GrooveKicks(context, "verse", bar)
         local notes = NotesBetween(verse, (bar - 1) * 4 * PPQ, bar * 4 * PPQ)
         Test.Equal(#notes, #kicks, "bar " .. bar)

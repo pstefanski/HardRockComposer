@@ -111,7 +111,7 @@ Pattern("hv_fill_toms", "Sixteenth Tom Fill", {
     Note(D.floor_tom, 15, 118)
 }, 2)
 
--- Used by `transition = "big"` sections.
+-- Played by sections with `fill = "fill_big"`.
 Pattern("fill_big", "Big Fill", {
     Note(D.snare, 12, 116),
     Note(D.snare, 13, 112),
@@ -185,6 +185,20 @@ Drums.grooves = {
         opening = { voice = "crash", velocity = 127 }
     }
 
+}
+
+-- Generated fills (see Core/DrumFill.lua): pickups, fills and builds
+-- replace the fills above, which sections can still force with `fill`.
+-- Five toms, kicks in the fills, the china among the arrival crashes.
+Drums.fills = {
+    toms = { "high_tom", "mid_tom", "low_tom", "floor_tom", "floor_tom_2" },
+    cells = { "snare", "toms", "snare_toms", "kick_snare" },
+    velocity = { from = 100, to = 127 },
+    kick = 112,
+    pickup = 0.4,
+    phrase = 0.7,
+    crashes = { "crash", "china", "crash_1" },
+    crash = 127
 }
 
 return Drums

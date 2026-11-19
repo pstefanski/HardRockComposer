@@ -145,6 +145,7 @@ Test.Case("Session: sections can be edited, reordered, duplicated and skipped", 
         structure = applied.structure,
         patternSets = applied.patternSets,
         grooves = applied.grooves,
+        fills = applied.fills,
         settings = applied.settings,
         palette = require("ColorsPalette")
     })

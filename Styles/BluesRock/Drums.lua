@@ -168,4 +168,14 @@ Drums.grooves = {
 
 }
 
+-- Generated fills (see Core/DrumFill.lua): triplet fills replace the
+-- fills above, which sections can still force with `fill`.
+Drums.fills = {
+    toms = { "high_tom", "low_tom", "floor_tom" },
+    velocity = { from = 84, to = 116 },
+    kick = 96,
+    pickup = 0.4,
+    phrase = 0.5
+}
+
 return Drums

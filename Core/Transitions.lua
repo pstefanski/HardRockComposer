@@ -44,7 +44,8 @@ function Transitions.Default(section, nextSection)
 
     local rise = (nextSection.energy or 1) - (section.energy or 1)
 
-    if rise >= Transitions.BIG_RISE then
+    -- The margin keeps 0.6 - 0.3 from falling just short of 0.3.
+    if rise >= Transitions.BIG_RISE - 1e-9 then
         return "big"
     end
 

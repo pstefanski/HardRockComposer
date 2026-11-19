@@ -17,6 +17,7 @@ local function Data()
         structure = SongStructure,
         patternSets = {DrumPatterns},
         grooves = Style.grooves,
+        fills = Style.fills,
         settings = SongSettings,
         palette = ColorsPalette
     })
